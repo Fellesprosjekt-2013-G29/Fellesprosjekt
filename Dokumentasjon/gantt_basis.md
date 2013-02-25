@@ -1,3 +1,8 @@
+# Fase 1
+## SU1: Prosjektplan
+- Tid og kostnadsestimat
+HEIE
+
 Fase 2
 ======
 Under implementering skal hver gruppe dokumentere unit test og system test prosesser. Ved 
