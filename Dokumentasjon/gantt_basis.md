@@ -1,11 +1,6 @@
 # Fase 1
 ## SU1: Prosjektplan
-- Tid og kostnadsestimat
-HEI
-fdsafpdjaåsdfj
-asdf
-asd
-fa
+
 
 Fase 2
 ======
