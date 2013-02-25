@@ -1,3 +1,8 @@
+# Fase 1
+## SU1: Prosjektplan
+- Tid og kostnadsestimat
+HEIE
+
 Fase 2
 ======
 Under implementering skal hver gruppe dokumentere unit test og system test prosesser. Ved slutten av fasen skal gruppene levere/demonstrere systemet til und.ass – et system som realiserer alle kravene med eventuelle forbehold som er gitt i kapittel 4.5. Und.ass godkjenner/underkjenner ut i fra gruppasimplementerte system og systemet i henhold til gruppas test dokumentasjon.
