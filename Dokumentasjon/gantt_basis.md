@@ -3,6 +3,9 @@
 - Tid og kostnadsestimat
 HEI
 fdsafpdjaåsdfj
+asdf
+asd
+fa
 
 Fase 2
 ======
