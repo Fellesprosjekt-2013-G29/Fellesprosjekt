@@ -52,9 +52,15 @@ programsystem som tilfresstilte de angitte kravene, må dette betraktes som vell
 
 SU 5: Dokumentasjon - 22.mars
 ----
-###Sluttrapport i henhold til krav i kap 4.3
-Sluttrapport:
-	- 
+###Sluttrapport i henhold til krav i kap 4.3 Kaptiler:
+	- Estimert og virkelig tidsforbruk for hver arbeidspakke. Kort kommentar der vi har avvik på 25% eller mer. ( 5 timer)
+	- Systemrapport
+		+ Resultater fra systemtest ( 2 timer )
+		+ Endringsrapport ( 4 timer )
+	- Prosjekterfaringer. 
+		+ Erfaringer vi vil unngå i senere utviklingsprosjekter. ( 3 timer)
+		+ Erfaringer vi vil gjenta i senere utviklingsprosjekter. (3 timer)
+		+ Forberede oss på senere utviklingsprosjekter (3 timer)
 
 KTN 2
 -----
