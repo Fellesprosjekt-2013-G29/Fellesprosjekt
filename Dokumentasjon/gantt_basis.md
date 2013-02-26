@@ -27,17 +27,17 @@ _Implementasjon og testing av systemet._
 
 MMI D3: Skjermdesign  og  konstruksjon  av  brukergrensesnittet. - 22. mars
 -----------------------------------------------------------------------
-1. Konseptuell modell. Mekke UML. Ting som må være med: 
+1. Konseptuell modell. Mekke UML. Ting som må være med:  ( **12 timer** )
 	- Beskriv klassene
 	- Datafeltene i klassene
 	- arv
 	- relasjoner
 
-2. Skjermdesign. Ta utgangspunkt i kravspec og  scenarier fra D2.
+2. Skjermdesign. Ta utgangspunkt i kravspec og  scenarier fra D2. 
 	_Vi skal spesifisere brukeropplevelsen; dvs hva brukeren til en hver tid ser og kan gjøre_
-	- Beskriv grafisk struktur og utforming
-	- Beskriv kobling mot konseptuell modell
-	- Beskriv interaksjon: Hvordan reagerer applikasjonen på hendelser som museklikk og tastetrykk
+	- Beskriv grafisk struktur og utforming ( **12 timer** )
+	- Beskriv kobling mot konseptuell modell ( **6 timer** )
+	- Beskriv interaksjon: Hvordan reagerer applikasjonen på hendelser som museklikk og tastetrykk ( **6 timer** )
 
 3. Konstruksjonsbeskrivelse. 
 _Beskriv hvordan GUI er bygd opp; dvs. hvilke vinduer og dialogelementer som utgjør grensesnittet og hvordan disse er koblet sammen i et hierarki og kommuniserer._
