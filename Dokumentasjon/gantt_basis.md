@@ -6,7 +6,7 @@ _Fordelt på arbeidspakker, der ingen pakker er større enn 16 timeverk_
 ### SU1: Prosjektplan
 _Frist 1. mars_
 
-- Hvilke ressurser man har til disposisjon, nemlig penger, personell og utstyr.
+- Hvilke ressurser man har til disposisjon, nemlig penger, personell og utstyr. (Risikoanalyse)
 	**Estimat: 2 timer**
 	
 - Tid og kostnadsestimater for prosjektet
@@ -15,26 +15,50 @@ _Frist 1. mars_
 	- Hvordan arbeidet skal brytes ned / opp i mindre deler
 	**Estimat: 6 timer**
 		
-	- Til hvilke tidsfrister hver del skal være ferdig.
+	- Til hvilke tidsfrister hver del skal være ferdig. (Lage Ganttdiagram)
 	**Estimat: 2 timer**
 
 - Hvem som skal ha ansvaret for hvilke arbeidsoppgaver.
 	**Estimat: 2 timer**
 
+**Totalt: 12 timer**
 
 ### SU2: Systemtestplan
 _Frist 1. mars_
 
-- 
+- Sette seg inn i krav.
+	**Estimat: 1 time**
+	
+- Lage plan for testene (14. krav som skal testes)
+	**Estimat: 3.5 timer** (15 minutter på hvert krav)
+
+** Totalt: 4.5 timer**
+
 
 ###DB1: Konseptuelt skjema
 _Frist 7. mars_
 
+
 ### KTN1: Fase 1
 _Frist 8. mars_
 
+
 ### SU3: Overordnet design
 _Frist 8. mars_
+
+- Lage Usecase-diagrammer (tre stk - 20min/st)
+	**Estimat: 1 time**
+
+- Lage tekstlige Usecases (tre stk)
+	**Estimat: 0.5 time**
+
+- Sekvensdiagrammer (fire stk - 20 min stk)
+	**Estimat: 1.5 timer**
+
+- Beskrivelse av struktur og de viktigeste klassene m/attributter og metoder.
+	**Estimat: 1.5 timer**
+	
+**totalt: 4.5 timer**
 
 ### MMI1: Øving D2a
 _Frist 8. mars_
