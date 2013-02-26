@@ -1,6 +1,47 @@
-# Fase 1
-## SU1: Prosjektplan
-asædkasdæølfk
+# _Tidsestimat for fellesprosjektet._
+_Fordelt på arbeidspakker, der ingen pakker er større enn 16 timeverk_
+
+## Fase 1
+
+### SU1: Prosjektplan
+_Frist 1. mars_
+
+- Hvilke ressurser man har til disposisjon, nemlig penger, personell og utstyr.
+	**Estimat: 2 timer**
+	
+- Tid og kostnadsestimater for prosjektet
+	**Estimat: 8 timer**
+		
+	- Hvordan arbeidet skal brytes ned / opp i mindre deler
+	**Estimat: 6 timer**
+		
+	- Til hvilke tidsfrister hver del skal være ferdig.
+	**Estimat: 2 timer**
+
+- Hvem som skal ha ansvaret for hvilke arbeidsoppgaver.
+	**Estimat: 2 timer**
+
+
+### SU2: Systemtestplan
+_Frist 1. mars_
+
+- 
+
+###DB1: Konseptuelt skjema
+_Frist 7. mars_
+
+### KTN1: Fase 1
+_Frist 8. mars_
+
+### SU3: Overordnet design
+_Frist 8. mars_
+
+### MMI1: Øving D2a
+_Frist 8. mars_
+
+
+---
+
 
 Fase 2
 ======
@@ -32,6 +73,8 @@ MMI D3 - 22. mars
 -----------------
 Skjermdesign  og  konstruksjon  av  brukergrensesnittet.
 
+
+---
 Fase 3
 ======	
 Sluttrapporten skal oppsummere erfaringene fra prosjektet og evaluerer hvorvidt det ble 
