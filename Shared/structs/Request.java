@@ -18,9 +18,13 @@ public class Request implements Serializable {
 	public static final int GET_USERS_NOTIFICATIONS = 1;
 	public static final int GET_USERS_APPOINTMENTS = 2;
 	public static final int ADD_APPOINTMENT = 3;
-	public static final int GET_UPDATE = 4;
+	public static final int GET_UPDATE_ALL = 4;
+	public static final int UPDATE_APPOINTMENT = 5;
+	public static final int UPDATE_INVITE = 6; //For alert
+	public static final int GET_USERS = 7;
+	public static final int GET_ROOMS = 8;
+	public static final int DELETE_APPOINTMENT = 9;
 	
-	// this is a comment
 	private int request;
 
 	private HashMap<String, Object> items = new HashMap<String, Object>();

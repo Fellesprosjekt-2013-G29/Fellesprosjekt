@@ -2,30 +2,28 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+DROP SCHEMA IF EXISTS `fellesprosjekt` ;
 CREATE SCHEMA IF NOT EXISTS `fellesprosjekt` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
 USE `fellesprosjekt` ;
 
 -- -----------------------------------------------------
--- Table `User`
+-- Table `fellesprosjekt`.`User`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `User` ;
-
-CREATE  TABLE IF NOT EXISTS `User` (
-  `id` INT NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`User` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `email` VARCHAR(255) NOT NULL ,
-  `name` VARCHAR(45) NULL ,
-  `password` CHAR(224) NULL ,
+  `name` VARCHAR(45) NULL DEFAULT NULL ,
+  `password` BLOB NOT NULL ,
+  `pw_hash` BLOB NOT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Room`
+-- Table `fellesprosjekt`.`Room`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Room` ;
-
-CREATE  TABLE IF NOT EXISTS `Room` (
-  `id` INT NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`Room` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `roomnr` VARCHAR(8) NOT NULL ,
   `location` VARCHAR(20) NULL DEFAULT NULL ,
   `size` INT NULL DEFAULT NULL ,
@@ -33,39 +31,36 @@ CREATE  TABLE IF NOT EXISTS `Room` (
 
 
 -- -----------------------------------------------------
--- Table `Appointment`
+-- Table `fellesprosjekt`.`Appointment`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Appointment` ;
-
-CREATE  TABLE IF NOT EXISTS `Appointment` (
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`Appointment` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(100) NOT NULL ,
   `start` DATETIME NOT NULL ,
   `end` DATETIME NOT NULL ,
   `description` TEXT NULL DEFAULT NULL ,
-  `roomid` INT NULL ,
+  `roomid` INT NULL DEFAULT NULL ,
   `owner` INT NOT NULL ,
+  `deleted` TINYINT(1) NOT NULL DEFAULT 0 ,
   INDEX `userid_idx` (`owner` ASC) ,
   INDEX `room_idx` (`roomid` ASC) ,
   PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_user`
     FOREIGN KEY (`owner` )
-    REFERENCES `User` (`id` )
+    REFERENCES `fellesprosjekt`.`User` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_room`
     FOREIGN KEY (`roomid` )
-    REFERENCES `Room` (`id` )
+    REFERENCES `fellesprosjekt`.`Room` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `Alarm`
+-- Table `fellesprosjekt`.`Alarm`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Alarm` ;
-
-CREATE  TABLE IF NOT EXISTS `Alarm` (
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`Alarm` (
   `apointmentid` INT NOT NULL ,
   `userid` INT NOT NULL ,
   `alarm_time` DATETIME NOT NULL ,
@@ -74,93 +69,62 @@ CREATE  TABLE IF NOT EXISTS `Alarm` (
   INDEX `user_idx` (`userid` ASC) ,
   CONSTRAINT `fk_appointment`
     FOREIGN KEY (`apointmentid` )
-    REFERENCES `Appointment` (`id` )
+    REFERENCES `fellesprosjekt`.`Appointment` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_userr`
     FOREIGN KEY (`userid` )
-    REFERENCES `User` (`id` )
+    REFERENCES `fellesprosjekt`.`User` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `Group_tbl`
+-- Table `fellesprosjekt`.`CanceledAppointment`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Group_tbl` ;
-
-CREATE  TABLE IF NOT EXISTS `Group_tbl` (
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`CanceledAppointment` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(50) NOT NULL ,
-  PRIMARY KEY (`id`) );
-
-
--- -----------------------------------------------------
--- Table `Rel_user_group`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `Rel_user_group` ;
-
-CREATE  TABLE IF NOT EXISTS `Rel_user_group` (
-  `userid` INT NOT NULL ,
-  `groupid` INT NOT NULL ,
-  PRIMARY KEY (`userid`, `groupid`) ,
-  INDEX `group_idx` (`groupid` ASC) ,
-  INDEX `user_idx` (`userid` ASC) ,
-  CONSTRAINT `fk_group`
-    FOREIGN KEY (`groupid` )
-    REFERENCES `Group_tbl` (`id` )
+  `cancelled_on` TIMESTAMP NOT NULL ,
+  `appointment_id` INT NOT NULL ,
+  `user_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_ca_aptmnt`
+    FOREIGN KEY (`id` )
+    REFERENCES `fellesprosjekt`.`Appointment` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_user_rel`
-    FOREIGN KEY (`userid` )
-    REFERENCES `User` (`id` )
+  CONSTRAINT `fk_ca_user`
+    FOREIGN KEY (`id` )
+    REFERENCES `fellesprosjekt`.`User` (`id` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Rel_group_group`
+-- Table `fellesprosjekt`.`Invitation`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Rel_group_group` ;
-
-CREATE  TABLE IF NOT EXISTS `Rel_group_group` (
-  `childid` INT NOT NULL ,
-  `parentid` INT NOT NULL ,
-  PRIMARY KEY (`childid`, `parentid`) ,
-  INDEX `child_idx` (`childid` ASC) ,
-  INDEX `parent_idx` (`parentid` ASC) ,
-  CONSTRAINT `fk_child`
-    FOREIGN KEY (`childid` )
-    REFERENCES `Group_tbl` (`id` )
+CREATE  TABLE IF NOT EXISTS `fellesprosjekt`.`Invitation` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `created` TIMESTAMP NOT NULL ,
+  `status` ENUM('YES', 'NO', 'NA') NOT NULL DEFAULT 'NA' ,
+  `alarm` DATETIME NULL ,
+  `appointment_id` INT NOT NULL ,
+  `user_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_inv_user`
+    FOREIGN KEY (`id` )
+    REFERENCES `fellesprosjekt`.`User` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_parent`
-    FOREIGN KEY (`parentid` )
-    REFERENCES `Group_tbl` (`id` )
+  CONSTRAINT `fk_inv_aptm`
+    FOREIGN KEY (`id` )
+    REFERENCES `fellesprosjekt`.`Appointment` (`id` )
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 USE `fellesprosjekt` ;
-USE `fellesprosjekt`;
-
-DELIMITER $$
-
-USE `fellesprosjekt`$$
-DROP TRIGGER IF EXISTS `Rel_group_group_BINS` $$
-USE `fellesprosjekt`$$
-
-
-CREATE TRIGGER `Rel_group_group_BINS` BEFORE INSERT ON Rel_group_group FOR EACH ROW
--- Edit trigger body code below this line. Do not edit lines above this one
-BEGIN
-	IF(NEW.childid = NEW.parentid) THEN
-		SET NEW.childid = 0;
-	END IF;
-END
-$$
-
-
-DELIMITER ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
