@@ -58,7 +58,6 @@ public class ClientConnection
 			objectOutputStream = new ObjectOutputStream(sslsocket.getOutputStream());
 			objectOutputStream.writeObject(request);
 			objectOutputStream.flush();
-			System.out.println("Object sent"); 
 			return true;
 		} 
 		catch (Exception e) 

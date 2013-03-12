@@ -45,9 +45,6 @@ public class ServerMethods
 		        case Request.ADD_APPOINTMENT:  
 		        	//getAllSheep(request, response, dc);
 		            break;
-		        case Request.GET_UPDATE:  
-//		        	getSheepByStatus(request, response, dc, 0);
-		            break;
 		        case Request.GET_USERS_APPOINTMENTS:  
 //		        	getSheepByStatus(request, response, dc, 1);
 		            break;
