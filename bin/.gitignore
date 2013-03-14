@@ -1,0 +1,6 @@
+/.gitignore
+/client
+/gui
+/model
+/server
+/structs
