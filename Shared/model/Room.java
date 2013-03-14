@@ -9,6 +9,31 @@ public class Room {
 	private int roomSize;
 	private String location;
 	
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getRoomSize() {
+		return roomSize;
+	}
+
+	public void setRoomSize(int roomSize) {
+		this.roomSize = roomSize;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
 	public static List<Room>AvailableRooms(Date tid){
 		//TODO: Implement me!
 		
