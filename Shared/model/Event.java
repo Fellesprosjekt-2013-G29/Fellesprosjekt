@@ -1,10 +1,14 @@
 package model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
 	private Person createdBy;
+	private DateFormat dateFormat;
 	private Date start;
 	private Date end;
 	private String description;
@@ -13,6 +17,23 @@ public class Event {
 	private boolean alarm;
 	private int AlarmBefore;
 	
+	public Event() {
+		
+	}
+	
+	public Event(String start, String end) {
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd, HH:mm");
+		
+		this.start = new Date();
+		this.end = new Date();
+
+		try {
+			this.start = dateFormat.parse(start);
+			this.end = dateFormat.parse(end);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public Person getCreatedBy() {
 		return createdBy;

@@ -152,10 +152,10 @@ public class CalendarView extends JFrame {
 			addToCalendar(label, 0, i, 1, 1);
 		}
 
-		Event meeting1 = new Event("2013-02-07, 16:00", "2013-02-07, 18:00");
+		EventView meeting1 = new EventView(new Event("2013-02-07, 16:00", "2013-02-07, 18:00"));
 		addEvent(meeting1);
 		
-		Event meeting2 = new Event("2013-02-03, 08:00", "2013-02-03, 10:00");
+		EventView meeting2 = new EventView(new Event("2013-02-03, 08:00", "2013-02-03, 10:00"));
 		addEvent(meeting2);
 		
 		Date test = new Date();
@@ -245,9 +245,9 @@ public class CalendarView extends JFrame {
 		panel.add(comp);
 	}
 	
-	public void addEvent(Event event) {
-		String start = (new SimpleDateFormat("MM HH mm u")).format(event.getStart());
-		String end = (new SimpleDateFormat("MM HH mm u")).format(event.getEnd());
+	public void addEvent(EventView event) {
+		String start = (new SimpleDateFormat("MM HH mm u")).format(event.getModel().getStart());
+		String end = (new SimpleDateFormat("MM HH mm u")).format(event.getModel().getEnd());
 		int day = Integer.parseInt(start.substring(9, 10));
 		int hour = Integer.parseInt(start.substring(3, 5));
 		int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
