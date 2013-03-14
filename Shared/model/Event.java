@@ -14,6 +14,7 @@ public class Event {
 	private String description;
 	private Room room;
 	private ArrayList<Invitation> participants;
+	private String title;
 	private boolean alarm;
 	private int AlarmBefore;
 	
@@ -82,6 +83,14 @@ public class Event {
 	}
 	public void setAlarmBefore(int alarmBefore) {
 		AlarmBefore = alarmBefore;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 	
