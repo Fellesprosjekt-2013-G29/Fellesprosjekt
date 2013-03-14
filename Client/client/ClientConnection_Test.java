@@ -1,5 +1,6 @@
 package client;
 
+import structs.Alert;
 import structs.Request;
 import structs.Response;
 
@@ -19,6 +20,7 @@ public class ClientConnection_Test
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		testSocket1(cc, connection);
+		testServerPushing(cc2, connection2);
 		cc.closeConnection();
 		cc2.closeConnection();
 	}
@@ -32,7 +34,7 @@ public class ClientConnection_Test
 			request.addItem("username", "herpderp@gmail.com");
 			request.addItem("password", "passord");
 			cc.sendObject(request);
-			Response response = cc.reciveObject();
+			Response response = cc.reciveResponse();
 			if(response.errorExist())
 				System.out.println("error " + response.getItem("error"));
 			else
@@ -49,7 +51,7 @@ public class ClientConnection_Test
 		request.setRequest(Request.ATTACH_SOCKET);
 		request.addItem("key", key);
 		cc.sendObject(request);
-		Response response = cc.reciveObject();
+		Response response = cc.reciveResponse();
 		System.out.println(response.getItem("result"));
 	}
 
@@ -58,8 +60,22 @@ public class ClientConnection_Test
 		Request request = new Request();
 		request.setRequest(Request.ADD_APPOINTMENT);
 		cc.sendObject(request);
-		Response response = cc.reciveObject();
+		Response response = cc.reciveResponse();
 		System.out.println(response.getItem("result"));
+	}
+	
+	public static void testServerPushing(ClientConnection cc, boolean connection)
+	{
+		Alert alert;
+		
+		while (true)
+		{
+			alert = cc.reciveAlert();
+			System.out.println("Type: " + alert.getAlertType());
+			if(alert.getAlertType() == 4)
+				break;
+		}
+		System.out.println("Done");
 	}
 }
 

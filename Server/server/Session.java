@@ -43,6 +43,8 @@ public class Session extends Connection
 	
 	public boolean sendAlert(Alert alert)
 	{
+		if(outboundSocket == null)
+			return false;
 		try
 		{
 			objectOutputStream = new ObjectOutputStream(outboundSocket.getOutputStream());
@@ -91,4 +93,6 @@ public class Session extends Connection
 	{
 		sessionManager.addSession(this);
 	}
+	
+	
 }

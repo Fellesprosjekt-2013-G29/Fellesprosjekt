@@ -2,6 +2,7 @@ package server;
 
 import javax.net.ssl.SSLSocket;
 
+import structs.Alert;
 import structs.Request;
 import structs.Response;
 
@@ -163,6 +164,12 @@ public class ServerMethods
 	
 	public static void testSessionManaging(Session session)
 	{
-		System.out.println(session.getUser());
+		Alert alert = new Alert();
+		alert.setAlertType(Alert.MEETING_INVITATION);
+		session.sendAlert(alert);
+		alert.setAlertType(Alert.MEETING_CANCELATION);
+		session.sendAlert(alert);
+		alert.setAlertType(4);
+		session.sendAlert(alert);
 	}
 }
