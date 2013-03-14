@@ -1,9 +1,6 @@
 package model;
 
-import java.util.List;
-import java.util.ArrayList;
-
-public class Person implements GroupMember{
+public class Person {
 	private int userId = 0;
 	private String name = "";
 	private String email = "";
@@ -42,12 +39,13 @@ public class Person implements GroupMember{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-
-	@Override
-	public List<Person> allMembers() {
-		List<Person> theList = new ArrayList<Person>();
-		theList.add(this);
-		return theList;
+	
+	
+	public void setUserId(int id){
+		this.userId = id;
+	}
+	
+	public int getUserId(){
+		return userId;
 	}
 }
