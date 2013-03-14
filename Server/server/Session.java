@@ -1,66 +1,38 @@
 package server;
 
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.SocketException;
 
 import javax.net.ssl.SSLSocket;
 
-import structs.Request;
+import structs.Alert;
 import structs.Response;
 
-/**
- * Session
- * 
- * The Session class will contain each client sessions information and allow the client and server
- * to have an open connection.
- * 
- * @author Tor Håkon Bonsaksen
- *
- */
-public class Session extends Thread
+public class Session extends Connection
 {
-	private SSLSocket sslsocket;
-	private int sessionID;
-	boolean running = true;
+	private SSLSocket outboundSocket;
+	private String user;
+	private SessionManager sessionManager;
+	private String key;
 	
-	ObjectInputStream objectInputStream;
-	ObjectOutputStream objectOutputStream;
-	
-	/**
-	 * Constructor for the Session class
-	 * 
-	 * @param sslsocket - The socket that holds the connection
-	 * @param sessionID - The ID of the session
-	 */
-	public Session(SSLSocket sslsocket, int sessionID)
+	public Session(SSLSocket innboundSocket, SessionManager sessionManager)
 	{
-		this.sslsocket = sslsocket;
-		this.sessionID = sessionID;
+		super(innboundSocket, sessionManager);
+		this.sessionManager = sessionManager;
 	}
-
 	
-	/**
-	 * Starts the session
-	 * Starts a loop that waits for requests from the client
-	 * 
-	 */
 	public void run()
-	{		
-		
-		
+	{			
 		try
-		{
-			System.out.println("Server - Connection Open...");
-            System.out.println("Session ID: " + sessionID);
-            
+		{          
             while(running)
             {
-            	Response response = ServerMethods.handleRequest(reciveObject());
-            	sendObject(response);
+            	System.out.println("Session waiting for object");
+            	Response response = ServerMethods.handleRequest(reciveRequest(), this);
+            	sendResponse(response);
             }
             
-            System.out.println("Session: " + sessionID + " terminated");
+            closeConnection();
             
 		}
 		catch(Exception e)
@@ -69,68 +41,54 @@ public class Session extends Thread
 		}
 	}
 	
-	
-	/**
-	 * Waits for an object from the server or for the connection to be closed.
-	 * When the connection is closed an exception is thrown and the boolean value of 'running'
-	 * is set to false.
-	 * @return Request - The request object sent from the client or NULL if the connection has been closed.
-	 */
-	public Request reciveObject()
+	public boolean sendAlert(Alert alert)
 	{
 		try
 		{
-			System.out.println("Sesion: [" + sessionID + "] - Waiting for object...");
-			objectInputStream = new ObjectInputStream(sslsocket.getInputStream());
-	        return (Request) objectInputStream.readObject();
-		}
-		catch(Exception e)
-		{
-			running = false;
-			return null;
-		}
-	}
-
-	/**
-	 * Returns an object to the client after an request has been received.
-	 * @param response - The object to be returned to the client.
-	 * @return boolean - True - the transfer completed, False - the transfer failed.
-	 */
-	public boolean sendObject(Response response)
-	{
-		try
-		{
-			objectOutputStream = new ObjectOutputStream(sslsocket.getOutputStream());
-			objectOutputStream.writeObject(response);
+			objectOutputStream = new ObjectOutputStream(outboundSocket.getOutputStream());
+			objectOutputStream.writeObject(alert);
 			objectOutputStream.flush();
 			return true;
 		}
 		catch(SocketException e)
-		{return false;}//Host disconected, dont do anything
+		{
+			e.printStackTrace();
+			return false;
+		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 			return false;
-		}	
+		}
 	}
 
-	/**
-	 * Cleanly closes all open streams and the socket.
-	 */
-	public void closeConnection()
+	public void setOutboundSocket(SSLSocket socket)
 	{
-		try
-		{
-			if(objectInputStream != null)
-				objectInputStream.close();
-			if(objectOutputStream != null)
-				objectOutputStream.close();
-			if(sslsocket != null)
-				sslsocket.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		this.outboundSocket = socket;
+	}
+	
+	public String getKey()
+	{
+		return key;
+	}
+
+	public void setKey(String key)
+	{ 
+		this.key = key;
+	}
+	
+	public void setUser(String user)
+	{
+		this.user = user;
+	}
+	
+	public String getUser()
+	{
+		return user;
+	}
+	
+	public void addToList()
+	{
+		sessionManager.addSession(this);
 	}
 }

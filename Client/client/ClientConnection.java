@@ -37,9 +37,7 @@ public class ClientConnection
 			sslsocket = (SSLSocket) sslsocketfactory.createSocket();
 			sslsocket.connect(socketaddress, CONNECTION_TIMEOUT);
 			
-			String[] cipher = new String[1];
-            cipher[0]="TLS_DH_anon_WITH_AES_128_CBC_SHA";
-            sslsocket.setEnabledCipherSuites(cipher);
+            sslsocket.setEnabledCipherSuites(sslsocket.getSupportedCipherSuites());
             
             System.out.println("Client - Conection open");
             return true;
@@ -71,7 +69,6 @@ public class ClientConnection
 	{
 		try
 		{
-			System.out.println("Client - Waiting for object...");
 			objectInputStream = new ObjectInputStream(sslsocket.getInputStream());
 	        return (Response) objectInputStream.readObject();
 		}

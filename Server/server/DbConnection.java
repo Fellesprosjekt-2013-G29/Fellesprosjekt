@@ -23,45 +23,24 @@ public class DbConnection {
         	
         }
         
-        /**
-         * Connects to the database requested in the constructor 
-         * @return Returns true if the connection is successful
-         */
-		public boolean connect (){
-			try{
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				connection = DriverManager.getConnection(url, user, password);
-				statement = connection.createStatement();
-				if(connection != null){
-					return true;
-				}
-			} catch (Exception e) {
-				System.out.println("Connection failed: " + e.getMessage());
-			}
-			return false; 
+
+		public boolean connect ()
+		{
+			return true;
 		}
-		/**
-		 * Sets the connection
-		 * @param connection The connection you want to set
-		 */
+
         public void setConnection(Connection connection){
             this.connection = connection;
         }
-        /**
-         * Gets this connections
-         * @return Returns this connection
-         */
+
         public Connection getConnection(){
             return this.connection;
         }
       
-        /**
-         * Retrives the stored hashed value from the database.
-         * @param email The email from the user of whom you like to retrieve the salt 
-         * @return Returns a byte array
-         * @throws Exception 
-         */
-        public byte[] getStoredHash(String email, String collumnName)throws Exception{
+        
+        
+        public byte[] getStoredHash(String email, String collumnName)throws Exception
+        {
         	String sql = "SELECT * FROM User WHERE Mail = '" + email +"'";
         	ResultSet resultSet = statement.executeQuery(sql);
         	resultSet.next();

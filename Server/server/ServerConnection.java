@@ -1,8 +1,16 @@
 package server;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
+
+import structs.Request;
+import structs.Response;
 
 /**
  * ServerConnection
@@ -16,6 +24,8 @@ public class ServerConnection extends Thread
 {	
 	public static final int PORT = 4447;
 	
+	private SessionManager sessionManager = new SessionManager();
+	
 	public void run()
 	{
 		try
@@ -23,20 +33,16 @@ public class ServerConnection extends Thread
 		
 			SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 	        SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(PORT);
-	
-	        String[] newcipher = new String[1];
-	        newcipher[0]="TLS_DH_anon_WITH_AES_128_CBC_SHA";
 	        
-	        int id = 0;
 	        System.out.println("Client handler started...");
 	        while(true)
 	        {
 	        	SSLSocket sslsocket;
 				sslsocket = (SSLSocket) sslserversocket.accept();
-	
-	        	sslsocket.setEnabledCipherSuites(newcipher);
-	        	Session ssc = new Session(sslsocket,id++);
-	        	ssc.start();
+	        	sslsocket.setEnabledCipherSuites(sslserversocket.getSupportedCipherSuites());
+	        
+	        	NewConnection connection = new NewConnection(sslsocket, sessionManager);
+	        	connection.start();
 	        }    
 		}
 		catch(Exception e)
@@ -44,5 +50,4 @@ public class ServerConnection extends Thread
 			e.printStackTrace();
 		}
 	}
-
 }
