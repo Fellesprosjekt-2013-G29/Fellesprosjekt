@@ -1,56 +1,22 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.SwingConstants;
-import javax.swing.border.MatteBorder;
-import javax.swing.text.DateFormatter;
-
-import model.Event;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class CalendarView extends JFrame {
-
-	private static final int ROWS = 24;
-	private static final int COLLUMNS = 8;
-
-	private final String[] days = {"Tid", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"};
-	private final String[] hours = {"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", 
-			"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", 
-			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
-	
-	private JPanel dayLine;
-	private JPanel panel;
-	private JScrollPane calendarScroller;
-	
-	private JLabel yearLabel;
-	private JLabel weekLabel;
-	private Date currentDate;
-	private int year;
-	private int week;
-	
-	private int gridSizeX;
-	private int gridSizeY;
+	private JTextField dateField;
 
 	/**
 	 * Launch the application.
@@ -72,16 +38,6 @@ public class CalendarView extends JFrame {
 	 * Create the application.
 	 */
 	public CalendarView() {
-
-		setSize(800, 600);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
-		
-		currentDate = new Date();
-		year = Integer.parseInt((new SimpleDateFormat("yyyy")).format(currentDate));
-		week = Integer.parseInt((new SimpleDateFormat("w")).format(currentDate));
-		
 		initialize();
 	}
 
@@ -89,168 +45,124 @@ public class CalendarView extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		setBounds(100, 100, 1024, 576);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[]{69, 66, 64, 12, 103, 68, 43, 234, 97, 109, 0};
+		gridBagLayout.rowHeights = new int[]{33, 23, 427, 23, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		getContentPane().setLayout(gridBagLayout);
 		
-		panel = new JPanel() {
-			@Override
-			public void paint(Graphics g) {
-				super.paint(g);
-				for(int i = 1; i < COLLUMNS; i++) {
-					g.drawLine(i * (getWidth() / COLLUMNS), 0, i * (getWidth() / COLLUMNS), getHeight());
-					for(int j = 1; j < ROWS + 1; j++) {
-						g.drawLine(0, j * (getHeight() / ROWS), getWidth(), j * (getHeight() / ROWS));
-					}
-				}
-				super.paintChildren(g);
-			}
-		};
-		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		panel.setPreferredSize(new Dimension(600, 800));
-		panel.setSize(panel.getPreferredSize());
-		panel.setLayout(null);
-
-		yearLabel = new JLabel("Year: " + year);
-		yearLabel.setBounds(340, 30, 100, 20);
-		getContentPane().add(yearLabel);
+		JLabel chooseDateLabel = new JLabel("Velg dato:");
+		GridBagConstraints gbc_chooseDateLabel = new GridBagConstraints();
+		gbc_chooseDateLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_chooseDateLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_chooseDateLabel.gridx = 1;
+		gbc_chooseDateLabel.gridy = 1;
+		getContentPane().add(chooseDateLabel, gbc_chooseDateLabel);
 		
-		weekLabel = new JLabel("Week: " + week);
-		weekLabel.setBounds(340, 50, 100, 20);
-		getContentPane().add(weekLabel);
+		dateField = new JTextField();
+		dateField.setText("dd-MM-\u00E5\u00E5\u00E5\u00E5");
+		GridBagConstraints gbc_dateField = new GridBagConstraints();
+		gbc_dateField.anchor = GridBagConstraints.WEST;
+		gbc_dateField.insets = new Insets(0, 0, 5, 5);
+		gbc_dateField.gridwidth = 2;
+		gbc_dateField.gridx = 2;
+		gbc_dateField.gridy = 1;
+		getContentPane().add(dateField, gbc_dateField);
+		dateField.setColumns(10);
 		
-		gridSizeX = panel.getWidth() / COLLUMNS;
-		gridSizeY = panel.getHeight() / ROWS;
+		JButton chooseDateButton = new JButton("Velg dato");
+		GridBagConstraints gbc_chooseDateButton = new GridBagConstraints();
+		gbc_chooseDateButton.anchor = GridBagConstraints.NORTH;
+		gbc_chooseDateButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_chooseDateButton.insets = new Insets(0, 0, 5, 5);
+		gbc_chooseDateButton.gridx = 4;
+		gbc_chooseDateButton.gridy = 1;
+		getContentPane().add(chooseDateButton, gbc_chooseDateButton);
 		
-		JViewport viewPort = new JViewport();
-		viewPort.setView(panel);
-		viewPort.setViewPosition(new Point(0, 8 * gridSizeY));
+		JLabel chooseWeekLabel = new JLabel("eller velg uke:");
+		GridBagConstraints gbc_chooseWeekLabel = new GridBagConstraints();
+		gbc_chooseWeekLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_chooseWeekLabel.gridx = 5;
+		gbc_chooseWeekLabel.gridy = 1;
+		getContentPane().add(chooseWeekLabel, gbc_chooseWeekLabel);
 		
-		calendarScroller = new JScrollPane();
-		calendarScroller.setBounds(100, 100, 620, 400);
-		calendarScroller.setViewport(viewPort);
-		getContentPane().add(calendarScroller);
+		JComboBox weekNumberBox = new JComboBox();
+		weekNumberBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"}));
+		GridBagConstraints gbc_weekNumberBox = new GridBagConstraints();
+		gbc_weekNumberBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_weekNumberBox.insets = new Insets(0, 0, 5, 5);
+		gbc_weekNumberBox.gridx = 6;
+		gbc_weekNumberBox.gridy = 1;
+		getContentPane().add(weekNumberBox, gbc_weekNumberBox);
 		
-		dayLine = new JPanel() {
-			@Override
-			public void paint(Graphics g) {
-				super.paint(g);
-				for(int i = 1; i < COLLUMNS; i++) {
-					g.drawLine(i * (getWidth() / COLLUMNS), 0, i * (getWidth() / COLLUMNS), getHeight());
-				}
-				super.paintChildren(g);
-			}
-		};
-		dayLine.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		dayLine.setPreferredSize(new Dimension(panel.getWidth(), (int)(1.3 * gridSizeY)));
-		dayLine.setSize(dayLine.getPreferredSize());
-		dayLine.setLayout(null);
+		JComboBox notificationsBox = new JComboBox();
+		notificationsBox.setModel(new DefaultComboBoxModel(new String[] {"Varslinger!"}));
+		GridBagConstraints gbc_notificationsBox = new GridBagConstraints();
+		gbc_notificationsBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_notificationsBox.insets = new Insets(0, 0, 5, 5);
+		gbc_notificationsBox.gridx = 8;
+		gbc_notificationsBox.gridy = 1;
+		getContentPane().add(notificationsBox, gbc_notificationsBox);
 		
-		updateDates();
-		
-		for(int i = 0; i < hours.length; i++) {
-			JLabel label = new JLabel(hours[i]);
-			label.setHorizontalAlignment(SwingConstants.CENTER);
-			label.setVerticalAlignment(SwingConstants.BOTTOM);
-			addToCalendar(label, 0, i, 1, 1);
-		}
-
-		EventView meeting1 = new EventView(new Event("2013-02-07, 16:00", "2013-02-07, 18:00"));
-		addEvent(meeting1);
-		
-		EventView meeting2 = new EventView(new Event("2013-02-03, 08:00", "2013-02-03, 10:00"));
-		addEvent(meeting2);
-		
-		Date test = new Date();
-		
-		for(int i = 0; i < 7; i++) {
-//			try {
-//				test = (new SimpleDateFormat("w u")).parse((i + 1) + " " + i);
-//			} catch (ParseException e) {
-//				e.printStackTrace();
-//			}
-		}
-		
-		JButton nextWeek = new JButton("Next Week");
-		nextWeek.addActionListener(new ActionListener() {
-			
-			@Override
+		JButton logOutButton = new JButton("Logg ut");
+		logOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				week++;
-				updateDates();
 			}
 		});
-		nextWeek.setVisible(true);
-		nextWeek.setBounds(getWidth() - 320, 10, 300, 50);
-		getContentPane().add(nextWeek);
-
-		JButton previousWeek = new JButton("Previous Week");
-		previousWeek.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				week--;
-				updateDates();
-			}
-		});
-//		previousWeek.setVisible(true);
-		previousWeek.setBounds(10, 10, 300, 50);
-		getContentPane().add(previousWeek);
-	}
-	
-	public void updateDates() {
-
-		dayLine.removeAll();
-		Date dates = null;
-		DateFormat df = new SimpleDateFormat("yyyy w u");
-		int date = 0;
-		int month = 0;
+		GridBagConstraints gbc_logOutButton = new GridBagConstraints();
+		gbc_logOutButton.anchor = GridBagConstraints.NORTHWEST;
+		gbc_logOutButton.insets = new Insets(0, 0, 5, 0);
+		gbc_logOutButton.gridx = 9;
+		gbc_logOutButton.gridy = 1;
+		getContentPane().add(logOutButton, gbc_logOutButton);
 		
-		for(int i = 0; i < days.length; i++) {
-			JLabel weekDay = new JLabel(days[i]);
-			weekDay.setBounds(i * gridSizeX, 0, gridSizeX, gridSizeY);
-			weekDay.setHorizontalAlignment(SwingConstants.CENTER);
-			dayLine.add(weekDay);
-			if(i > 0) {
-				try {
-					if(i != 7) {
-						dates = (new SimpleDateFormat("yyyy w u")).parse(year + " " + week + " " + (i % 8));
-					}
-					else {
-						dates = (new SimpleDateFormat("yyyy w u")).parse(year + " " + (week + 1) + " " + (i % 8));
-					}
-					System.out.println(i + " " +(i % 8) + " " + (new SimpleDateFormat("M u d w")).format(dates));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-//				date = Integer.parseInt((new SimpleDateFormat("d")).format(dates));
-//				month = Integer.parseInt((new SimpleDateFormat("M")).format(dates));
-				JLabel dateLabel = new JLabel(new SimpleDateFormat("d/M").format(dates));
-				dateLabel.setBounds(i * gridSizeX, dateLabel.getFont().getSize(), gridSizeX, gridSizeY);
-				dateLabel.setHorizontalAlignment(SwingConstants.CENTER);
-				dayLine.add(dateLabel);
-			}
-		}
-
-		try {
-			dates = (new SimpleDateFormat("yyyy w u")).parse(year + " " + week + " " + 4);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		yearLabel.setText("Year: " + (new SimpleDateFormat("yyyy")).format(dates));
-		weekLabel.setText("Week: " + (new SimpleDateFormat("w")).format(dates));
+		CalendarPane calendarPane = new CalendarPane();
+		GridBagConstraints gbc_calendarPane = new GridBagConstraints();
+		gbc_calendarPane.fill = GridBagConstraints.BOTH;
+		gbc_calendarPane.insets = new Insets(0, 0, 5, 0);
+		gbc_calendarPane.gridwidth = 9;
+		gbc_calendarPane.gridx = 1;
+		gbc_calendarPane.gridy = 2;
+		getContentPane().add(calendarPane, gbc_calendarPane);
 		
-		calendarScroller.setColumnHeaderView(dayLine);
-	}
-	
-	public void addToCalendar(Component comp, double posX, double posY, double width, double height) {
-		comp.setBounds((int)(posX * gridSizeX), (int)(posY * gridSizeY), (int)(gridSizeX * width), (int)(gridSizeY * height));
-		panel.add(comp);
-	}
-	
-	public void addEvent(EventView event) {
-		String start = (new SimpleDateFormat("MM HH mm u")).format(event.getModel().getStart());
-		String end = (new SimpleDateFormat("MM HH mm u")).format(event.getModel().getEnd());
-		int day = Integer.parseInt(start.substring(9, 10));
-		int hour = Integer.parseInt(start.substring(3, 5));
-		int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
-		addToCalendar(event, day, hour, 1, duration);
+		JButton newEventButton = new JButton("Opprett hendelse");
+		GridBagConstraints gbc_newEventButton = new GridBagConstraints();
+		gbc_newEventButton.anchor = GridBagConstraints.NORTH;
+		gbc_newEventButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_newEventButton.insets = new Insets(0, 0, 0, 5);
+		gbc_newEventButton.gridwidth = 2;
+		gbc_newEventButton.gridx = 1;
+		gbc_newEventButton.gridy = 3;
+		getContentPane().add(newEventButton, gbc_newEventButton);
+		
+		JButton editEventButton = new JButton("Endre hendelse");
+		GridBagConstraints gbc_editEventButton = new GridBagConstraints();
+		gbc_editEventButton.anchor = GridBagConstraints.NORTH;
+		gbc_editEventButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_editEventButton.insets = new Insets(0, 0, 0, 5);
+		gbc_editEventButton.gridwidth = 2;
+		gbc_editEventButton.gridx = 3;
+		gbc_editEventButton.gridy = 3;
+		getContentPane().add(editEventButton, gbc_editEventButton);
+		
+		JButton deleteEventButton = new JButton("Slett valgt(e)");
+		GridBagConstraints gbc_deleteEventButton = new GridBagConstraints();
+		gbc_deleteEventButton.anchor = GridBagConstraints.NORTH;
+		gbc_deleteEventButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_deleteEventButton.insets = new Insets(0, 0, 0, 5);
+		gbc_deleteEventButton.gridx = 5;
+		gbc_deleteEventButton.gridy = 3;
+		getContentPane().add(deleteEventButton, gbc_deleteEventButton);
+		
+		JButton manageCalendarsButton = new JButton("Administrer kalendere");
+		GridBagConstraints gbc_manageCalendarsButton = new GridBagConstraints();
+		gbc_manageCalendarsButton.anchor = GridBagConstraints.NORTHEAST;
+		gbc_manageCalendarsButton.gridwidth = 2;
+		gbc_manageCalendarsButton.gridx = 8;
+		gbc_manageCalendarsButton.gridy = 3;
+		getContentPane().add(manageCalendarsButton, gbc_manageCalendarsButton);
 	}
 }
