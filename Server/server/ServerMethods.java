@@ -95,7 +95,7 @@ public class ServerMethods
 		return response;		
 	}
 	
-	public static boolean login(Request request, Response response, NewConnection connection)
+	private static boolean login(Request request, Response response, NewConnection connection)
 	{
 		//TODO fix
 		DbConnection dc = new DbConnection(null, null, null);
@@ -130,7 +130,7 @@ public class ServerMethods
 		return false;
 	}
 
-	public static void attachSocket(Request request, Response response, NewConnection connection)
+	private static void attachSocket(Request request, Response response, NewConnection connection)
 	{
 		String key = (String) request.getItem("key");
 		System.out.println(key.toString());
@@ -263,6 +263,11 @@ public class ServerMethods
 	}
 	
 	
+	
+	private static void triggerAlert()
+	{
+		
+	}
 	
 	
 	public static void testLogin(Request request, Response response, NewConnection connection)
