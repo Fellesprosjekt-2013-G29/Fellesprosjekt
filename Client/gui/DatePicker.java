@@ -4,6 +4,8 @@ import model.*;
 import model.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Calendar;
+
 import javax.swing.*;
 
 class DatePicker {
@@ -17,7 +19,7 @@ class DatePicker {
     public DatePicker(JFrame parent) {
             d = new JDialog();
             d.setModal(true);
-            String[] header = { "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" };
+            String[] header = { "Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun" };
             JPanel p1 = new JPanel(new GridLayout(7, 7));
             p1.setPreferredSize(new Dimension(430, 120));
 
@@ -72,10 +74,11 @@ class DatePicker {
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
                             "MMMM yyyy");
             java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setFirstDayOfWeek(Calendar.MONDAY);
             cal.set(year, month, 1);
             int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK);
             int daysInMonth = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-            for (int x = 6 + dayOfWeek, day = 1; day <= daysInMonth; x++, day++)
+            for (int x = 5 + dayOfWeek, day = 1; day <= daysInMonth; x++, day++)
                     button[x].setText("" + day);
             l.setText(sdf.format(cal.getTime()));
             d.setTitle("Valg av dato");

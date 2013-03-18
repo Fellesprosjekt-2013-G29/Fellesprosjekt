@@ -235,13 +235,13 @@ public class CalendarView extends JFrame implements ActionListener {
 			}
 			break;
 		case "Velg dato":
-			
+			dateField.setText(new DatePicker(this).setPickedDate());
 			break;
 		case "Logg ut":
 			System.exit(0);
 			break;
 		case "Opprett hendelse":
-			new DatePicker(this);
+			
 			break;
 		case "Administrer kalendere":
 			

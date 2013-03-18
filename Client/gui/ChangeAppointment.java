@@ -185,7 +185,7 @@ public class ChangeAppointment extends JPanel {
 		//row9
 		constr.fill = GridBagConstraints.NONE;
 		constr.gridy = 8; constr.gridwidth = 1;
-		constr.gridx = 0; addLabel("Alarm(ant. min før):");
+		constr.gridx = 0; addLabel("Alarm(ant. min fï¿½r):");
 		
 		constr.gridx = 1; addDDList(alarmBox);
 		//row10

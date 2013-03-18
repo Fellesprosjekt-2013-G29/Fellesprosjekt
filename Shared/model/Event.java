@@ -3,6 +3,7 @@ package model;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class Event {
@@ -23,18 +24,20 @@ public class Event {
 	public Event(String start, String end) {
 		setStart(Timestamp.valueOf(start));
 		setEnd(Timestamp.valueOf(end));
-		
 	}
 	
 	public User getCreatedBy() {
 		return createdBy;
 	}
+	
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
+	
 	public Timestamp getStart() {
 		return start;
 	}
+	
 	public void setStart(Timestamp start) {
 		this.start = start;
 	}

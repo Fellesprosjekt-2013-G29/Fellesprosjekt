@@ -4,18 +4,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import client.Program;
+
 import model.Event;
 
 public class CalendarModel {
 
+	private Program parent;
+	
 	private Date currentDate;
 	private int year;
 	private int week;
 	
 	private ArrayList<EventView> events;
 	
-	public CalendarModel() {
-
+	public CalendarModel(Program parent) {
+		this.parent = parent;
 		init();
 	}
 	
@@ -28,6 +32,14 @@ public class CalendarModel {
 		events = new ArrayList<EventView>();
 		
 		createTestEvents();
+	}
+
+	public Program getParent() {
+		return parent;
+	}
+
+	public void setParent(Program parent) {
+		this.parent = parent;
 	}
 
 	public Date getCurrentDate() {
@@ -68,16 +80,16 @@ public class CalendarModel {
 	
 	public void createTestEvents() {
 
-		EventView meeting1 = new EventView(new Event("2013-02-07, 16:00", "2013-02-07, 18:00"));
+		EventView meeting1 = new EventView(new Event("2013-02-07 16:00:00", "2013-02-07 18:00:00"));
 		events.add(meeting1);
 		
-		EventView meeting2 = new EventView(new Event("2013-02-03, 08:00", "2013-02-03, 10:00"));
+		EventView meeting2 = new EventView(new Event("2013-02-03 08:00:00", "2013-02-03 10:00:00"));
 		events.add(meeting2);
 
-		EventView meeting3 = new EventView(new Event("2013-03-19, 09:00", "2013-03-19, 13:00"));
+		EventView meeting3 = new EventView(new Event("2013-03-19 09:00:00", "2013-03-19 13:00:00"));
 		events.add(meeting3);
 		
-		EventView meeting4 = new EventView(new Event("2013-03-23, 08:00", "2013-03-23, 10:00"));
+		EventView meeting4 = new EventView(new Event("2013-03-23 08:00:00", "2013-03-23 10:00:00"));
 		events.add(meeting4);
 	}
 }
