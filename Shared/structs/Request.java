@@ -29,6 +29,16 @@ public class Request implements Serializable {
 	private int request;
 
 	private HashMap<String, Object> items = new HashMap<String, Object>();
+	
+	public Request()
+	{
+		
+	}
+	
+	public Request(int request)
+	{
+		this.request = request;
+	}
 
 	public void setRequest(int request) {
 		this.request = request;
