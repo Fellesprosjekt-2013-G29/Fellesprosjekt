@@ -205,7 +205,7 @@ public class ShowAppointment extends JPanel{
 	            //storeEvent(Event model);? <--------- implementer
 	            //storeAlarm();? <------------ implementer
 	            
-	            //storeInvitationAnswer();?
+	            //storeInvitationAnswer();? <----- implementer
 	            
 	            if (answerBox.getSelectedItem().equals("Decline")) {
 	            	//removeEventFromCalender(model); <------- kanskje implementer?

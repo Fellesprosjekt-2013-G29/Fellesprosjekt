@@ -45,8 +45,8 @@ public class AddParticipants extends JPanel{
 	
 	private JTextField searchField;
 	
-	// public AddParticipants(ChangeAppointment parent) { <---------------- fjern comment
-	public AddParticipants(ArrayList<Person> persList, ChangeAppointment parent) { // <--- add comment
+	public AddParticipants(ChangeAppointment parent) { // <------ fjern comment
+	// public AddParticipants(ArrayList<Person> persList, ChangeAppointment parent) { // <--- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -82,18 +82,18 @@ public class AddParticipants extends JPanel{
 		createGraphics();
 		
 		//test-method
-		addUsersToList(persList); // <--------- legg til comment
+		//addUsersToList(persList); // <--------- legg til comment
 		// Real method:
 		// Gets all users from DB
-		// addUsersToList(getAllUsersFromDB()); <----------- implementer
+		//addUsersToList(getAllUsersFromDB()); //<----------- implementer
 		
 		addListeners();
 		
 		frame.setContentPane(this);
 		frame.pack();
 	}
-	// public AddParticipants(ChangeAppointment parent) { <---------------- fjern comment
-	public AddParticipants(ArrayList<Person> persList, NewAppointment parent) {// <-- add comment
+	public AddParticipants(ChangeAppointment parent) { //<---------------- fjern comment
+	//public AddParticipants(ArrayList<Person> persList, NewAppointment parent) {// <-- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -129,10 +129,10 @@ public class AddParticipants extends JPanel{
 		createGraphics();
 		
 		//test-method
-		addUsersToList(persList); // <--------- legg til comment
+		// addUsersToList(persList); // <--------- legg til comment
 		// Real method:
 		// Gets all users from DB
-		// addUsersToList(getAllUsersFromDB()); <------------- implementer
+		//addUsersToList(getAllUsersFromDB()); // <------------- implementer
 		
 		addListeners();
 		

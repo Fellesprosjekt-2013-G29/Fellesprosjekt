@@ -19,7 +19,7 @@ public class ChangeAppointment extends JPanel {
 	private Event model;
 	private Person owner;
 	private JFrame thisFrame;
-	// private CalendarView parent; <------------- fjern comment
+	private CalendarView parent; //<------------- fjern comment
 	private ChangeAppointment child;
 	
 	private boolean isMeeting;
@@ -66,16 +66,16 @@ public class ChangeAppointment extends JPanel {
 	
 	private GridBagConstraints constr;
 	//TEST- LIST
-	private ArrayList<Person> testList;
+	//private ArrayList<Person> testList; // <---- legg til comment
 	
-	// public NewAppointment(Event model, boolean isMeeting, Person owner, CalendarView parent) { <--------- fjern comment
-	public ChangeAppointment(Event model, boolean isMeeting, ArrayList<Person> list) { // <-------------- legg til comment
+	public NewAppointment(Event model, boolean isMeeting, Person owner, CalendarView parent) { //<--------- fjern comment
+	//public ChangeAppointment(Event model, boolean isMeeting, ArrayList<Person> list) { // <-------------- legg til comment
 		// TESING
-		testList = list;
+		// testList = list; // <---- legg til comment
 		
-		// this.parent = parent;
+		this.parent = parent; //<----- fjern comment
 		this.child = this;
-		// this.owner = owner;
+		this.owner = owner; //<--- fjern comment
 		
 		JFrame frame = new JFrame("Endre hendelse:");
 		frame.setVisible(true);
@@ -317,7 +317,7 @@ public class ChangeAppointment extends JPanel {
 	}
 	
 	private void sendModel() {
-		// parent.addEvent(model); <---------------- fjern comment
+		parent.addEvent(model); <---------------- fjern comment
 	}
 	
 	private void addListeners(final JFrame thisparent) {
@@ -432,8 +432,8 @@ public class ChangeAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	AddParticipants addPartPanel = new AddParticipants(testList, child);// <-- add comment
-	        	//AddParticipants addPartPanel = new AddParticipants(testList, child); <---- fjern comment
+	        	//AddParticipants addPartPanel = new AddParticipants(testList, child);// <-- add comment
+	        	AddParticipants addPartPanel = new AddParticipants(testList, child); //<---- fjern comment
 	        }
 		});
 	}

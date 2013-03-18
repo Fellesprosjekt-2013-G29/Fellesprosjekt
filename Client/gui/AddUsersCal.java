@@ -81,7 +81,7 @@ public class AddUsersCal extends JPanel{
 		createGraphics();
 		
 		//test-method
-		addUsersToList(persList); // <--------- legg til comment
+		// addUsersToList(persList); // <--------- legg til comment
 		// Real method:
 		// Gets all users from DB
 		// addUsersToList(getAllUsersFromDB()); <----------- implementer
@@ -164,7 +164,7 @@ public class AddUsersCal extends JPanel{
 	}
 	private void sendAddedList() {
 		// metode i CalenderView-klasse som tar i mot liste med brukere som skal ha kalendere addet
-		parent.addUsersToList(addedList);
+		parent.setNewUsersCal(addedList);
 	}
 	
 	private void addListeners() {

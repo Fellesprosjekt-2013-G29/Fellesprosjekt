@@ -21,7 +21,7 @@ public class NewAppointment extends JPanel {
 	private Event model;
 	private Person owner;
 	private JFrame thisFrame;
-	// private CalendarView parent; <-------------- fjern comment
+	private CalendarView parent; //<----------- fjern comment
 	private NewAppointment child;
 	
 	private DateFormat eventDate = new SimpleDateFormat("HH-mm-dd-MM-yyyy");
@@ -64,16 +64,16 @@ public class NewAppointment extends JPanel {
 	private GridBagConstraints constr;
 	
 	// TEST-LIST
-	private ArrayList<Person> testList;
+	//private ArrayList<Person> testList; // <---- legg til comment
 	
-	// public NewAppointment(Person owner, CalendarView parent) { <----- fjern comment
-	public NewAppointment(ArrayList<Person> list) { //<------------ legg til comment
+	public NewAppointment(Person owner, CalendarView parent) { //<--- fjern comment
+	//public NewAppointment(ArrayList<Person> list) { //<---------- legg til comment
 		// TESTING
-		testList = list;
+		// testList = list; // <---- legg til comment
 		
-		// this.parent = parent;
+		this.parent = parent; //<----- fjern comment
 		this.child = this;
-		// this.owner = owner;
+		this.owner = owner; //<--- fjern comment
 		model = new Event();
 		
 		JFrame frame = new JFrame("Opprett ny hendelse");
@@ -387,8 +387,8 @@ public class NewAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) { 	
-	        	AddParticipants addPartPanel = new AddParticipants(testList, child);// <-- add comment
-	        	//AddParticipants addPartPanel = new AddParticipants(testList, child); <---- fjern comment
+	        	// AddParticipants addPartPanel = new AddParticipants(testList, child);// <-- add comment
+	        	AddParticipants addPartPanel = new AddParticipants(testList, child); //<---- fjern comment
 	        }
 		});
 	}
