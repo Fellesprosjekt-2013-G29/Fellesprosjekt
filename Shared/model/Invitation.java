@@ -1,37 +1,58 @@
 package model;
 
-import hoved.Event;
-import hoved.InvitationAnswer;
-import hoved.Person;
+import java.sql.Timestamp;
 
 public class Invitation {
-	private Person from;
-	private Person to;
+	private int id;
+	private Timestamp created;
+	private User to;
 	private Event event;
-	private InvitationAnswer answer;
+	private Timestamp alarm;
+	private InvitationAnswer status;
 	
-	public void setFrom(Person from) {
-		this.from = from;
+	public Invitation(){
+		
 	}
-	public Person getFrom() {
-		return from;
+	
+	public Timestamp getCreated() {
+		return created;
 	}
-	public void setTo(Person to) {
-		this.to = to;
+	public void setCreated(Timestamp created) {
+		this.created = created;
 	}
-	public Person getTo() {
+	public User getTo() {
 		return to;
 	}
-	public void setEvent(Event event) {
-		this.event = event;
+
+		public void setTo(User to) {
+		this.to = to;
 	}
 	public Event getEvent() {
 		return event;
 	}
-	public void setInvitationAnswer(InvitationAnswer answer) {
-		this.answer = answer;
+
+	public void setEvent(Event event) {
+		this.event = event;
 	}
-	public InvitationAnswer getInvitationAnswer() {
-		return answer;
+	public Timestamp getAlarm() {
+		return alarm;
 	}
+	public void setAlarm(Timestamp alarm) {
+		this.alarm = alarm;
+	}
+	public InvitationAnswer getStatus() {
+		return status;
+	}
+	public void setStatus(InvitationAnswer status) {
+		this.status = status;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 }

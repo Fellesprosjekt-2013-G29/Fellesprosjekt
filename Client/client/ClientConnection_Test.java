@@ -1,5 +1,9 @@
 package client;
 
+import java.sql.Timestamp;
+
+import model.Event;
+
 import structs.Alert;
 import structs.Request;
 import structs.Response;
@@ -21,6 +25,9 @@ public class ClientConnection_Test
 		attachSocket(cc2, connection2, key);
 		testSocket1(cc, connection);
 		testServerPushing(cc2, connection2);
+		
+		
+		
 		cc.closeConnection();
 		cc2.closeConnection();
 	}
@@ -30,7 +37,7 @@ public class ClientConnection_Test
 		if(connection)
 		{
 			Request request = new Request();
-			request.setRequest(Request.DELETE_APPOINTMENT);
+			request.setRequest(Request.LOGIN);
 			request.addItem("username", "herpderp@gmail.com");
 			request.addItem("password", "passord");
 			cc.sendObject(request);
@@ -76,6 +83,67 @@ public class ClientConnection_Test
 				break;
 		}
 		System.out.println("Done");
+	}
+
+	public static void getUsers(ClientConnection cc, boolean connection)
+	{
+		Request request = new Request(Request.GET_USERS);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			System.out.println(response.getItem("users"));
+	}
+	
+	public static void getRooms(ClientConnection cc, Timestamp start, Timestamp end)
+	{
+		Request request = new Request(Request.GET_ROOMS);
+		request.addItem("start", start);
+		request.addItem("end", end);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			System.out.println(response.getItem("users"));
+	}
+	
+	public static void getNotifications(ClientConnection cc)
+	{
+		Request request = new Request(Request.GET_USERS_NOTIFICATIONS);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			//TODO
+			System.out.println("Uncomplete");
+	}
+
+	public static void getApointments(ClientConnection cc, String[] users)
+	{
+		Request request = new Request(Request.GET_USERS_APPOINTMENTS);
+		request.addItem("users", users);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			//TODO
+			System.out.println("Uncomplete");
+	}
+	
+	public static void addAppointment(ClientConnection cc, Event event)
+	{
+		Request request = new Request(Request.ADD_APPOINTMENT);
+		request.addItem("event", event);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			System.out.println(response.getItem("result"));
 	}
 }
 

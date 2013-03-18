@@ -1,12 +1,12 @@
 package model;
 
-public class Person {
+public class User {
 	private int userId = 0;
 	private String name = "";
 	private String email = "";
 	private String password = "";
 	
-	public Person(){
+	public User(){
 		
 	}
 	

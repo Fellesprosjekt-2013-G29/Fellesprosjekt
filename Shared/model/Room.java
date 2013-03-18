@@ -5,17 +5,22 @@ import java.util.Date;
 import java.util.List;
 
 public class Room {
-	private String name;
+	private int id;
+	private int roomNumber;
 	private int roomSize;
 	private String location;
 	
+	public Room(int roomNumber, String location, int roomSize){
+		
+	}
 	
-	public String getName() {
-		return name;
+	
+	public int getRoomNumber() {
+		return roomNumber;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRoomNumber(int nr) {
+		this.roomNumber = nr;
 	}
 
 	public int getRoomSize() {
@@ -39,5 +44,15 @@ public class Room {
 		
 		// hent alle ledige rom ved gitt tidspunkt fra databasen, og returner liste med rom.
 		return new ArrayList<Room>();
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

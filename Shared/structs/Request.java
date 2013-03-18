@@ -25,10 +25,21 @@ public class Request implements Serializable {
 	public static final int DELETE_APPOINTMENT = 16;
 	public static final int GET_USERS = 20;
 	public static final int GET_ROOMS = 21;
+	public static final int CREATE_USER = 31;
 	
 	private int request;
 
 	private HashMap<String, Object> items = new HashMap<String, Object>();
+	
+	public Request()
+	{
+		
+	}
+	
+	public Request(int request)
+	{
+		this.request = request;
+	}
 
 	public void setRequest(int request) {
 		this.request = request;
@@ -44,6 +55,11 @@ public class Request implements Serializable {
 
 	public int getRequest() {
 		return request;
+	}
+	
+	public boolean hasKey(String key)
+	{
+		return items.containsKey(key);
 	}
 
 }
