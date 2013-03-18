@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
-	private Person createdBy;
+	private User createdBy;
 	private DateFormat dateFormat;
 	private Date start;
 	private Date end;
@@ -36,10 +36,10 @@ public class Event {
 		}
 	}
 	
-	public Person getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
-	public void setCreatedBy(Person createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 	public Date getStart() {

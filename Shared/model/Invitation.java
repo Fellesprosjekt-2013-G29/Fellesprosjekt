@@ -5,21 +5,21 @@ import hoved.InvitationAnswer;
 import hoved.Person;
 
 public class Invitation {
-	private Person from;
-	private Person to;
+	private User from;
+	private User to;
 	private Event event;
 	private InvitationAnswer answer;
 	
-	public void setFrom(Person from) {
+	public void setFrom(User from) {
 		this.from = from;
 	}
-	public Person getFrom() {
+	public User getFrom() {
 		return from;
 	}
-	public void setTo(Person to) {
+	public void setTo(User to) {
 		this.to = to;
 	}
-	public Person getTo() {
+	public User getTo() {
 		return to;
 	}
 	public void setEvent(Event event) {

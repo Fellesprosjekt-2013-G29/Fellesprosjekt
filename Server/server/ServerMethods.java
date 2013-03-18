@@ -262,7 +262,25 @@ public class ServerMethods
 		}
 	}
 	
-	
+	private static void createUser(Request request, Response response, DbConnection dc)
+	{
+		try
+		{
+			String email = (String) request.getItem("username");
+			String password = (String) request.getItem("password");
+			String name = (String)	request.getItem("name");
+			
+			byte[] salt = PasswordEncryption.createSalt();
+			byte[] hashedPassword = PasswordEncryption.getHash(password, salt);
+			
+			dc.createUser(name, email, salt, password);
+			response.addItem("result", "OK");
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
 	
 	private static void triggerAlert()
 	{
