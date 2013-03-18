@@ -1,29 +1,13 @@
 package server;
 
-import javax.net.ssl.SSLSocket;
-
+import model.Event;
 import structs.Alert;
 import structs.Request;
 import structs.Response;
 
-/**
- * ServerMethods
- * 
- * The class containing the logic behind the client handling and the simulator. 
- * The class contains only static methods that are standalone.
- * @author Tor Håkon Bonsaksen
- *
- */
 public class ServerMethods 
 {
-	/**
-	 * Handles all client requests based on the request field in the Request object.
-	 * The response contains an 'error' if there are some problem of some sort that 
-	 * hinders the server from returning the expected data.
-	 * 
-	 * @param request - Containing the relevant information regarding the request.
-	 * @return Response - Containg relevant information to be returned to the client.
-	 */
+
 	public static Response handleRequest(Request request, Session session)
 	{
 		Response response = new Response();
@@ -42,14 +26,32 @@ public class ServerMethods
 		{					
 			switch (request.getRequest()) 
 			{
-		        case Request.ADD_APPOINTMENT:  
-		        	testSessionManaging(session);
-		            break;
 		        case Request.GET_USERS_APPOINTMENTS:  
-//		        	getSheepByStatus(request, response, dc, 1);
+		        	getUsersAppointment(request, response, dc, session);
 		            break;
 		        case Request.GET_USERS_NOTIFICATIONS:  
-//		        	getSheepByStatus(request, response, dc, 2);
+		        	getUsersNotifications(request, response, dc, session);
+		            break;
+		        case Request.ADD_APPOINTMENT:  
+		        	addAppointment(request, response, dc, session);
+		            break;
+		        case Request.GET_UPDATE_ALL:  
+		        	//TODO
+		            break;
+		        case Request.UPDATE_APPOINTMENT:  
+		        	updateAppointment(request, response, dc);
+		            break;
+		        case Request.UPDATE_INVITE:  
+		        	updateInvite(request, response, dc, session);
+		            break;
+		        case Request.DELETE_APPOINTMENT:  
+		        	deleteAppointment(request, response, dc, session);
+		            break;
+		        case Request.GET_USERS:  
+		        	getUsers(response, dc);
+		            break;
+		        case Request.GET_ROOMS:  
+		        	updateInvite(request, response, dc, session);
 		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
@@ -83,12 +85,6 @@ public class ServerMethods
 					break;
 		        case Request.ATTACH_SOCKET:  
 		        	attachSocket(request, response, connection);
-		            break;
-		        case Request.DELETE_APPOINTMENT:  
-		        	testLogin(request, response, connection);
-		            break;
-		        case Request.ADD_APPOINTMENT:  
-		        	System.out.println("derp");
 		            break;
 		        default:
 		        	response.addItem("error", "Invalid request");
@@ -148,6 +144,127 @@ public class ServerMethods
 			response.addItem("result", "No Active session found");
 	}
 
+	private static void getUsersAppointment(Request request, Response response, DbConnection dc, Session session)
+	{
+		try
+		{
+			String[] users = (String[]) request.getItem("users");
+			
+			if(users != null)
+			{
+				response.addItem("appointments", dc.getUsersApointment(users));
+			}
+			else
+			{
+				response.addItem("error", "Invalid input");
+			}
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+
+	private static void getUsersNotifications(Request request, Response response, DbConnection dc, Session session)
+	{	
+		try
+		{
+			response.addItem("notifications", dc.getUsersNotifications(session.getUser()));
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void addAppointment(Request request, Response response, DbConnection dc, Session session)
+	{
+		try
+		{
+			Event event = (Event) request.getItem("event");
+			
+			dc.addAppointment(event);
+			response.addItem("result", "OK");
+			//TODO trigger notifications
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void updateAppointment(Request request, Response response, DbConnection dc)
+	{
+		try
+		{
+			if(request.hasKey("start"))
+				dc.updateAppointment("start", request.getItem("start"));
+			if(request.hasKey("end"))
+				dc.updateAppointment("end", request.getItem("end"));
+			if(request.hasKey("description"))
+				dc.updateAppointment("description", request.getItem("description"));
+			if(request.hasKey("room"))
+				dc.updateAppointment("room", request.getItem("room"));
+			if(request.hasKey("participants"))
+				dc.updateAppointment("participants", request.getItem("participants"));
+			if(request.hasKey("title"))
+				dc.updateAppointment("title", request.getItem("title"));
+			if(request.hasKey("room"))
+				dc.updateAppointment("room", request.getItem("room"));
+			
+			//TODO trigger notifications
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void updateInvite(Request request, Response response, DbConnection dc, Session session)
+	{
+		//TODO
+	}
+	
+	private static void deleteAppointment(Request request, Response response, DbConnection dc, Session session)
+	{
+		try
+		{
+			dc.deleteAppointment(request.getItem("appointmentid"));
+			//TODO trigger notifications
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void getUsers(Response response, DbConnection dc)
+	{
+		try
+		{
+			response.addItem("users", dc.getUsers());
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void getRooms(Request request, Response response, DbConnection dc)
+	{
+		try
+		{
+			response.addItem("rooms", dc.getRooms(request.getItem("start"), request.getItem("end")));
+		}
+		catch(Exception e)
+		{
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	
+	
+	
 	public static void testLogin(Request request, Response response, NewConnection connection)
 	{
 		String username = (String) request.getItem("username");

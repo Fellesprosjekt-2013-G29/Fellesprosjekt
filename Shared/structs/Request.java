@@ -45,5 +45,10 @@ public class Request implements Serializable {
 	public int getRequest() {
 		return request;
 	}
+	
+	public boolean hasKey(String key)
+	{
+		return items.containsKey(key);
+	}
 
 }
