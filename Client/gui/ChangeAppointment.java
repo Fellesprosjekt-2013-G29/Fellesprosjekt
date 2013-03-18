@@ -442,8 +442,8 @@ public class ChangeAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	//AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child);// <-- add comment
-	        	AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child); //<---- fjern comment
+	        	//AddParticipants addPartPanel = new AddParticipants(participantsList, child);// <-- add comment
+	        	AddParticipants addPartPanel = new AddParticipants(participantsList, child); //<---- fjern comment
 	        }
 		});
 	}

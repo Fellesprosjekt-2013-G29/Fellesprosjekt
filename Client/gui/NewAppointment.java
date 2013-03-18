@@ -68,17 +68,14 @@ public class NewAppointment extends JPanel {
 	private GridBagConstraints constr;
 	
 	// TEST-LIST
-<<<<<<< HEAD
 	//private ArrayList<user> testList; // <---- legg til comment
 	
 	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
 	//public NewAppointment(ArrayList<user> list) { //<---------- legg til comment
-=======
 	//private ArrayList<User> testList; // <---- legg til comment
 	
 	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
 	//public NewAppointment(ArrayList<User> list) { //<---------- legg til comment
->>>>>>> person to User rename
 		// TESTING
 		// testList = list; // <---- legg til comment
 		
@@ -281,7 +278,7 @@ public class NewAppointment extends JPanel {
 		}
 	}
 	private void sendModel() {
-		// parent.addEvent(model); <------------  fjern commennt
+		parent.addEvent(model); //<------------  fjern commennt
 	}
 	public Event getModel() {
 		return this.model;
@@ -405,8 +402,8 @@ public class NewAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) { 	
-	        	// AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child);// <-- add comment
-	        	AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child); //<---- fjern comment
+	        	// AddParticipants addPartPanel = new AddParticipants(participantsList, child);// <-- add comment
+	        	AddParticipants addPartPanel = new AddParticipants(participantsList, child); //<---- fjern comment
 	        }
 		});
 	}
