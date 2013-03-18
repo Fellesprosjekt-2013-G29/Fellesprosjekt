@@ -19,7 +19,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class NewAppointment extends JPanel {
-	private model.Event model;
+	private Event model;
 	private Person owner;
 	private JFrame thisFrame;
 	private CalendarView parent; //<----------- fjern comment
