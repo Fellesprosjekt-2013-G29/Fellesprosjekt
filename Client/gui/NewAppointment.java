@@ -66,10 +66,17 @@ public class NewAppointment extends JPanel {
 	private GridBagConstraints constr;
 	
 	// TEST-LIST
+<<<<<<< HEAD
 	//private ArrayList<user> testList; // <---- legg til comment
 	
 	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
 	//public NewAppointment(ArrayList<user> list) { //<---------- legg til comment
+=======
+	//private ArrayList<User> testList; // <---- legg til comment
+	
+	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
+	//public NewAppointment(ArrayList<User> list) { //<---------- legg til comment
+>>>>>>> person to User rename
 		// TESTING
 		// testList = list; // <---- legg til comment
 		

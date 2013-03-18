@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 public class ChangeAppointment extends JPanel {
 	private model.Event model;
-	private Person owner;
+	private User owner;
 	private JFrame thisFrame;
 	private CalendarView parent; //<------------- fjern comment
 	private ChangeAppointment child;
@@ -46,7 +46,7 @@ public class ChangeAppointment extends JPanel {
 	private JList userList;
 	private DefaultListModel userListModel;
 	private JScrollPane listScroller;
-	private ArrayList<Person> participantsList;
+	private ArrayList<User> participantsList;
 	
 	private JComboBox fromHourBox;
 	private JComboBox fromMinBox;
@@ -67,10 +67,10 @@ public class ChangeAppointment extends JPanel {
 	
 	private GridBagConstraints constr;
 	//TEST- LIST
-	//private ArrayList<Person> testList; // <---- legg til comment
+	//private ArrayList<User> testList; // <---- legg til comment
 	
-	public NewAppointment(Event model, boolean isMeeting, Person owner, CalendarView parent) { //<--------- fjern comment
-	//public ChangeAppointment(Event model, boolean isMeeting, ArrayList<Person> list) { // <-------------- legg til comment
+	public NewAppointment(Event model, boolean isMeeting, User owner, CalendarView parent) { //<--------- fjern comment
+	//public ChangeAppointment(Event model, boolean isMeeting, ArrayList<User> list) { // <-------------- legg til comment
 		// TESING
 		// testList = list; // <---- legg til comment
 		
@@ -86,7 +86,7 @@ public class ChangeAppointment extends JPanel {
 		this.model = model;
 		this.isMeeting = isMeeting;
 		
-		participantsList = new ArrayList<Person>();
+		participantsList = new ArrayList<User>();
 		userListModel = new DefaultListModel();
 		userList = new JList(userListModel);
 		listScroller = new JScrollPane(userList);
@@ -221,7 +221,7 @@ public class ChangeAppointment extends JPanel {
 			else {
 				for (int i = 0; i < inviteList.size(); i++) {
 					Invitation invite = inviteList.get(i);
-					Person pers = invite.getTo();
+					User pers = invite.getTo();
 					participantsList.add(pers);
 					userListModel.addElement(pers.getName());
 				}
@@ -308,10 +308,10 @@ public class ChangeAppointment extends JPanel {
 		return false;
 	}
 	// Receives users from return list from addUserPanel and adds them into the JList
-	public void addUsersToList(ArrayList<Person> persList) {
+	public void addUsersToList(ArrayList<User> persList) {
 		userListModel.clear();
 		for (int i = 0; i < persList.size(); i++) {;
-			Person pers = persList.get(i);
+			User pers = persList.get(i);
 			participantsList.add(pers);
 			userListModel.addElement(pers.getName());
 		}
@@ -351,7 +351,7 @@ public class ChangeAppointment extends JPanel {
 		            if (isMeeting == true && userListModel.getSize() > 0) {
 		            	ArrayList<Invitation> invitationList = new ArrayList<Invitation>();
 			            for (int i = 0; i < userListModel.getSize(); i++) {
-			            	Person user = participantsList.get(i);
+			            	User user = participantsList.get(i);
 			            	Invitation invite = new Invitation();
 			            	invite.setFrom(owner);
 			            	invite.setTo(user);

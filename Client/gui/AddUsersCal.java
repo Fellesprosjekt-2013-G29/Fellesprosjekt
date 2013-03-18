@@ -26,8 +26,8 @@ public class AddUsersCal extends JPanel{
 	private JScrollPane listScroller1;
 	private JScrollPane listScroller2;
 	
-	private ArrayList<Person> notAddedList;
-	private ArrayList<Person> addedList;
+	private ArrayList<User> notAddedList;
+	private ArrayList<User> addedList;
 	
 	private Dimension smallButtDim = new Dimension(90, 30);
 	private Dimension bigButtDim = new Dimension(100, 50);
@@ -45,7 +45,7 @@ public class AddUsersCal extends JPanel{
 	private JTextField searchField;
 	
 	// public AddParticipants(ChangeAppointment parent) { <---------------- fjern comment
-	public AddUsersCal(ArrayList<Person> persList, CalenderView parent) { // <--- add comment
+	public AddUsersCal(ArrayList<User> persList, CalenderView parent) { // <--- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -59,8 +59,8 @@ public class AddUsersCal extends JPanel{
 		userList1 = new JList(userListModel1);
 		userList2 = new JList(userListModel2);
 		
-		notAddedList = new ArrayList<Person>();
-		addedList = new ArrayList<Person>();
+		notAddedList = new ArrayList<User>();
+		addedList = new ArrayList<User>();
 		
 		listScroller1 = new JScrollPane(userList1);
 		listScroller1.setPreferredSize(scrollDim);
@@ -151,14 +151,14 @@ public class AddUsersCal extends JPanel{
 		this.add(button, constr);
 	}
 	
-	public void addUsersToList(ArrayList<Person> list) {
+	public void addUsersToList(ArrayList<User> list) {
 		//addedList.clear();
 		//userListModel2.clear();
 		notAddedList.clear();
 		notAddedList = list;
 		userListModel1.clear();
 		for (int i = 0; i < list.size(); i++) {
-			Person pers = notAddedList.get(i);
+			User pers = notAddedList.get(i);
 			userListModel1.addElement(pers.getName());
 		}
 	}
@@ -192,7 +192,7 @@ public class AddUsersCal extends JPanel{
 	        	if (userListModel1.size() == 0) {return;} 
 	        	int  size = userListModel1.size();
 	    		for (int i = 0; i < size; i++) {
-	    			Person pers = notAddedList.get(i);
+	    			User pers = notAddedList.get(i);
 		        	addedList.add(pers);
 		        	userListModel2.addElement(pers.getName());
 	    		}
@@ -205,7 +205,7 @@ public class AddUsersCal extends JPanel{
 	        	if (userList1.getSelectedValue() == null) {return;}
 	        	else {
 		        	int tempPos = userList1.getSelectedIndex();
-		        	Person pers = notAddedList.get(tempPos);
+		        	User pers = notAddedList.get(tempPos);
 		        	notAddedList.remove(tempPos);
 		        	addedList.add(pers);
 		        	userListModel1.remove(tempPos);
@@ -218,7 +218,7 @@ public class AddUsersCal extends JPanel{
 	        	if (userList2.getSelectedValue() == null) {return;}
 				else {
 		        	int tempPos = userList2.getSelectedIndex();
-		        	Person pers = addedList.get(tempPos);
+		        	User pers = addedList.get(tempPos);
 		        	addedList.remove(tempPos);
 		        	notAddedList.add(pers);
 		        	userListModel1.addElement(pers.getName());

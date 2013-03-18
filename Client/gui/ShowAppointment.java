@@ -158,7 +158,7 @@ public class ShowAppointment extends JPanel{
 		else {
 			for (int i = 0; i < inviteList.size(); i++) {
 				Invitation invite = inviteList.get(i);
-				Person pers = invite.getTo();
+				User pers = invite.getTo();
 				userListModel.addElement(pers.getName());
 			}
 		}
