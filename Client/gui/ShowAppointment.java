@@ -16,7 +16,7 @@ public class ShowAppointment extends JPanel{
 	private Dimension dateDimension = new Dimension(150, 20);
 	private Dimension bigButtDim = new Dimension(80, 30);
 	
-	private Event model;
+	private model.Event model;
 	private JFrame parent;
 	
 	private JComboBox alarmBox;
