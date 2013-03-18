@@ -23,6 +23,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
+import client.Program;
+
 import model.Event;
 
 public class CalendarPane extends JPanel implements MouseListener {
@@ -36,6 +38,7 @@ public class CalendarPane extends JPanel implements MouseListener {
 			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
 	
 	private CalendarModel model;
+	private Program parent;
 	
 	private JPanel dayLine;
 	private JPanel panel;
@@ -55,12 +58,14 @@ public class CalendarPane extends JPanel implements MouseListener {
 	/**
 	 * Create the application.
 	 */
-	public CalendarPane() {
+	public CalendarPane(Program parent) {
 
+		this.parent = parent;
+		
 		setSize(800, 400);
 		setLayout(null);
 		
-		model = new CalendarModel();
+		model = new CalendarModel(parent);
 		
 		initialize();
 	}

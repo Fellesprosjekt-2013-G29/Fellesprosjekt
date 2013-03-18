@@ -14,8 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import client.Program;
+
 public class CalendarView extends JFrame implements ActionListener {
 
+	private Program parent;
+	
 	private JLabel chooseDateLabel;
 	private JTextField dateField;
 	private JButton chooseDateButton;
@@ -28,7 +32,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	private JButton deleteEventButton;
 	private JButton manageCalendarsButton;
 	private JComboBox weekNumberBox;
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -36,7 +40,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CalendarView window = new CalendarView();
+					CalendarView window = new CalendarView(null);
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +52,8 @@ public class CalendarView extends JFrame implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public CalendarView() {
+	public CalendarView(Program parent) {
+		this.parent = parent;
 		initialize();
 	}
 
@@ -125,7 +130,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_logOutButton.gridy = 1;
 		getContentPane().add(logOutButton, gbc_logOutButton);
 		
-		calendarPane = new CalendarPane();
+		calendarPane = new CalendarPane(parent);
 		GridBagConstraints gbc_calendarPane = new GridBagConstraints();
 		gbc_calendarPane.fill = GridBagConstraints.BOTH;
 		gbc_calendarPane.insets = new Insets(0, 0, 5, 0);
