@@ -1,6 +1,7 @@
 package gui;
 
 import model.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -318,6 +319,12 @@ public class ChangeAppointment extends JPanel {
 	
 	private void sendModel() {
 		parent.addEvent(model); <---------------- fjern comment
+	}
+	public Event getModel() {
+		return this.model;
+	}
+	public void setModel(Event model){
+		this.model = model;
 	}
 	
 	private void addListeners(final JFrame thisparent) {

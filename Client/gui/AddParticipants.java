@@ -211,11 +211,16 @@ public class AddParticipants extends JPanel{
 		}
 	}
 	private void sendAddedList() {
-		if (parentNew == null) {
-			parentChange.addUsersToList(addedList);
+		if (addedList.size() == 0) {
+			return;
 		}
-		else if (parentChange == null)
-			parentNew.addUsersToList(addedList);
+		else {
+			if (parentNew == null) {
+				parentChange.addUsersToList(addedList);
+			}
+			else if (parentChange == null)
+				parentNew.addUsersToList(addedList);
+		}
 	}
 	
 	private void addListeners() {

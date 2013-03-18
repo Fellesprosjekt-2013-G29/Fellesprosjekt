@@ -1,6 +1,7 @@
 package gui;
 
 import model.*;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.*;
@@ -270,6 +271,12 @@ public class NewAppointment extends JPanel {
 	}
 	private void sendModel() {
 		// parent.addEvent(model); <------------  fjern commennt
+	}
+	public Event getModel() {
+		return this.model;
+	}
+	public void setModel(Event model){
+		this.model = model;
 	}
 
 	private void addListeners(final JFrame thisparent) {
