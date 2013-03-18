@@ -14,8 +14,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class CalendarView extends JFrame {
+public class CalendarView extends JFrame implements ActionListener {
+
+	private JLabel chooseDateLabel;
 	private JTextField dateField;
+	private JButton chooseDateButton;
+	private JLabel chooseWeekLabel;
+	private JComboBox notificationsBox;
+	private JButton logOutButton;
+	private CalendarPane calendarPane;
+	private JButton newEventButton;
+	private JButton editEventButton;
+	private JButton deleteEventButton;
+	private JButton manageCalendarsButton;
+	private JComboBox weekNumberBox;
 
 	/**
 	 * Launch the application.
@@ -53,7 +65,7 @@ public class CalendarView extends JFrame {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
 		
-		JLabel chooseDateLabel = new JLabel("Velg dato:");
+		chooseDateLabel = new JLabel("Velg dato:");
 		GridBagConstraints gbc_chooseDateLabel = new GridBagConstraints();
 		gbc_chooseDateLabel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_chooseDateLabel.insets = new Insets(0, 0, 5, 5);
@@ -63,8 +75,9 @@ public class CalendarView extends JFrame {
 		
 		dateField = new JTextField();
 		dateField.setText("dd-MM-\u00E5\u00E5\u00E5\u00E5");
+		dateField.setEditable(false);
 		GridBagConstraints gbc_dateField = new GridBagConstraints();
-		gbc_dateField.anchor = GridBagConstraints.WEST;
+		gbc_dateField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_dateField.insets = new Insets(0, 0, 5, 5);
 		gbc_dateField.gridwidth = 2;
 		gbc_dateField.gridx = 2;
@@ -72,7 +85,8 @@ public class CalendarView extends JFrame {
 		getContentPane().add(dateField, gbc_dateField);
 		dateField.setColumns(10);
 		
-		JButton chooseDateButton = new JButton("Velg dato");
+		chooseDateButton = new JButton("Velg dato");
+		chooseDateButton.addActionListener(this);
 		GridBagConstraints gbc_chooseDateButton = new GridBagConstraints();
 		gbc_chooseDateButton.anchor = GridBagConstraints.NORTH;
 		gbc_chooseDateButton.fill = GridBagConstraints.HORIZONTAL;
@@ -81,24 +95,16 @@ public class CalendarView extends JFrame {
 		gbc_chooseDateButton.gridy = 1;
 		getContentPane().add(chooseDateButton, gbc_chooseDateButton);
 		
-		JLabel chooseWeekLabel = new JLabel("eller velg uke:");
+		chooseWeekLabel = new JLabel("eller velg uke:");
 		GridBagConstraints gbc_chooseWeekLabel = new GridBagConstraints();
 		gbc_chooseWeekLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_chooseWeekLabel.gridx = 5;
 		gbc_chooseWeekLabel.gridy = 1;
 		getContentPane().add(chooseWeekLabel, gbc_chooseWeekLabel);
 		
-		JComboBox weekNumberBox = new JComboBox();
-		weekNumberBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"}));
-		GridBagConstraints gbc_weekNumberBox = new GridBagConstraints();
-		gbc_weekNumberBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_weekNumberBox.insets = new Insets(0, 0, 5, 5);
-		gbc_weekNumberBox.gridx = 6;
-		gbc_weekNumberBox.gridy = 1;
-		getContentPane().add(weekNumberBox, gbc_weekNumberBox);
-		
-		JComboBox notificationsBox = new JComboBox();
+		notificationsBox = new JComboBox();
 		notificationsBox.setModel(new DefaultComboBoxModel(new String[] {"Varslinger!"}));
+		notificationsBox.addActionListener(this);
 		GridBagConstraints gbc_notificationsBox = new GridBagConstraints();
 		gbc_notificationsBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_notificationsBox.insets = new Insets(0, 0, 5, 5);
@@ -106,7 +112,8 @@ public class CalendarView extends JFrame {
 		gbc_notificationsBox.gridy = 1;
 		getContentPane().add(notificationsBox, gbc_notificationsBox);
 		
-		JButton logOutButton = new JButton("Logg ut");
+		logOutButton = new JButton("Logg ut");
+		logOutButton.addActionListener(this);
 		logOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -118,7 +125,7 @@ public class CalendarView extends JFrame {
 		gbc_logOutButton.gridy = 1;
 		getContentPane().add(logOutButton, gbc_logOutButton);
 		
-		CalendarPane calendarPane = new CalendarPane();
+		calendarPane = new CalendarPane();
 		GridBagConstraints gbc_calendarPane = new GridBagConstraints();
 		gbc_calendarPane.fill = GridBagConstraints.BOTH;
 		gbc_calendarPane.insets = new Insets(0, 0, 5, 0);
@@ -127,7 +134,8 @@ public class CalendarView extends JFrame {
 		gbc_calendarPane.gridy = 2;
 		getContentPane().add(calendarPane, gbc_calendarPane);
 		
-		JButton newEventButton = new JButton("Opprett hendelse");
+		newEventButton = new JButton("Opprett hendelse");
+		newEventButton.addActionListener(this);
 		GridBagConstraints gbc_newEventButton = new GridBagConstraints();
 		gbc_newEventButton.anchor = GridBagConstraints.NORTH;
 		gbc_newEventButton.fill = GridBagConstraints.HORIZONTAL;
@@ -137,7 +145,9 @@ public class CalendarView extends JFrame {
 		gbc_newEventButton.gridy = 3;
 		getContentPane().add(newEventButton, gbc_newEventButton);
 		
-		JButton editEventButton = new JButton("Endre hendelse");
+		editEventButton = new JButton("Endre hendelse");
+		editEventButton.setEnabled(false);
+		editEventButton.addActionListener(this);
 		GridBagConstraints gbc_editEventButton = new GridBagConstraints();
 		gbc_editEventButton.anchor = GridBagConstraints.NORTH;
 		gbc_editEventButton.fill = GridBagConstraints.HORIZONTAL;
@@ -147,7 +157,9 @@ public class CalendarView extends JFrame {
 		gbc_editEventButton.gridy = 3;
 		getContentPane().add(editEventButton, gbc_editEventButton);
 		
-		JButton deleteEventButton = new JButton("Slett valgt(e)");
+		deleteEventButton = new JButton("Slett valgt(e)");
+		deleteEventButton.setEnabled(false);
+		deleteEventButton.addActionListener(this);
 		GridBagConstraints gbc_deleteEventButton = new GridBagConstraints();
 		gbc_deleteEventButton.anchor = GridBagConstraints.NORTH;
 		gbc_deleteEventButton.fill = GridBagConstraints.HORIZONTAL;
@@ -155,13 +167,91 @@ public class CalendarView extends JFrame {
 		gbc_deleteEventButton.gridx = 5;
 		gbc_deleteEventButton.gridy = 3;
 		getContentPane().add(deleteEventButton, gbc_deleteEventButton);
-		
-		JButton manageCalendarsButton = new JButton("Administrer kalendere");
+
+		manageCalendarsButton = new JButton("Administrer kalendere");
+		manageCalendarsButton.addActionListener(this);
 		GridBagConstraints gbc_manageCalendarsButton = new GridBagConstraints();
 		gbc_manageCalendarsButton.anchor = GridBagConstraints.NORTHEAST;
 		gbc_manageCalendarsButton.gridwidth = 2;
 		gbc_manageCalendarsButton.gridx = 8;
 		gbc_manageCalendarsButton.gridy = 3;
 		getContentPane().add(manageCalendarsButton, gbc_manageCalendarsButton);
+
+		weekNumberBox = new JComboBox();
+		weekNumberBox.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53"}));
+		weekNumberBox.setSelectedIndex(calendarPane.getModel().getWeek() - 1);
+		weekNumberBox.addActionListener(this);
+		GridBagConstraints gbc_weekNumberBox = new GridBagConstraints();
+		gbc_weekNumberBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_weekNumberBox.insets = new Insets(0, 0, 5, 5);
+		gbc_weekNumberBox.gridx = 6;
+		gbc_weekNumberBox.gridy = 1;
+		getContentPane().add(weekNumberBox, gbc_weekNumberBox);
+	}
+
+	public JComboBox getNotificationsBox() {
+		return notificationsBox;
+	}
+
+	public void setNotificationsBox(JComboBox notificationsBox) {
+		this.notificationsBox = notificationsBox;
+	}
+
+	public JButton getEditEventButton() {
+		return editEventButton;
+	}
+
+	public void setEditEventButton(JButton editEventButton) {
+		this.editEventButton = editEventButton;
+	}
+
+	public JButton getDeleteEventButton() {
+		return deleteEventButton;
+	}
+
+	public void setDeleteEventButton(JButton deleteEventButton) {
+		this.deleteEventButton = deleteEventButton;
+	}
+
+	public JComboBox getWeekNumberBox() {
+		return weekNumberBox;
+	}
+
+	public void setWeekNumberBox(JComboBox weekNumberBox) {
+		this.weekNumberBox = weekNumberBox;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		System.out.println(e.getActionCommand());
+		switch(e.getActionCommand()) {
+		case "comboBoxChanged":
+			if(e.getSource().equals(weekNumberBox)) {
+				calendarPane.getModel().setWeek(weekNumberBox.getSelectedIndex() + 1);
+				calendarPane.updateCalendar();
+			}
+			else if(e.getSource().equals(notificationsBox)) {
+				
+			}
+			break;
+		case "Velg dato":
+			
+			break;
+		case "Logg ut":
+			System.exit(0);
+			break;
+		case "Opprett hendelse":
+			new DatePicker(this);
+			break;
+		case "Administrer kalendere":
+			
+			break;
+		case "Endre hendelse":
+			
+			break;
+		case "Slett valgt(e)":
+			
+			break;
+		}
 	}
 }
