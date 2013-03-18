@@ -2,10 +2,12 @@ package server;
 
 
 import java.sql.*;//jconnector
+import java.util.ArrayList;
+import model.*;
 
 public class DbConnection {
 
-		private Connection connection = null;
+		private java.sql.Connection connection = null;
 		private Statement statement = null;
 		private PreparedStatement preparedStatement = null;     
         private String url, user, password;
@@ -29,11 +31,11 @@ public class DbConnection {
 			return true;
 		}
 
-        public void setConnection(Connection connection){
+        public void setConnection(java.sql.Connection connection){
             this.connection = connection;
         }
 
-        public Connection getConnection(){
+        public java.sql.Connection getConnection(){
             return this.connection;
         }
       
@@ -92,5 +94,128 @@ public class DbConnection {
         	ps.executeUpdate();
 
         }
+        
+        
+        //
+        //
+        //  Collections from database
+        //
+        //
+        
+        public ArrayList<Room> getAvailableRooms(Timestamp time) throws SQLException{
+        	String query = String.format("select * from Room r where r.id not in (select roomid from Appointment a where '%s' between a.start and a.end)", time.toString());
+        	ArrayList<Room> result = new ArrayList<Room>();
+        	
+        	ResultSet res = statement.executeQuery(query);
+        	while (res.next()){
+        		int roomNumber = res.getInt("roomnr");
+        		int roomSize = res.getInt("size");
+        		String location = res.getString("location");
+        		Room room = new Room(roomNumber, location, roomSize);
+        		result.add(room);
+        	}
+        	return result;
+        }
+        
+        public ArrayList<Invitation> getInvites(User p) throws SQLException{
+        	ArrayList<Invitation> result = new ArrayList<Invitation>();
+        	
+        	String query = String.format("SELECT id from Invitation i where user_id = %s", p.getUserId());
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() ){
+        		result.add(getInvitation(res.getInt("user_id")));
+        	}
+        	return result;
+        }
+        
 
+        public ArrayList<Invitation> getInvitationsByEvent(int eventId) throws SQLException{
+        	ArrayList<Invitation> list = new ArrayList<Invitation>();
+        	String query = String.format("SELECT id from Invitation where appointment_id = %s", eventId);
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() ){
+     		   list.add(getInvitation(res.getInt("id")));
+     	   }
+     	   return list;
+        }
+        
+        
+        
+        
+        
+        //
+        // Single entries from database
+        //
+        
+       public Event getEvent(int eventId) throws SQLException{
+    	   Event event = new Event();    	   
+    	   String query = String.format("SLEECT * from Appointment a where id = %s", eventId);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   ResultSet res = stmt.executeQuery();
+    	   
+    	   event.setEventId(eventId);
+    	   event.setCreatedBy(getUser(res.getInt("owner")));
+    	   event.setDescription(res.getString("description"));
+    	   event.setStart(Timestamp.valueOf(res.getString("start")));
+    	   event.setEnd(Timestamp.valueOf(res.getString("end")));
+    	   event.setTitle("name");
+    	   event.setRoom(getRoom(res.getInt("roomid")));
+    	   event.setParticipants(getInvitationsByEvent(eventId));
+    	   return event;
+       }
+        
+       public User getUser(int uid) throws SQLException{
+    	   User u = new User();
+    	   String query = String.format("SLEECT * from User where id = %s", uid);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   ResultSet res = stmt.executeQuery();
+    	   
+    	   u.setEmail(res.getString("email"));
+    	   u.setName(res.getString("name"));
+    	   u.setUserId(uid);
+    	   return u;
+       }
+       
+       public Room getRoom(int rid) throws SQLException{
+    	   String query = String.format("SLEECT * from Room where id = %s", rid);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   ResultSet res = stmt.executeQuery();
+    	   
+    	   //public Room(int roomNumber, String location, int roomSize)
+    	   int roomNumber = res.getInt("roomnr");
+    	   int roomSize = res.getInt("size");
+    	   String location = res.getString("location");
+    	   Room room = new Room(roomNumber, location, roomSize);
+    	   room.setId(rid);
+    	   return room;
+       }
+       
+       public Invitation getInvitation(int invitationId) throws SQLException{
+    	   Invitation inv = new Invitation();
+    	   String query = String.format("SLEECT * from Invitation where id = %s", invitationId);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   ResultSet res = stmt.executeQuery();
+    	   
+    	   inv.setId(invitationId);
+    	   inv.setAlarm( Timestamp.valueOf(res.getString("alarm")));
+    	   inv.setCreated(Timestamp.valueOf(res.getString("created")));
+    	   inv.setStatus(InvitationAnswer.valueOf(res.getString("status")));
+    	   inv.setTo(getUser(res.getInt("user_id")));
+    	   inv.setEvent(getEvent(res.getInt("appointment_id")));
+    	   
+    	   
+    	   return inv;
+       }
 }
+
+
+
+
+
+
+
+
