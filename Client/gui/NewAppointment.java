@@ -2,6 +2,8 @@ package gui;
 
 import model.*;
 
+import hoved.Person;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.*;
@@ -271,9 +273,10 @@ public class NewAppointment extends JPanel {
 	// Receives users from return list from addUserPanel and adds them into the JList
 	public void addUsersToList(ArrayList<User> persList) {
 		userListModel.clear();
-		for (int i = 0; i < persList.size(); i++) {
-			User pers = persList.get(i);
-			participantsList.add(pers);
+		participantsList = persList;
+
+		for (int i = 0; i < participantsList.size(); i++) {
+			User pers = participantsList.get(i);
 			userListModel.addElement(pers.getName());
 		}
 	}
@@ -402,8 +405,8 @@ public class NewAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) { 	
-	        	// AddParticipants addPartPanel = new AddParticipants(testList, child);// <-- add comment
-	        	AddParticipants addPartPanel = new AddParticipants(testList, child); //<---- fjern comment
+	        	// AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child);// <-- add comment
+	        	AddParticipants addPartPanel = new AddParticipants(participantsList, testList, child); //<---- fjern comment
 	        }
 		});
 	}

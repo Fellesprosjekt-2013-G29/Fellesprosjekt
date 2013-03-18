@@ -1,6 +1,8 @@
 package gui;
 
 import model.*;
+import hoved.Person;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -45,8 +47,8 @@ public class AddParticipants extends JPanel{
 	
 	private JTextField searchField;
 	
-	public AddParticipants(ChangeAppointment parent) { // <------ fjern comment
-	// public AddParticipants(ArrayList<User> persList, ChangeAppointment parent) { // <--- add comment
+	public AddParticipants(ArrayList<User> oldList, ChangeAppointment parent) { // <------ fjern comment
+	// public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, ChangeAppointment parent) { // <--- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -82,18 +84,18 @@ public class AddParticipants extends JPanel{
 		createGraphics();
 		
 		//test-method
-		//addUsersToList(persList); // <--------- legg til comment
+		//addUsersToList(oldList, persList); // <--------- legg til comment
 		// Real method:
 		// Gets all users from DB
-		//addUsersToList(getAllUsersFromDB()); //<----------- implementer
+		//addUsersToList(oldList, getAllUsersFromDB()); //<----------- implementer
 		
 		addListeners();
 		
 		frame.setContentPane(this);
 		frame.pack();
 	}
-	public AddParticipants(ChangeAppointment parent) { //<---------------- fjern comment
-	//public AddParticipants(ArrayList<User> persList, NewAppointment parent) {// <-- add comment
+	public AddParticipants(ArrayList<User> oldList, ChangeAppointment parent) { //<---------------- fjern comment
+	//public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, NewAppointment parent) {// <-- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -129,10 +131,10 @@ public class AddParticipants extends JPanel{
 		createGraphics();
 		
 		//test-method
-		// addUsersToList(persList); // <--------- legg til comment
+		// addUsersToList(oldList, persList); // <--------- legg til comment
 		// Real method:
 		// Gets all users from DB
-		//addUsersToList(getAllUsersFromDB()); // <------------- implementer
+		//addUsersToList(oldList, getAllUsersFromDB()); // <------------- implementer
 		
 		addListeners();
 		
@@ -199,13 +201,24 @@ public class AddParticipants extends JPanel{
 		this.add(button, constr);
 	}
 	
-	public void addUsersToList(ArrayList<User> list) {
-		//addedList.clear();
-		//userListModel2.clear();
+	private void addUsersToList(ArrayList<User> oldList, ArrayList<Person> list) {
 		notAddedList.clear();
-		notAddedList = list;
 		userListModel1.clear();
-		for (int i = 0; i < list.size(); i++) {
+		notAddedList = list;
+		
+		if(oldList.size() > 0) {
+			addedList = oldList;
+			for (int i = 0; i < addedList.size(); i++) {
+				User pers = addedList.get(i);
+				userListModel2.addElement(pers.getName());
+				for (int k = 0; k < notAddedList.size(); k++) {
+					if(pers.getName().equals(notAddedList.get(k).getName())) {
+						notAddedList.remove(k);
+					}
+				}
+			}
+		}	
+		for (int i = 0; i < notAddedList.size(); i++) {
 			User pers = notAddedList.get(i);
 			userListModel1.addElement(pers.getName());
 		}

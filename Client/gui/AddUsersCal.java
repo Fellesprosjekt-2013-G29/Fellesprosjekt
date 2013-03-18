@@ -151,7 +151,7 @@ public class AddUsersCal extends JPanel{
 		this.add(button, constr);
 	}
 	
-	public void addUsersToList(ArrayList<User> list) {
+	private void addUsersToList(ArrayList<User> list) {
 		//addedList.clear();
 		//userListModel2.clear();
 		notAddedList.clear();
