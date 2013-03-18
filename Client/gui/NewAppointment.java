@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 public class NewAppointment extends JPanel {
 	
+	private String k;
 	private Event model;
 	private User owner;
 	private JFrame thisFrame;
