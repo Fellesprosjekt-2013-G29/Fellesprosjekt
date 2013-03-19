@@ -28,7 +28,19 @@ public class DbConnection {
 
 		public boolean connect ()
 		{
-			return true;
+			try
+			{
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				connection = DriverManager.getConnection(url, user, password);
+				statement = connection.createStatement();
+				if(connection != null)
+					return true;
+			} 
+			catch (Exception e) 
+			{
+				System.out.println("Connection failed: " + e.getMessage());
+			}
+			return false; 
 		}
 
         public void setConnection(java.sql.Connection connection){
@@ -43,7 +55,7 @@ public class DbConnection {
         
         public byte[] getStoredHash(String email, String collumnName)throws Exception
         {
-        	String sql = "SELECT * FROM User WHERE Mail = '" + email +"'";
+        	String sql = "SELECT * FROM User WHERE email = '" + email +"'";
         	ResultSet resultSet = statement.executeQuery(sql);
         	resultSet.next();
         	byte[] hash = resultSet.getBytes(collumnName);
@@ -89,8 +101,8 @@ public class DbConnection {
         	
         	ps.setString(1, u.getEmail());
         	ps.setString(2, u.getName());
-        	ps.setBytes(3, salt);
-        	ps.setBytes(4, password);
+        	ps.setBytes(3, password);
+        	ps.setBytes(4, salt);
         	ps.executeUpdate();
 
         }
@@ -101,6 +113,24 @@ public class DbConnection {
         //  Collections from database
         //
         //
+        
+        
+//        public ArrayList<Alarm> getAlarms(User u){
+//        	ArrayList<Invitation> result = new ArrayList<Invitation>();
+//        	
+//        	String query = String.format("SELECT id from Invitation i where user_id = %s", u.getUserId());
+//        	ResultSet res = statement.executeQuery(query);
+//        	while( res.next() ){
+//        		result.add(getInvitation(res.getInt("user_id")));
+//        	}
+////        	return result;
+//        }
+//        
+        
+        public ArrayList<Event> getCancellations(User u){
+        	return null;
+        }
+        
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
         	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between %s and %s)and (a.end not between %s and %s))",
@@ -154,7 +184,10 @@ public class DbConnection {
         	return list;
         }
         
-        
+        public ArrayList<User> getUsers(){
+        	// TODO: Implement
+        	return new ArrayList<User>();
+        }
         
         
         //
@@ -192,6 +225,21 @@ public class DbConnection {
     	   return u;
        }
        
+       public User getUser(String email) throws SQLException{
+    	   User u = new User();
+    	   String query = "SELECT * from User where email = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   stmt.setString(1, email);
+    	   ResultSet res = stmt.executeQuery();
+    	   res.next();
+    	   
+    	   u.setEmail(res.getString("email"));
+    	   u.setName(res.getString("name"));
+    	   u.setUserId(res.getInt("id"));
+    	   return u;
+       }
+       
        public Room getRoom(int rid) throws SQLException{
     	   String query = String.format("SLEECT * from Room where id = %s", rid);
     	   PreparedStatement stmt = connection.prepareStatement(query);
@@ -204,6 +252,10 @@ public class DbConnection {
     	   Room room = new Room(roomNumber, location, roomSize);
     	   room.setId(rid);
     	   return room;
+       }
+       
+       public int getCancellation(int id){
+    	   return 0;
        }
        
        public Invitation getInvitation(int invitationId) throws SQLException{
@@ -220,9 +272,41 @@ public class DbConnection {
     	   inv.setTo(getUser(res.getInt("user_id")));
     	   inv.setEvent(getEvent(res.getInt("appointment_id")));
     	   
-    	   
     	   return inv;
        }
+       
+       public Alarm getAlarm(int id){
+    	   return null;
+       }
+       
+       
+       //
+       // Creation methods
+       //
+       
+       public void addAppointment(Event e) throws SQLException{}
+       
+       
+       
+       //
+       // Update methods
+       //
+       
+       public void updateAppointment(int eventId, String columnname, Object value)throws SQLException{
+    	   
+       }
+       
+       //
+       // Deletion methods
+       //
+       
+       public void deleteAppointment(int id){
+    	   
+       }
+
+       
+       
+       
 }
 
 

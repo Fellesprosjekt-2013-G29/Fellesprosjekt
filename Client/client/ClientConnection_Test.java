@@ -10,7 +10,7 @@ import structs.Response;
 
 public class ClientConnection_Test 
 {
-	private final static String HOST = "78.91.10.195";
+	private final static String HOST = "localhost";
 	private final static int PORT = 4447;
 	
 	public static void main(String[] args) throws Exception
@@ -23,10 +23,8 @@ public class ClientConnection_Test
 		String key = login(cc, connection);
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
-		testSocket1(cc, connection);
-		testServerPushing(cc2, connection2);
 		
-		
+		createUser(cc);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -38,8 +36,8 @@ public class ClientConnection_Test
 		{
 			Request request = new Request();
 			request.setRequest(Request.LOGIN);
-			request.addItem("username", "herpderp@gmail.com");
-			request.addItem("password", "passord");
+			request.addItem("username", "bjarne@gmail.com");
+			request.addItem("password", "derp");
 			cc.sendObject(request);
 			Response response = cc.reciveResponse();
 			if(response.errorExist())
@@ -138,6 +136,20 @@ public class ClientConnection_Test
 	{
 		Request request = new Request(Request.ADD_APPOINTMENT);
 		request.addItem("event", event);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			System.out.println(response.getItem("result"));
+	}
+
+	public static void createUser(ClientConnection cc)
+	{
+		Request request = new Request(Request.CREATE_USER);
+		request.addItem("name", "Bjarne hansen");
+		request.addItem("username", "hege@gmail.com");
+		request.addItem("password", "derp");
 		cc.sendObject(request);
 		Response response = cc.reciveResponse();
 		if(response.errorExist())
