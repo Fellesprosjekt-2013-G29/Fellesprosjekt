@@ -124,11 +124,11 @@ public class ServerMethods
 				session.addToList();
 				session.start();
 				response.addItem("key", key);
-				response.addItem("result", "loginOK");
+				response.addItem("result", "loginok");
 				return true;
 			}
 			else
-				response.addItem("result", "loginFailed");
+				response.addItem("result", "loginfailed");
 		}
 		catch(Exception e)
 		{
@@ -144,16 +144,24 @@ public class ServerMethods
 
 	private static void attachSocket(Request request, Response response, NewConnection connection)
 	{
-		String key = (String) request.getItem("key");
-		System.out.println(key.toString());
-		Session session = connection.getSessionManager().getSession(key);
-		if(session != null)
+		try
 		{
-			session.setOutboundSocket(connection.getSocket());
-			response.addItem("result", "Socket added");
+			String key = (String) request.getItem("key");
+			System.out.println(key.toString());
+			Session session = connection.getSessionManager().getSession(key);
+			if(session != null)
+			{
+				session.setOutboundSocket(connection.getSocket());
+				response.addItem("result", "Socket added");
+			}
+			else
+				response.addItem("result", "No Active session found");
 		}
-		else
-			response.addItem("result", "No Active session found");
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			response.addItem("error", e.toString());
+		}
 	}
 
 	private static void getUsersAppointment(Request request, Response response, DbConnection dc, Session session)
@@ -174,6 +182,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -187,6 +196,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -208,6 +218,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -237,6 +248,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -255,6 +267,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -267,6 +280,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -281,6 +295,7 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
@@ -314,21 +329,7 @@ public class ServerMethods
 	{
 		
 	}
-	
-	//Deprecated
-	public static void testLogin(Request request, Response response, NewConnection connection)
-	{
-		String username = (String) request.getItem("username");
-		Session session = new Session(connection.getSocket(), connection.getSessionManager());
-		String key = PasswordEncryption.createSalt().toString();
-		session.setKey(key);
-		//session.setUser(username);
-		session.addToList();
-		session.start();
-		System.out.println(key.toString());
-		response.addItem("key", key);
-		response.addItem("result", "loginOK");
-	}
+
 	
 	public static void testSessionManaging(Session session)
 	{
