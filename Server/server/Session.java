@@ -5,13 +5,15 @@ import java.net.SocketException;
 
 import javax.net.ssl.SSLSocket;
 
+import model.User;
+
 import structs.Alert;
 import structs.Response;
 
 public class Session extends Connection
 {
 	private SSLSocket outboundSocket;
-	private String user;
+	private User user;
 	private SessionManager sessionManager;
 	private String key;
 	
@@ -79,12 +81,12 @@ public class Session extends Connection
 		this.key = key;
 	}
 	
-	public void setUser(String user)
+	public void setUser(User user)
 	{
 		this.user = user;
 	}
 	
-	public String getUser()
+	public User getUser()
 	{
 		return user;
 	}

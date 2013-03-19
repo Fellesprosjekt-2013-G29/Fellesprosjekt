@@ -23,10 +23,8 @@ public class ClientConnection_Test
 		String key = login(cc, connection);
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
-		testSocket1(cc, connection);
-		testServerPushing(cc2, connection2);
 		
-		
+		createUser(cc);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -138,6 +136,20 @@ public class ClientConnection_Test
 	{
 		Request request = new Request(Request.ADD_APPOINTMENT);
 		request.addItem("event", event);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+			System.out.println(response.getItem("result"));
+	}
+
+	public static void createUser(ClientConnection cc)
+	{
+		Request request = new Request(Request.CREATE_USER);
+		request.addItem("name", "Bjarne hansen");
+		request.addItem("username", "bjarne@gmail.com");
+		request.addItem("password", "derp");
 		cc.sendObject(request);
 		Response response = cc.reciveResponse();
 		if(response.errorExist())

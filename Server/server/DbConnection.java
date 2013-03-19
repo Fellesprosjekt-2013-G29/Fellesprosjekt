@@ -28,7 +28,19 @@ public class DbConnection {
 
 		public boolean connect ()
 		{
-			return true;
+			try
+			{
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				connection = DriverManager.getConnection(url, user, password);
+				statement = connection.createStatement();
+				if(connection != null)
+					return true;
+			} 
+			catch (Exception e) 
+			{
+				System.out.println("Connection failed: " + e.getMessage());
+			}
+			return false; 
 		}
 
         public void setConnection(java.sql.Connection connection){

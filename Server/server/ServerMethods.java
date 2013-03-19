@@ -3,6 +3,7 @@ package server;
 import java.sql.Timestamp;
 
 import model.Event;
+import model.Room;
 import model.User;
 import structs.Alert;
 import structs.Request;
@@ -14,8 +15,7 @@ public class ServerMethods
 	public static Response handleRequest(Request request, Session session)
 	{
 		Response response = new Response();
-		DbConnection dc = null;
-				//new DbConnection("jdbc:mysql://mysql.stud.ntnu.no/chrlu_prosjekt1", "chrlu_prosjekt1", "general1");
+		DbConnection dc = new DbConnection("jdbc:mysql://arve.in", "fellesproj", "pebcak");
 		
 		if(request == null)
 		{
@@ -68,8 +68,7 @@ public class ServerMethods
 	public static Response handleNewConnection(Request request, NewConnection connection)
 	{
 		Response response = new Response();
-		DbConnection dc = null;
-				//new DbConnection("jdbc:mysql://mysql.stud.ntnu.no/chrlu_prosjekt1", "chrlu_prosjekt1", "general1");
+		DbConnection dc = new DbConnection("jdbc:mysql://arve.in", "fellesproj", "pebcak");
 		
 		if(request == null)
 		{
@@ -116,7 +115,7 @@ public class ServerMethods
 				Session session = new Session(connection.getSocket(), connection.getSessionManager());
 				String key = PasswordEncryption.createSalt().toString();
 				session.setKey(key);
-				session.setUser(username);
+				session.setUser(dc.getUser(username));
 				session.addToList();
 				session.start();
 				response.addItem("key", key);
@@ -156,11 +155,11 @@ public class ServerMethods
 			if(user != null)
 			{
 				response.addItem("invitations", dc.getInvites(user));
-				response.addItem("myEvents", dc.getEventsCreatedByUser(user));
+				response.addItem("events", dc.getEventsCreatedByUser(user));
 			}
 			else
 			{
-				response.addItem("error", "Invalid input");
+				response.addItem("error", "Invalid input - user object is null");
 			}
 		}
 		catch(Exception e)
@@ -173,7 +172,8 @@ public class ServerMethods
 	{	
 		try
 		{
-			response.addItem("notifications", dc.getUsersNotifications(session.getUser()));
+			response.addItem("invitation", dc.getInvites(session.getUser()));
+			response.addItem("cancellations", dc.getCancellations(session.getUser()));
 		}
 		catch(Exception e)
 		{
@@ -187,9 +187,14 @@ public class ServerMethods
 		{
 			Event event = (Event) request.getItem("event");
 			
-			dc.addAppointment(event);
-			response.addItem("result", "OK");
-			//TODO trigger notifications
+			
+			if(event != null)
+			{
+				dc.addAppointment(event);
+				response.addItem("result", "OK");
+				//TODO trigger notifications
+			}
+			response.addItem("error", "invalid input - event is null");
 		}
 		catch(Exception e)
 		{
@@ -199,22 +204,24 @@ public class ServerMethods
 	
 	private static void updateAppointment(Request request, Response response, DbConnection dc)
 	{
+		int id = (int) request.getItem("id");
+		
 		try
 		{
 			if(request.hasKey("start"))
-				dc.updateAppointment("start", request.getItem("start"));
+				dc.updateAppointment(id, "start", request.getItem("start"));
 			if(request.hasKey("end"))
-				dc.updateAppointment("end", request.getItem("end"));
+				dc.updateAppointment(id, "end", request.getItem("end"));
 			if(request.hasKey("description"))
-				dc.updateAppointment("description", request.getItem("description"));
+				dc.updateAppointment(id, "description", request.getItem("description"));
 			if(request.hasKey("room"))
-				dc.updateAppointment("room", request.getItem("room"));
+				dc.updateAppointment(id, "room", request.getItem("room"));
 			if(request.hasKey("participants"))
-				dc.updateAppointment("participants", request.getItem("participants"));
+				dc.updateAppointment(id, "participants", request.getItem("participants")); //TODO fix
 			if(request.hasKey("title"))
-				dc.updateAppointment("title", request.getItem("title"));
-			if(request.hasKey("room"))
-				dc.updateAppointment("room", request.getItem("room"));
+				dc.updateAppointment(id, "title",  request.getItem("title"));
+			
+			response.addItem("result", "Update ok");
 			
 			//TODO trigger notifications
 		}
@@ -233,7 +240,7 @@ public class ServerMethods
 	{
 		try
 		{
-			dc.deleteAppointment(request.getItem("appointmentid"));
+			dc.deleteAppointment((int) request.getItem("appointmentid"));
 			//TODO trigger notifications
 		}
 		catch(Exception e)
@@ -275,15 +282,15 @@ public class ServerMethods
 			String email = (String) request.getItem("username");
 			String password = (String) request.getItem("password");
 			String name = (String)	request.getItem("name");
-			User u = new User();
-			u.setEmail(email);
-			u.setname(name);
+			User user = new User();
+			user.setEmail(email);
+			user.setName(name);
 			
 			byte[] salt = PasswordEncryption.createSalt();
 			byte[] hashedPassword = PasswordEncryption.getHash(password, salt);
 			
-			dc.createUser(u, password, salt);
-			response.addItem("result", "OK");
+			dc.createUser(user, hashedPassword, salt);
+			response.addItem("result", "User created");
 		}
 		catch(Exception e)
 		{
