@@ -5,7 +5,6 @@ import java.io.ObjectOutputStream;
 import java.net.SocketException;
 
 import javax.net.ssl.SSLSocket;
-import javax.swing.plaf.synth.SynthSliderUI;
 
 import structs.Request;
 import structs.Response;
