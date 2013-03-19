@@ -1,28 +1,47 @@
 package gui;
 
-import model.*;
-
-import hoved.Person;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import client.Program;
+
+import model.Event;
+import model.Invitation;
+import model.Room;
+import model.User;
+
 public class ChangeAppointment extends JPanel {
+	
+	private Program program;
+	
 	private model.Event model;
 	private User owner;
 	private JFrame thisFrame;
-	private CalendarView parent; //<------------- fjern comment
+	private CalendarView parent;
 	private ChangeAppointment child;
 	
 	private boolean isMeeting;
@@ -68,17 +87,13 @@ public class ChangeAppointment extends JPanel {
 	private JButton endDateButton;
 	
 	private GridBagConstraints constr;
-	//TEST- LIST
-	//private ArrayList<User> testList; // <---- legg til comment
 	
-	public NewAppointment(Event model, boolean isMeeting, User owner, CalendarView parent) { //<--------- fjern comment
-	//public ChangeAppointment(Event model, boolean isMeeting, ArrayList<User> list) { // <-------------- legg til comment
-		// TESING
-		// testList = list; // <---- legg til comment
+	public ChangeAppointment(Program program, Event model, boolean isMeeting, User owner, CalendarView parent) { 
 		
-		this.parent = parent; //<----- fjern comment
+		this.program = program;
+		this.parent = parent;
 		this.child = this;
-		this.owner = owner; //<--- fjern comment
+		this.owner = owner;
 		
 		JFrame frame = new JFrame("Endre hendelse:");
 		frame.setVisible(true);
@@ -231,7 +246,7 @@ public class ChangeAppointment extends JPanel {
 		}
 		
 		roomList.add(model.getRoom());
-		roomBox.addItem(model.getRoom().getName());
+		roomBox.addItem(model.getRoom().getRoomNumber());
 		description.setText(model.getDescription());
 		if (model.isAlarm()) {
 			int alarmTime = model.getAlarmBefore();
@@ -299,7 +314,7 @@ public class ChangeAppointment extends JPanel {
 		// Adds rooms to combobox
 		if 	(roomList.size() > 0) {
 			for(int i = 0; i < roomList.size(); i++) {
-				roomBox.addItem(roomList.get(i).getName());}
+				roomBox.addItem(roomList.get(i).getRoomNumber());}
 		}
 	}
 	// Checks if date field is empty
@@ -315,13 +330,13 @@ public class ChangeAppointment extends JPanel {
 		participantsList = persList;
 
 		for (int i = 0; i < participantsList.size(); i++) {
-			Person pers = participantsList.get(i);
+			User pers = participantsList.get(i);
 			userListModel.addElement(pers.getName());
 		}
 	}
 	
 	private void sendModel() {
-		parent.addEvent(model); <---------------- fjern comment
+		parent.addEvent(model);
 	}
 	public Event getModel() {
 		return this.model;
@@ -335,8 +350,8 @@ public class ChangeAppointment extends JPanel {
 		saveButton.addActionListener(new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
 		        	model.setCreatedBy(owner);
-		        	model.setStart(startDate);
-		        	model.setEnd(endDate);
+		        	model.setStart(new Timestamp(startDate.getTime()));
+		        	model.setEnd(new Timestamp(endDate.getTime()));
 		            model.setDescription(description.getText());
 		            
 		            int roomIndex = roomBox.getSelectedIndex();
@@ -442,8 +457,7 @@ public class ChangeAppointment extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-	        	//AddParticipants addPartPanel = new AddParticipants(participantsList, child);// <-- add comment
-	        	AddParticipants addPartPanel = new AddParticipants(participantsList, child); //<---- fjern comment
+	        	AddParticipants addPartPanel = new AddParticipants(participantsList, child);
 	        }
 		});
 	}

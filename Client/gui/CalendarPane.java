@@ -38,7 +38,7 @@ public class CalendarPane extends JPanel implements MouseListener {
 			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
 	
 	private CalendarModel model;
-	private Program parent;
+	private Program program;
 	
 	private JPanel dayLine;
 	private JPanel panel;
@@ -60,9 +60,9 @@ public class CalendarPane extends JPanel implements MouseListener {
 	 */
 	public CalendarPane(Program parent) {
 
-		this.parent = parent;
+		this.program = parent;
 		
-		setSize(800, 400);
+		setSize(CalendarView.WIDTH, 400);
 		setLayout(null);
 		
 		model = new CalendarModel(parent);
@@ -93,7 +93,7 @@ public class CalendarPane extends JPanel implements MouseListener {
 			}
 		};
 		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		panel.setPreferredSize(new Dimension(600, 800));
+		panel.setPreferredSize(new Dimension(getWidth() - 200, 800));
 		panel.setSize(panel.getPreferredSize());
 		panel.setLayout(null);
 

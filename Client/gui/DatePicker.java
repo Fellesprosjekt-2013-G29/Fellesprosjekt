@@ -28,13 +28,14 @@ class DatePicker {
                     button[x] = new JButton();
                     button[x].setFocusPainted(false);
                     button[x].setBackground(Color.white);
-                    if (x > 6)
-                            button[x].addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent ae) {
-                                            day = button[selection].getActionCommand();
-                                            d.dispose();
-                                    }
-                            });
+                    if (x > 6) {
+                        button[x].addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent ae) {
+                                day = button[selection].getActionCommand();
+                                d.dispose();
+                            }
+                        });
+                    }
                     if (x < 7) {
                             button[x].setText(header[x]);
                             button[x].setForeground(Color.red);
@@ -69,8 +70,10 @@ class DatePicker {
     }
 
     public void displayDate() {
-            for (int x = 7; x < button.length; x++)
+            for (int x = 7; x < button.length; x++) {
                     button[x].setText("");
+                	button[x].setEnabled(false);
+            }
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
                             "MMMM yyyy");
             java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -78,8 +81,10 @@ class DatePicker {
             cal.set(year, month, 1);
             int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK);
             int daysInMonth = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-            for (int x = 5 + dayOfWeek, day = 1; day <= daysInMonth; x++, day++)
+            for (int x = 5 + dayOfWeek, day = 1; day <= daysInMonth; x++, day++) {
                     button[x].setText("" + day);
+                	button[x].setEnabled(true);
+            }
             l.setText(sdf.format(cal.getTime()));
             d.setTitle("Valg av dato");
     }

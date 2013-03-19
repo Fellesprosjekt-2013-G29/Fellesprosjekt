@@ -1,19 +1,24 @@
 package gui;
 
-import model.*;
-import hoved.Person;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import model.User;
 
 public class AddParticipants extends JPanel{
 	private JFrame thisFrame;
@@ -75,7 +80,7 @@ public class AddParticipants extends JPanel{
 		
 		saveButton = new JButton("Lagre");
 		cancelButton = new JButton("Abryt");
-		searchButton = new JButton("Søk");
+		searchButton = new JButton("Sï¿½k");
 		addAllButton = new JButton("Velg alle");
 		addButton = new JButton("Legg til");
 		removeButton = new JButton("Fjern");
@@ -94,7 +99,7 @@ public class AddParticipants extends JPanel{
 		frame.setContentPane(this);
 		frame.pack();
 	}
-	public AddParticipants(ArrayList<User> oldList, ChangeAppointment parent) { //<---------------- fjern comment
+	public AddParticipants(ArrayList<User> oldList, NewAppointment parent) { //<---------------- fjern comment
 	//public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, NewAppointment parent) {// <-- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
@@ -122,7 +127,7 @@ public class AddParticipants extends JPanel{
 		
 		saveButton = new JButton("Lagre");
 		cancelButton = new JButton("Abryt");
-		searchButton = new JButton("Søk");
+		searchButton = new JButton("Sï¿½k");
 		addAllButton = new JButton("Velg alle");
 		addButton = new JButton("Legg til");
 		removeButton = new JButton("Fjern");
@@ -201,7 +206,7 @@ public class AddParticipants extends JPanel{
 		this.add(button, constr);
 	}
 	
-	private void addUsersToList(ArrayList<User> oldList, ArrayList<Person> list) {
+	private void addUsersToList(ArrayList<User> oldList, ArrayList<User> list) {
 		notAddedList.clear();
 		userListModel1.clear();
 		notAddedList = list;

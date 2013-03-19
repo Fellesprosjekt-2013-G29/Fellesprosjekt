@@ -1,16 +1,39 @@
 package gui;
 
-import model.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-public class ShowAppointment extends JPanel{
+import client.Program;
+
+import model.Event;
+import model.Invitation;
+import model.InvitationAnswer;
+import model.Room;
+import model.User;
+
+public class ShowAppointment extends JPanel {
+	
+	private Program program;
+	
 	private GridBagConstraints constr;
 	private Dimension labelDimension = new Dimension(120, 20);
 	private Dimension dateDimension = new Dimension(150, 20);
@@ -31,11 +54,13 @@ public class ShowAppointment extends JPanel{
 	private JButton cancelButton;
 	
 	
-	public ShowAppointment(Event model) {
+	public ShowAppointment(Program program, Event model) {
 		JFrame frame = new JFrame("Informasjon om hendelse");
 		frame.setVisible(true);
 		this.setBackground(Color.WHITE);
 		parent = frame;
+		
+		this.program = program;
 		
 		this.model = model;
 		constr = new GridBagConstraints();
@@ -87,7 +112,7 @@ public class ShowAppointment extends JPanel{
 		constr.gridx = 1; addLabelRoom(model.getRoom());
 		// row 5
 		constr.gridy = 4;
-		constr.gridx = 0; addLabel("Alarm(ant min før):");
+		constr.gridx = 0; addLabel("Alarm(ant min fï¿½r):");
 		constr.gridx = 1; addDDList(alarmBox);
 		// row 6
 		constr.gridy = 5;
@@ -146,7 +171,7 @@ public class ShowAppointment extends JPanel{
 		this.add(label, constr);
 	}
 	private void addLabelRoom(Room room) {
-		String room1 = room.getName();
+		int room1 = room.getRoomNumber();
 		String loc  = room.getLocation();
 		JLabel label = new JLabel(room1 + " i " + loc);
 		label.setPreferredSize(dateDimension);
