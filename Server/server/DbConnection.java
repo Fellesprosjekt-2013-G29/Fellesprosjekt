@@ -109,7 +109,8 @@ public class DbConnection {
         
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
-        	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between '%s' and '%s') and (a.end not between '%s' and '%s'))",
+
+        	String query = String.format("select * from Room where id not in (select roomid from Appointment a where (a.start between %s and %s)and (a.end between %s and %s));",
         			start.toString(), 
         			end.toString(),
         			start.toString(),
