@@ -6,6 +6,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -15,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import model.Event;
-
 import client.Program;
 
 public class CalendarView extends JFrame implements ActionListener {
@@ -84,7 +87,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		getContentPane().add(chooseDateLabel, gbc_chooseDateLabel);
 		
 		dateField = new JTextField();
-		dateField.setText("dd-MM-\u00E5\u00E5\u00E5\u00E5");
+		dateField.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
 		dateField.setEditable(false);
 		GridBagConstraints gbc_dateField = new GridBagConstraints();
 		gbc_dateField.fill = GridBagConstraints.HORIZONTAL;
@@ -250,9 +253,18 @@ public class CalendarView extends JFrame implements ActionListener {
 			break;
 		case "Velg dato":
 			String pickedDate = new DatePicker(this).setPickedDate();
-//			if(!pickedDate.equals("")) {
-				dateField.setText(pickedDate);
-//			}
+			dateField.setText(pickedDate);
+			try {
+				calendarPane.getModel().setYear(Integer.parseInt(new SimpleDateFormat("yyyy").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
+				calendarPane.getModel().setWeek(Integer.parseInt(new SimpleDateFormat("w").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
+				calendarPane.updateCalendar();
+			} catch (NumberFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 		case "Logg ut":
 			System.exit(0);

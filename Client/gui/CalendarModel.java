@@ -4,22 +4,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import client.Program;
-
 import model.Event;
+import model.Room;
+import model.User;
+import client.Program;
 
 public class CalendarModel {
 
 	private Program program;
+	
+	private User additionalUser;
 	
 	private Date currentDate;
 	private int year;
 	private int week;
 	
 	private ArrayList<EventView> events;
+	private ArrayList<EventView> additionalEvents;
 	
 	public CalendarModel(Program parent) {
 		this.program = parent;
+		additionalUser = new User();
 		init();
 	}
 	
@@ -30,16 +35,26 @@ public class CalendarModel {
 		week = Integer.parseInt((new SimpleDateFormat("w")).format(currentDate));
 		
 		events = new ArrayList<EventView>();
+		additionalEvents = new ArrayList<EventView>();
 		
 		createTestEvents();
 	}
 
-	public Program getParent() {
+	public Program getProgram() {
 		return program;
 	}
 
-	public void setParent(Program parent) {
-		this.program = parent;
+	public void setProgram(Program program) {
+		this.program = program;
+	}
+
+	public User getAdditionalUser() {
+		return additionalUser;
+	}
+
+	public void setAdditionalUser(User additionalUser) {
+		this.additionalUser = additionalUser;
+//		TODO Implement fetching additionalUser's Events
 	}
 
 	public Date getCurrentDate() {
@@ -80,16 +95,24 @@ public class CalendarModel {
 	
 	public void createTestEvents() {
 
-		EventView meeting1 = new EventView(new Event("2013-02-07 16:00:00", "2013-02-07 18:00:00"));
+		Event event = new Event("2013-03-19 09:00:00", "2013-03-19 13:00:00");
+		event.setDescription("Testmøte som alle må delta på");
+		event.setRoom(new Room(5, "Testrom", 10));
+		event.setTitle("Testmøte");
+		EventView meeting1 = new EventView(event);
 		events.add(meeting1);
 		
-		EventView meeting2 = new EventView(new Event("2013-02-03 08:00:00", "2013-02-03 10:00:00"));
+		event = new Event("2013-03-23 08:00:00", "2013-03-23 10:00:00");
+		event.setDescription("Ingen må gå inn på dette rommet!");
+		event.setRoom(new Room(93, "Testrom", 105));
+		event.setTitle("Viktig!");
+		EventView meeting2 = new EventView(event);
 		events.add(meeting2);
 
-		EventView meeting3 = new EventView(new Event("2013-03-19 09:00:00", "2013-03-19 13:00:00"));
-		events.add(meeting3);
-		
-		EventView meeting4 = new EventView(new Event("2013-03-23 08:00:00", "2013-03-23 10:00:00"));
-		events.add(meeting4);
+//		EventView meeting3 = new EventView();
+//		events.add(meeting3);
+//		
+//		EventView meeting4 = new EventView();
+//		events.add(meeting4);
 	}
 }

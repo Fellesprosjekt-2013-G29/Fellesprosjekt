@@ -12,6 +12,7 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JComponent;
 import javax.swing.border.StrokeBorder;
@@ -25,12 +26,15 @@ public class EventView extends JComponent {
 	private boolean selected;
 
 	public EventView() {
-		color = Color.LIGHT_GRAY;
-		selected = false;
+		init();
 	}
 	
 	public EventView(Event model) {
 		this.model = model;
+		init();
+	}
+	
+	public void init() {
 		color = Color.LIGHT_GRAY;
 		selected = false;
 	}
@@ -70,7 +74,10 @@ public class EventView extends JComponent {
 			g.drawRoundRect(0, 0, getBounds().width, getBounds().height - 1, 10, 10);
 			g.drawRoundRect(1, 1, getBounds().width - 2, getBounds().height - 3, 10, 10);
 		}
-		g.drawString("Testmøte", 4, g.getFont().getSize() + 4);
-		g.drawString("Testmøte", 4, g.getFont().getSize() * 2 + 4);
+		int pos = 1;
+		g.drawString(model.getTitle(), 4, g.getFont().getSize() * pos++);
+		g.drawString("Rom: " + model.getRoom().getRoomNumber(), 4, g.getFont().getSize() * pos++);
+		g.drawString("Start: " + new SimpleDateFormat("HH:mm").format(model.getStart()), 4, g.getFont().getSize() * pos++);
+		g.drawString("Slutt: " + new SimpleDateFormat("HH:mm").format(model.getEnd()), 4, g.getFont().getSize() * pos++);
 	}
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -18,9 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import client.Program;
-
 import model.User;
+import client.Program;
 
 public class AddUsersCal extends JPanel{
 	
@@ -184,8 +184,8 @@ public class AddUsersCal extends JPanel{
 		}
 	}
 	private void sendAddedList() {
-		// metode i CalenderView-klasse som tar i mot liste med brukere som skal ha kalendere addet
-		parent.setNewUsersCal(addedList);
+//		TODO metode i CalenderView-klasse som tar i mot liste med brukere som skal ha kalendere addet
+//		parent.setNewUsersCal(addedList);
 	}
 	
 	private void addListeners() {

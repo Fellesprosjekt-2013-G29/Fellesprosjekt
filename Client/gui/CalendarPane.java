@@ -21,21 +21,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import client.Program;
 
-import model.Event;
-
 public class CalendarPane extends JPanel implements MouseListener {
 
-	private static final int ROWS = 24;
+	private static final int ROWS = 25;
 	private static final int COLLUMNS = 8;
 
 	private final String[] days = {"Tid", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"};
 	private final String[] hours = {"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", 
 			"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", 
-			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
+			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"};
 	
 	private CalendarModel model;
 	private Program program;

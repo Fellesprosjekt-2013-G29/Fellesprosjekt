@@ -11,7 +11,9 @@ public class Room {
 	private String location;
 	
 	public Room(int roomNumber, String location, int roomSize){
-		
+		this.roomNumber = roomNumber;
+		this.location = location;
+		this.roomSize = roomSize;
 	}
 	
 	
