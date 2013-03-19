@@ -21,11 +21,10 @@ public class ClientConnection_Test
 		boolean connection = cc.openConnection();
 		
 		String key = login(cc, connection);
-		System.out.println("Key: " + key);
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		
-//		createUser(cc);
+		createUser(cc);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -149,7 +148,7 @@ public class ClientConnection_Test
 	{
 		Request request = new Request(Request.CREATE_USER);
 		request.addItem("name", "Bjarne hansen");
-		request.addItem("username", "bjarne@gmail.com");
+		request.addItem("username", "hege@gmail.com");
 		request.addItem("password", "derp");
 		cc.sendObject(request);
 		Response response = cc.reciveResponse();

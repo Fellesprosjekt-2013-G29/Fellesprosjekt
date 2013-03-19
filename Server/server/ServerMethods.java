@@ -56,6 +56,9 @@ public class ServerMethods
 		        case Request.GET_ROOMS:  
 		        	getRooms(request, response, dc);
 		            break;
+		        case Request.CREATE_USER:  
+		        	createUser(request, response, dc);
+		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
 		            
@@ -111,9 +114,6 @@ public class ServerMethods
 		{
 			byte[] salt = dc.getStoredHash(username, "pw_hash");
 			byte[] hashedPassword = dc.getStoredHash(username, "password");
-			
-			System.out.println(salt.toString());
-			System.out.println(hashedPassword.toString());
 			
 			if(PasswordEncryption.checkPassword(password, hashedPassword, salt))	
 			{

@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Invitation {
+public class Invitation implements Serializable{
 	private int id;
 	private Timestamp created;
 	private User to;

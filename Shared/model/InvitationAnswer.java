@@ -1,6 +1,8 @@
 package model;
 
-public enum InvitationAnswer {
+import java.io.Serializable;
+
+public enum InvitationAnswer implements Serializable{
 	Accept,
 	Decline,
 	NotAnsweredYet

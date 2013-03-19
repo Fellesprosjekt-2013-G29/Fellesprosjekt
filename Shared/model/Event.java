@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 
-public class Event {
+public class Event implements Serializable{
 
 	private int eventId;
 	private User createdBy;

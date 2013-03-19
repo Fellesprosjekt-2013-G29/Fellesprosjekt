@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Alarm {
+public class Alarm implements Serializable{
 	private int id;
 	private Timestamp time;
 	private User user;
