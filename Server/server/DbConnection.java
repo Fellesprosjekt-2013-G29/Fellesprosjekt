@@ -299,7 +299,7 @@ public class DbConnection {
        // Deletion methods
        //
        
-       private void deleteAppointment(int id){
+       public void deleteAppointment(int id){
     	   
        }
 

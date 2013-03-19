@@ -303,14 +303,14 @@ public class ServerMethods
 		
 	}
 	
-	
+	//Deprecated
 	public static void testLogin(Request request, Response response, NewConnection connection)
 	{
 		String username = (String) request.getItem("username");
 		Session session = new Session(connection.getSocket(), connection.getSessionManager());
 		String key = PasswordEncryption.createSalt().toString();
 		session.setKey(key);
-		session.setUser(username);
+		//session.setUser(username);
 		session.addToList();
 		session.start();
 		System.out.println(key.toString());
