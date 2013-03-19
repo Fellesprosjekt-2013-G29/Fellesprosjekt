@@ -22,13 +22,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import client.Program;
-
 import model.Event;
 import model.Invitation;
 import model.InvitationAnswer;
 import model.Room;
 import model.User;
+import client.Program;
 
 public class ShowAppointment extends JPanel {
 	
