@@ -110,7 +110,8 @@ public class DbConnection {
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
 
-        	String query = String.format("select * from Room where id not in (select roomid from Appointment a where (a.start between '%s' and '%s')and (a.end between '%s' and '%s'));",
+        	String query = String.format("select * from Room where id not in " +
+        			"(select roomid from Appointment a where (a.start between '%s' and '%s')  OR (a.end between '%s' and '%s'))",
         			start.toString(), 
         			end.toString(),
         			start.toString(),
@@ -129,7 +130,7 @@ public class DbConnection {
         	}
         	return result;
         }
-        
+       
         public ArrayList<Invitation> getInvites(User u) throws SQLException{
         	ArrayList<Invitation> result = new ArrayList<Invitation>();
         	
@@ -186,7 +187,7 @@ public class DbConnection {
         
        public Event getEvent(int eventId) throws SQLException{
     	   Event event = new Event();    	   
-    	   String query = String.format("SLEECT * from Appointment a where id = %s", eventId);
+    	   String query = String.format("SELECT * from Appointment a where id = %s", eventId);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
@@ -205,7 +206,7 @@ public class DbConnection {
         
        public User getUser(int uid) throws SQLException{
     	   User u = new User();
-    	   String query = String.format("SLEECT * from User where id = %s", uid);
+    	   String query = String.format("SELECT * from User where id = %s", uid);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
@@ -254,7 +255,7 @@ public class DbConnection {
        
        public Invitation getInvitation(int invitationId) throws SQLException{
     	   Invitation inv = new Invitation();
-    	   String query = String.format("SLEECT * from Invitation where id = %s", invitationId);
+    	   String query = String.format("SELECT * from Invitation where id = %s", invitationId);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
@@ -272,7 +273,7 @@ public class DbConnection {
        
        public Alarm getAlarm(int id) throws SQLException{
     	   Alarm alarm = new Alarm();
-    	   String query = String.format("SLEECT * from Alarm where id = %s", id);
+    	   String query = String.format("SELECT * from Alarm where id = %s", id);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
@@ -289,19 +290,20 @@ public class DbConnection {
        // Creation methods
        //
        
-       public Event createAppointment(Event e) throws SQLException{
-    	   String sql = "INSERT INTO Appointment (title, start, end, description, roomid, owner)  VALUES (?, ?, ?, ?, ?, ?)";
+       public void createAppointment(Event e) throws SQLException{
+    	   String sql = "INSERT INTO Appointment (name, start, end, description, roomid, owner)  VALUES (?, ?, ?, ?, ?, ?)";
     	   PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	   // name, start, end, description, roomid, owner
     	   stmt.setString(1, e.getTitle());
     	   stmt.setTimestamp(2, e.getStart());
     	   stmt.setTimestamp(3, e.getEnd());
     	   stmt.setString(4, e.getDescription());
-    	   stmt.setInt(5, e.getRoom().getId());
+    	   if(e.getRoom() != null)
+    		   stmt.setInt(5, e.getRoom().getId());
+    	   else
+    		   stmt.setNull(5, java.sql.Types.INTEGER);
     	   stmt.setInt(6, e.getCreatedBy().getUserId());
-    	   int newId = stmt.executeUpdate();
-    	   
-    	   return getEvent(newId);
+    	   stmt.executeUpdate();
        }
        
        

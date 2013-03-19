@@ -30,10 +30,14 @@ public class ClientConnection_Test
 		
 		//testAddAppointment(cc);
 		
-		Timestamp start = Timestamp.valueOf("2013-03-10 00:00:00");
-		Timestamp end = Timestamp.valueOf("2013-03-12 16:00:00");
+		Timestamp start = Timestamp.valueOf("2013-03-28 16:00:00");
+		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 		
-		getRooms(cc, start, end);
+		//getUsers(cc, connection);
+		
+		addAppointment(cc, start, end);
+		
+		//getRooms(cc, start, end);
 		
 		
 		cc.closeConnection();
@@ -162,8 +166,14 @@ public class ClientConnection_Test
 			
 	}
 	
-	public static void addAppointment(ClientConnection cc, Event event)
+	public static void addAppointment(ClientConnection cc, Timestamp start, Timestamp end)
 	{
+		Event event = new Event();
+		event.setDescription("beskrivelse");
+		event.setTitle("Møte1");
+		event.setStart(start);
+		event.setEnd(end);
+		
 		Request request = new Request(Request.ADD_APPOINTMENT);
 		request.addItem("event", event);
 		cc.sendObject(request);
@@ -171,7 +181,9 @@ public class ClientConnection_Test
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
+		{
 			System.out.println(response.getItem("result"));
+		}
 	}
 
 	public static void createUser(ClientConnection cc)
@@ -186,18 +198,6 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 			System.out.println(response.getItem("result"));
-	}
-	
-	public static void testAddAppointment(ClientConnection cc)
-	{
-		Timestamp start = new Timestamp(2013,4,23,12,00,00,00);
-		Timestamp end = new Timestamp(2013,4,23,14,00,00,00);
-		Event event = new Event();
-		event.setDescription("beskrivelse");
-		event.setTitle("Møte1");
-		event.setStart(start);
-		event.setEnd(end);
-		addAppointment(cc, event);
 	}
 
 	

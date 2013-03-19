@@ -206,15 +206,16 @@ public class ServerMethods
 		try
 		{
 			Event event = (Event) request.getItem("event");
-			
+			event.setCreatedBy(session.getUser());
 			
 			if(event != null)
 			{
-				//dc.addAppointment(event);
+				dc.createAppointment(event);
 				response.addItem("result", "OK");
 				//TODO trigger notifications
 			}
-			response.addItem("error", "invalid input - event is null");
+			else
+				response.addItem("error", "invalid input - event is null");
 		}
 		catch(Exception e)
 		{
