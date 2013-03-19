@@ -13,6 +13,8 @@ import client.Program;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.prefs.Preferences;
 
 public class LoginWindow extends JFrame{
@@ -33,7 +35,7 @@ public class LoginWindow extends JFrame{
 	private JLabel passwordLabel = new JLabel("Password");
 	
 	private JPanel pane = new JPanel(new GridBagLayout());
-	
+
 	public LoginWindow(Program mainProgram){
 		// Call super to create window with title
 		super("Login");
@@ -58,6 +60,7 @@ public class LoginWindow extends JFrame{
 		setVisible(true);  
 		
 		loginButton.addActionListener(new buttonListener());
+		password.addKeyListener(new buttonListener());
 	}
 	
 	public void alert(String input){
@@ -106,7 +109,7 @@ public class LoginWindow extends JFrame{
 	}
 	
 	// Action Listener for Login button
-	class buttonListener implements ActionListener {
+	class buttonListener implements ActionListener, KeyListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
@@ -117,16 +120,31 @@ public class LoginWindow extends JFrame{
 				prefs.put("USERNAME", username.getText());
 				prefs.put("HOST", host.getText());
 				
-				String pass = password.getPassword().toString();
+				String pass = new String(password.getPassword());
+				
 				try {
 					mainProgram.login(host.getText(), username.getText(), pass);
 				} catch (Exception e1) {
 					alert(e1.getMessage());
-					
 				}
-			
 			}	
 		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode() == 10) {
+				loginButton.doClick();
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			
+		}
 	}
-	
 }

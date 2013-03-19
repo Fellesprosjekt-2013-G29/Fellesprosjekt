@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -224,12 +225,30 @@ public class CalendarPane extends JPanel implements MouseListener {
 		if(eventWeek != model.getWeek()) {
 			return;
 		}
-		int day = Integer.parseInt(start.substring(9, 10));
-		int hour = Integer.parseInt(start.substring(3, 5));
-		int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
 		event.addMouseListener(this);
 		visibleEvents.add(event);
-		addToCalendar(event, day, hour, 1, duration);
+		
+		ArrayList<EventView> simultaneousEvents = new ArrayList<EventView>();
+		long e1Start, e1End, e2Start, e2End;
+		e1Start = event.getModel().getStart().getTime();
+		e1End = event.getModel().getEnd().getTime();
+		
+		for(EventView e : visibleEvents) {
+			e2Start = e.getModel().getStart().getTime();
+			e2End = e.getModel().getEnd().getTime();
+			
+			if((e1Start >= e2Start && e1Start < e2End) || (e2End <= e1End && e2End > e1Start) || (e2Start >= e1Start && e2Start < e1End) || (e2End <= e1End && e2End > e1Start)) {
+				simultaneousEvents.add(e);
+			}
+		}
+		for(EventView se : simultaneousEvents) {
+			start = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getStart());
+			end = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getEnd());
+			int day = Integer.parseInt(start.substring(9, 10));
+			int hour = Integer.parseInt(start.substring(3, 5));
+			int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
+			addToCalendar(se, day + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), hour, 1 / (double)simultaneousEvents.size(), duration);
+		}
 	}
 
 	public CalendarModel getModel() {

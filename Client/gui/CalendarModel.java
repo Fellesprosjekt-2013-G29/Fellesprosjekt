@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,6 +91,7 @@ public class CalendarModel {
 	}
 	
 	public void addEvent(Event event) {
+		
 		events.add(new EventView(event));
 	}
 	
@@ -109,6 +111,24 @@ public class CalendarModel {
 		EventView meeting2 = new EventView(event);
 		events.add(meeting2);
 
+		event = new Event("2013-03-23 07:00:00", "2013-03-23 09:30:00");
+		event.setDescription("Lawl");
+		event.setRoom(new Room(93, "Testrom", 105));
+		event.setTitle("Nope!");
+		EventView meeting3 = new EventView(event);
+		meeting3.setColor(Color.RED);
+		events.add(meeting3);
+
+//		for(int i = 0; i < 8; i++) {
+//			event = new Event("2013-03-23 08:00:00", "2013-03-23 10:00:00");
+//			event.setDescription("Lawl");
+//			event.setRoom(new Room(93, "Testrom", 105));
+//			event.setTitle("Nope!");
+//			EventView meeting4 = new EventView(event);
+//			meeting4.setColor(Color.BLUE);
+//			events.add(meeting4);
+//		}
+		
 //		EventView meeting3 = new EventView();
 //		events.add(meeting3);
 //		

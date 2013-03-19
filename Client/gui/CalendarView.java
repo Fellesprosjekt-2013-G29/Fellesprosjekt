@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -71,6 +72,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	private void initialize() {
 		setBounds(100, 100, WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{69, 66, 64, 12, 103, 68, 43, 234, 97, 109, 0};
 		gridBagLayout.rowHeights = new int[]{33, 23, 427, 23, 0};
@@ -270,7 +272,7 @@ public class CalendarView extends JFrame implements ActionListener {
 			System.exit(0);
 			break;
 		case "Opprett hendelse":
-			
+			System.out.println(program.getConnectionManager().getUsers());
 			break;
 		case "Administrer kalendere":
 			
