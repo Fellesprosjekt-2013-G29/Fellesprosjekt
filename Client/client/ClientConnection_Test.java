@@ -30,10 +30,10 @@ public class ClientConnection_Test
 		
 		//testAddAppointment(cc);
 		
-		Timestamp start = new Timestamp(2013,4,28,12,00,00,00);
-		Timestamp end = new Timestamp(2013,4,28,14,00,00,00);
+		Timestamp start = Timestamp.valueOf("2013-03-10 00:00:00");
+		Timestamp end = Timestamp.valueOf("2013-03-12 16:00:00");
 		
-		getUsers(cc, connection);
+		getRooms(cc, start, end);
 		
 		
 		cc.closeConnection();
@@ -122,7 +122,7 @@ public class ClientConnection_Test
 			System.out.println("rooms:");
 			ArrayList<Room> rooms = (ArrayList<Room>) response.getItem("rooms");
 			for(Room room : rooms)
-				System.out.println(room.getRoomNumber());
+				System.out.println(room.getId() + " - " + room.getRoomNumber() + " - " + room.getLocation() + " - " + room.getRoomSize());
 		}
 	}
 	

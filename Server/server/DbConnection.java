@@ -110,19 +110,21 @@ public class DbConnection {
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
 
-        	String query = String.format("select * from Room where id not in (select roomid from Appointment a where (a.start between %s and %s)and (a.end between %s and %s));",
+        	String query = String.format("select * from Room where id not in (select roomid from Appointment a where (a.start between '%s' and '%s')and (a.end between '%s' and '%s'));",
         			start.toString(), 
         			end.toString(),
         			start.toString(),
         			end.toString());
+        	System.out.println(query);
         	ArrayList<Room> result = new ArrayList<Room>();
         	
         	ResultSet res = statement.executeQuery(query);
         	while (res.next()){
+        		int id = res.getInt("id");
         		int roomNumber = res.getInt("roomnr");
         		int roomSize = res.getInt("size");
         		String location = res.getString("location");
-        		Room room = new Room(roomNumber, location, roomSize);
+        		Room room = new Room(id, roomNumber, location, roomSize);
         		result.add(room);
         	}
         	return result;
@@ -231,16 +233,17 @@ public class DbConnection {
        }
        
        public Room getRoom(int rid) throws SQLException{
-    	   String query = String.format("SLEECT * from Room where id = %s", rid);
+    	   String query = String.format("SELECT * from Room where id = %s", rid);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
     	   res.next();
     	   
+    	   int id = res.getInt("id");
     	   int roomNumber = res.getInt("roomnr");
     	   int roomSize = res.getInt("size");
     	   String location = res.getString("location");
-    	   Room room = new Room(roomNumber, location, roomSize);
+    	   Room room = new Room(id, roomNumber, location, roomSize);
     	   room.setId(rid);
     	   return room;
        }
