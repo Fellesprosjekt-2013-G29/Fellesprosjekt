@@ -10,7 +10,7 @@ import model.Event;
 
 public class CalendarModel {
 
-	private Program parent;
+	private Program program;
 	
 	private Date currentDate;
 	private int year;
@@ -19,7 +19,7 @@ public class CalendarModel {
 	private ArrayList<EventView> events;
 	
 	public CalendarModel(Program parent) {
-		this.parent = parent;
+		this.program = parent;
 		init();
 	}
 	
@@ -35,11 +35,11 @@ public class CalendarModel {
 	}
 
 	public Program getParent() {
-		return parent;
+		return program;
 	}
 
 	public void setParent(Program parent) {
-		this.parent = parent;
+		this.program = parent;
 	}
 
 	public Date getCurrentDate() {

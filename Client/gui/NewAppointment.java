@@ -1,24 +1,41 @@
 package gui;
 
-import model.*;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import model.Event;
+import model.Invitation;
+import model.Room;
+import model.User;
+import client.Program;
+
 public class NewAppointment extends JPanel {
+	
+	private Program program;
 	
 	private Event model;
 	private User owner;
@@ -65,21 +82,12 @@ public class NewAppointment extends JPanel {
 	
 	private GridBagConstraints constr;
 	
-	// TEST-LIST
-	//private ArrayList<user> testList; // <---- legg til comment
-	
-	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
-	//public NewAppointment(ArrayList<user> list) { //<---------- legg til comment
-	//private ArrayList<User> testList; // <---- legg til comment
-	
-	public NewAppointment(User owner, CalendarView parent) { //<--- fjern comment
-	//public NewAppointment(ArrayList<User> list) { //<---------- legg til comment
-		// TESTING
-		// testList = list; // <---- legg til comment
+	public NewAppointment(Program program, User owner, CalendarView parent) { 
 		
-		this.parent = parent; //<----- fjern comment
+		this.program = program;
+		this.parent = parent;
 		this.child = this;
-		this.owner = owner; //<--- fjern comment
+		this.owner = owner;
 		model = new Event();
 		
 		JFrame frame = new JFrame("Opprett ny hendelse");
@@ -185,7 +193,7 @@ public class NewAppointment extends JPanel {
 		//row9
 		constr.fill = GridBagConstraints.NONE;
 		constr.gridy = 8; constr.gridwidth = 1;
-		constr.gridx = 0; addLabel("Alarm(ant. min før):");
+		constr.gridx = 0; addLabel("Alarm(ant. min fï¿½r):");
 		
 		constr.gridx = 1; addDDList(alarmBox);
 		//row10
@@ -292,8 +300,8 @@ public class NewAppointment extends JPanel {
 		     
 		        	model.setTitle(nameField.getText());
 		        	model.setCreatedBy(owner);
-		        	model.setStart(startDate);
-		        	model.setEnd(endDate);
+		        	model.setStart(new Timestamp(startDate.getTime()));
+		        	model.setEnd(new Timestamp(endDate.getTime()));
 		            model.setDescription(description.getText());
 		            
 		            int roomIndex = roomBox.getSelectedIndex();

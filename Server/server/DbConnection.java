@@ -81,16 +81,16 @@ public class DbConnection {
          * @param password The password of the user
          * @throws Exception
          */
-        public void createUser (String name, String email, String farm,
-        		int phonenumber, byte [] salt, byte [] password)  throws Exception
+        public void createUser (User u, byte[] password, byte [] salt)  throws Exception
         {
-        	String sql = "INSERT INTO User (Name, Phonenumber, Mail, Farm, Salt, Password)"
-        			+ " VALUES ('" + name + "', " + phonenumber + ", '" + email + "', '" + farm
-        			+ "', ?, ?)";
+        	String sql = "INSERT INTO User (email, name, password, pw_hash)  VALUES (?, ?, ?, ?)";
 
         	PreparedStatement ps = (PreparedStatement) connection.prepareStatement(sql);
-        	ps.setBytes(1, salt);
-        	ps.setBytes(2, password);
+        	
+        	ps.setString(1, u.getEmail());
+        	ps.setString(2, u.getName());
+        	ps.setBytes(3, salt);
+        	ps.setBytes(4, password);
         	ps.executeUpdate();
 
         }
@@ -102,8 +102,12 @@ public class DbConnection {
         //
         //
         
-        public ArrayList<Room> getAvailableRooms(Timestamp time) throws SQLException{
-        	String query = String.format("select * from Room r where r.id not in (select roomid from Appointment a where '%s' between a.start and a.end)", time.toString());
+        public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
+        	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between %s and %s)and (a.end not between %s and %s))",
+        			start.toString(), 
+        			end.toString(),
+        			start.toString(),
+        			end.toString());
         	ArrayList<Room> result = new ArrayList<Room>();
         	
         	ResultSet res = statement.executeQuery(query);
@@ -117,10 +121,10 @@ public class DbConnection {
         	return result;
         }
         
-        public ArrayList<Invitation> getInvites(User p) throws SQLException{
+        public ArrayList<Invitation> getInvites(User u) throws SQLException{
         	ArrayList<Invitation> result = new ArrayList<Invitation>();
         	
-        	String query = String.format("SELECT id from Invitation i where user_id = %s", p.getUserId());
+        	String query = String.format("SELECT id from Invitation i where user_id = %s", u.getUserId());
         	ResultSet res = statement.executeQuery(query);
         	while( res.next() ){
         		result.add(getInvitation(res.getInt("user_id")));
@@ -139,6 +143,16 @@ public class DbConnection {
      	   return list;
         }
         
+        
+        public ArrayList<Event> getEventsCreatedByUser(User u) throws SQLException{
+        	ArrayList<Event> list = new ArrayList<Event>();
+        	String query = String.format("SELECT id from Appointment where owner = %s", u.getUserId());
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() ){
+     		   list.add(getEvent(res.getInt("id")));
+     	   }
+        	return list;
+        }
         
         
         
@@ -184,7 +198,6 @@ public class DbConnection {
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
     	   
-    	   //public Room(int roomNumber, String location, int roomSize)
     	   int roomNumber = res.getInt("roomnr");
     	   int roomSize = res.getInt("size");
     	   String location = res.getString("location");

@@ -1,21 +1,33 @@
 package gui;
-import model.*; 
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import client.Program;
+
+import model.User;
+
 public class AddUsersCal extends JPanel{
+	
+	Program program;
+	
 	private JFrame thisFrame;
-	private CalenderView parent;
+	private CalendarView parent;
 	
 	private GridBagConstraints constr;
 	
@@ -45,7 +57,7 @@ public class AddUsersCal extends JPanel{
 	private JTextField searchField;
 	
 	// public AddParticipants(ChangeAppointment parent) { <---------------- fjern comment
-	public AddUsersCal(ArrayList<User> persList, CalenderView parent) { // <--- add comment
+	public AddUsersCal(Program program, ArrayList<User> persList, CalendarView parent) { // <--- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
@@ -53,6 +65,8 @@ public class AddUsersCal extends JPanel{
 		thisFrame = frame;
 		this.parent = parent;
 		constr = new GridBagConstraints();
+
+		this.program = program;
 		
 		userListModel1 = new DefaultListModel();
 		userListModel2 = new DefaultListModel();
@@ -72,7 +86,7 @@ public class AddUsersCal extends JPanel{
 		
 		saveButton = new JButton("Lagre");
 		cancelButton = new JButton("Abryt");
-		searchButton = new JButton("Søk");
+		searchButton = new JButton("Sï¿½k");
 		addAllButton = new JButton("Velg alle");
 		addButton = new JButton("Legg til");
 		removeButton = new JButton("Fjern");

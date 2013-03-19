@@ -14,11 +14,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import model.Event;
+
 import client.Program;
 
 public class CalendarView extends JFrame implements ActionListener {
 
-	private Program parent;
+	public static final int WIDTH = 1024;
+	public static final int HEIGHT = 576;
+	
+	private Program program;
 	
 	private JLabel chooseDateLabel;
 	private JTextField dateField;
@@ -53,7 +58,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	 * Create the application.
 	 */
 	public CalendarView(Program parent) {
-		this.parent = parent;
+		this.program = parent;
 		initialize();
 	}
 
@@ -61,7 +66,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		setBounds(100, 100, 1024, 576);
+		setBounds(100, 100, WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{69, 66, 64, 12, 103, 68, 43, 234, 97, 109, 0};
@@ -130,12 +135,12 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_logOutButton.gridy = 1;
 		getContentPane().add(logOutButton, gbc_logOutButton);
 		
-		calendarPane = new CalendarPane(parent);
+		calendarPane = new CalendarPane(program);
 		GridBagConstraints gbc_calendarPane = new GridBagConstraints();
 		gbc_calendarPane.fill = GridBagConstraints.BOTH;
 		gbc_calendarPane.insets = new Insets(0, 0, 5, 0);
-		gbc_calendarPane.gridwidth = 9;
-		gbc_calendarPane.gridx = 1;
+		gbc_calendarPane.gridwidth = 10;
+		gbc_calendarPane.gridx = 0;
 		gbc_calendarPane.gridy = 2;
 		getContentPane().add(calendarPane, gbc_calendarPane);
 		
@@ -178,7 +183,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		GridBagConstraints gbc_manageCalendarsButton = new GridBagConstraints();
 		gbc_manageCalendarsButton.anchor = GridBagConstraints.NORTHEAST;
 		gbc_manageCalendarsButton.gridwidth = 2;
-		gbc_manageCalendarsButton.gridx = 8;
+		gbc_manageCalendarsButton.gridx = 7;
 		gbc_manageCalendarsButton.gridy = 3;
 		getContentPane().add(manageCalendarsButton, gbc_manageCalendarsButton);
 
@@ -225,6 +230,10 @@ public class CalendarView extends JFrame implements ActionListener {
 	public void setWeekNumberBox(JComboBox weekNumberBox) {
 		this.weekNumberBox = weekNumberBox;
 	}
+	
+	public void addEvent(Event event) {
+		calendarPane.getModel().addEvent(event);
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -240,7 +249,10 @@ public class CalendarView extends JFrame implements ActionListener {
 			}
 			break;
 		case "Velg dato":
-			dateField.setText(new DatePicker(this).setPickedDate());
+			String pickedDate = new DatePicker(this).setPickedDate();
+//			if(!pickedDate.equals("")) {
+				dateField.setText(pickedDate);
+//			}
 			break;
 		case "Logg ut":
 			System.exit(0);
