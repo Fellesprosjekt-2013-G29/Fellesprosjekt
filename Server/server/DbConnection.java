@@ -102,6 +102,24 @@ public class DbConnection {
         //
         //
         
+        
+//        public ArrayList<Alarm> getAlarms(User u){
+//        	ArrayList<Invitation> result = new ArrayList<Invitation>();
+//        	
+//        	String query = String.format("SELECT id from Invitation i where user_id = %s", u.getUserId());
+//        	ResultSet res = statement.executeQuery(query);
+//        	while( res.next() ){
+//        		result.add(getInvitation(res.getInt("user_id")));
+//        	}
+////        	return result;
+//        }
+//        
+        
+        public ArrayList<Event> getCancellations(User u){
+        	return null;
+        }
+        
+        
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
         	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between %s and %s)and (a.end not between %s and %s))",
         			start.toString(), 
@@ -154,7 +172,10 @@ public class DbConnection {
         	return list;
         }
         
-        
+        public ArrayList<User> getUsers(){
+        	// TODO: Implement
+        	return new ArrayList<User>();
+        }
         
         
         //
@@ -220,6 +241,10 @@ public class DbConnection {
     	   return room;
        }
        
+       public int getCancellation(int id){
+    	   return 0;
+       }
+       
        public Invitation getInvitation(int invitationId) throws SQLException{
     	   Invitation inv = new Invitation();
     	   String query = String.format("SLEECT * from Invitation where id = %s", invitationId);
@@ -234,9 +259,41 @@ public class DbConnection {
     	   inv.setTo(getUser(res.getInt("user_id")));
     	   inv.setEvent(getEvent(res.getInt("appointment_id")));
     	   
-    	   
     	   return inv;
        }
+       
+       public Alarm getAlarm(int id){
+    	   return null;
+       }
+       
+       
+       //
+       // Creation methods
+       //
+       
+       public void addAppointment(Event e) throws SQLException{}
+       
+       
+       
+       //
+       // Update methods
+       //
+       
+       public void updateAppointment(int eventId, String columnname, Object value)throws SQLException{
+    	   
+       }
+       
+       //
+       // Deletion methods
+       //
+       
+       private void deleteAppointment(int id){
+    	   
+       }
+
+       
+       
+       
 }
 
 
