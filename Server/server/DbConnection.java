@@ -192,6 +192,20 @@ public class DbConnection {
     	   return u;
        }
        
+       public User getUser(String email) throws SQLException{
+    	   User u = new User();
+    	   String query = "SLEECT * from User where email = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   stmt.setString(1, email);
+    	   ResultSet res = stmt.executeQuery();
+    	   
+    	   u.setEmail(res.getString("email"));
+    	   u.setName(res.getString("name"));
+    	   u.setUserId(res.getInt("id"));
+    	   return u;
+       }
+       
        public Room getRoom(int rid) throws SQLException{
     	   String query = String.format("SLEECT * from Room where id = %s", rid);
     	   PreparedStatement stmt = connection.prepareStatement(query);
