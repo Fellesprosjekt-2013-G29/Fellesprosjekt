@@ -314,14 +314,16 @@ public class NewAppointment extends JPanel {
 		            	model.setAlarm(true);
 		            	model.setAlarmBefore(timeBefore);
 		            }
-		            else {model.setAlarm(false);}
+		            else {
+		            	model.setAlarm(false);
+		            }
 		            
 		            if(userListModel.getSize() > 0 ) {
 			            ArrayList<Invitation> invitationList = new ArrayList<Invitation>();
 			            for (int i = 0; i < userListModel.getSize(); i++) {
 			            	User user = participantsList.get(i);
 			            	Invitation invite = new Invitation();
-			            	invite.setFrom(owner);
+//			            	invite.setFrom(owner);
 			            	invite.setTo(user);
 			            	invite.setEvent(model);
 			            	invitationList.add(invite);

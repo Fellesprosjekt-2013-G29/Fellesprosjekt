@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -21,21 +22,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import client.Program;
 
-import model.Event;
-
 public class CalendarPane extends JPanel implements MouseListener {
 
-	private static final int ROWS = 24;
+	private static final int ROWS = 25;
 	private static final int COLLUMNS = 8;
 
 	private final String[] days = {"Tid", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"};
 	private final String[] hours = {"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", 
 			"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", 
-			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
+			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"};
 	
 	private CalendarModel model;
 	private Program program;
@@ -227,12 +225,30 @@ public class CalendarPane extends JPanel implements MouseListener {
 		if(eventWeek != model.getWeek()) {
 			return;
 		}
-		int day = Integer.parseInt(start.substring(9, 10));
-		int hour = Integer.parseInt(start.substring(3, 5));
-		int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
 		event.addMouseListener(this);
 		visibleEvents.add(event);
-		addToCalendar(event, day, hour, 1, duration);
+		
+		ArrayList<EventView> simultaneousEvents = new ArrayList<EventView>();
+		long e1Start, e1End, e2Start, e2End;
+		e1Start = event.getModel().getStart().getTime();
+		e1End = event.getModel().getEnd().getTime();
+		
+		for(EventView e : visibleEvents) {
+			e2Start = e.getModel().getStart().getTime();
+			e2End = e.getModel().getEnd().getTime();
+			
+			if((e1Start >= e2Start && e1Start < e2End) || (e2End <= e1End && e2End > e1Start) || (e2Start >= e1Start && e2Start < e1End) || (e2End <= e1End && e2End > e1Start)) {
+				simultaneousEvents.add(e);
+			}
+		}
+		for(EventView se : simultaneousEvents) {
+			start = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getStart());
+			end = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getEnd());
+			int day = Integer.parseInt(start.substring(9, 10));
+			int hour = Integer.parseInt(start.substring(3, 5));
+			int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
+			addToCalendar(se, day + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), hour, 1 / (double)simultaneousEvents.size(), duration);
+		}
 	}
 
 	public CalendarModel getModel() {
