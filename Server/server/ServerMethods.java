@@ -210,7 +210,7 @@ public class ServerMethods
 			
 			if(event != null)
 			{
-				dc.addAppointment(event);
+				//dc.addAppointment(event);
 				response.addItem("result", "OK");
 				//TODO trigger notifications
 			}
@@ -229,18 +229,18 @@ public class ServerMethods
 		
 		try
 		{
-			if(request.hasKey("start"))
-				dc.updateAppointment(id, "start", request.getItem("start"));
-			if(request.hasKey("end"))
-				dc.updateAppointment(id, "end", request.getItem("end"));
-			if(request.hasKey("description"))
-				dc.updateAppointment(id, "description", request.getItem("description"));
-			if(request.hasKey("room"))
-				dc.updateAppointment(id, "room", request.getItem("room"));
-			if(request.hasKey("participants"))
-				dc.updateAppointment(id, "participants", request.getItem("participants")); //TODO fix
-			if(request.hasKey("title"))
-				dc.updateAppointment(id, "title",  request.getItem("title"));
+//			if(request.hasKey("start"))
+//				dc.updateAppointment(id, "start", request.getItem("start"));
+//			if(request.hasKey("end"))
+//				dc.updateAppointment(id, "end", request.getItem("end"));
+//			if(request.hasKey("description"))
+//				dc.updateAppointment(id, "description", request.getItem("description"));
+//			if(request.hasKey("room"))
+//				dc.updateAppointment(id, "room", request.getItem("room"));
+//			if(request.hasKey("participants"))
+//				dc.updateAppointment(id, "participants", request.getItem("participants")); //TODO fix
+//			if(request.hasKey("title"))
+//				dc.updateAppointment(id, "title",  request.getItem("title"));
 			
 			response.addItem("result", "Update ok");
 			

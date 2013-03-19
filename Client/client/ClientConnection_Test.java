@@ -28,7 +28,13 @@ public class ClientConnection_Test
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		
-		testAddAppointment(cc);
+		//testAddAppointment(cc);
+		
+		Timestamp start = new Timestamp(2013,4,28,12,00,00,00);
+		Timestamp end = new Timestamp(2013,4,28,14,00,00,00);
+		
+		getUsers(cc, connection);
+		
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -98,7 +104,7 @@ public class ClientConnection_Test
 		{
 			ArrayList<User> users = (ArrayList<User>) response.getItem("users");
 			for(User user : users)
-				System.out.println(user.getEmail());
+				System.out.println(user.getUserId() + " - " + user.getEmail());
 		}
 	}
 	
@@ -113,6 +119,7 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 		{
+			System.out.println("rooms:");
 			ArrayList<Room> rooms = (ArrayList<Room>) response.getItem("rooms");
 			for(Room room : rooms)
 				System.out.println(room.getRoomNumber());
@@ -192,5 +199,7 @@ public class ClientConnection_Test
 		event.setEnd(end);
 		addAppointment(cc, event);
 	}
+
+	
 }
 

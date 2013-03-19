@@ -109,7 +109,7 @@ public class DbConnection {
         
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
-        	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between %s and %s)and (a.end not between %s and %s))",
+        	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between '%s' and '%s') and (a.end not between '%s' and '%s'))",
         			start.toString(), 
         			end.toString(),
         			start.toString(),
@@ -160,9 +160,20 @@ public class DbConnection {
         	return list;
         }
         
-        public ArrayList<User> getUsers(){
-        	// TODO: Implement
-        	return new ArrayList<User>();
+        public ArrayList<User> getUsers() throws SQLException
+        {
+        	ArrayList<User> list = new ArrayList<User>();
+        	String query = String.format("SELECT * from User");
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() )
+        	{
+        		User user = new User();
+        		user.setEmail(res.getString("email"));
+     		   	user.setName(res.getString("name"));
+     		   	user.setUserId(res.getInt("id"));
+     		   	list.add(user);
+     	   	}
+        	return list;
         }
         
         
