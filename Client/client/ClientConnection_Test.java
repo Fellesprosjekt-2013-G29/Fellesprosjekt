@@ -10,7 +10,7 @@ import structs.Response;
 
 public class ClientConnection_Test 
 {
-	private final static String HOST = "78.91.10.195";
+	private final static String HOST = "localhost";
 	private final static int PORT = 4447;
 	
 	public static void main(String[] args) throws Exception
@@ -21,10 +21,11 @@ public class ClientConnection_Test
 		boolean connection = cc.openConnection();
 		
 		String key = login(cc, connection);
+		System.out.println("Key: " + key);
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		
-		createUser(cc);
+//		createUser(cc);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -36,8 +37,8 @@ public class ClientConnection_Test
 		{
 			Request request = new Request();
 			request.setRequest(Request.LOGIN);
-			request.addItem("username", "herpderp@gmail.com");
-			request.addItem("password", "passord");
+			request.addItem("username", "bjarne@gmail.com");
+			request.addItem("password", "derp");
 			cc.sendObject(request);
 			Response response = cc.reciveResponse();
 			if(response.errorExist())

@@ -55,7 +55,7 @@ public class DbConnection {
         
         public byte[] getStoredHash(String email, String collumnName)throws Exception
         {
-        	String sql = "SELECT * FROM User WHERE Mail = '" + email +"'";
+        	String sql = "SELECT * FROM User WHERE email = '" + email +"'";
         	ResultSet resultSet = statement.executeQuery(sql);
         	resultSet.next();
         	byte[] hash = resultSet.getBytes(collumnName);
@@ -101,8 +101,8 @@ public class DbConnection {
         	
         	ps.setString(1, u.getEmail());
         	ps.setString(2, u.getName());
-        	ps.setBytes(3, salt);
-        	ps.setBytes(4, password);
+        	ps.setBytes(3, password);
+        	ps.setBytes(4, salt);
         	ps.executeUpdate();
 
         }
@@ -227,11 +227,12 @@ public class DbConnection {
        
        public User getUser(String email) throws SQLException{
     	   User u = new User();
-    	   String query = "SLEECT * from User where email = ?";
+    	   String query = "SELECT * from User where email = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   stmt.setString(1, email);
     	   ResultSet res = stmt.executeQuery();
+    	   res.next();
     	   
     	   u.setEmail(res.getString("email"));
     	   u.setName(res.getString("name"));

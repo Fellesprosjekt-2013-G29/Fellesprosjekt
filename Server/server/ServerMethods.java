@@ -15,16 +15,16 @@ public class ServerMethods
 	public static Response handleRequest(Request request, Session session)
 	{
 		Response response = new Response();
-		DbConnection dc = new DbConnection("jdbc:mysql://arve.in", "fellesproj", "pebcak");
+		DbConnection dc = new DbConnection("jdbc:mysql://arve.in/fellesprosjekt", "fellesproj", "pebcak");
 		
 		if(request == null)
 		{
 			response.addItem("error", "No request");
 		}
-//		else if(!dc.connect())
-//		{
-//			response.addItem("error", "Unable to connect to the database");
-//		}
+		else if(!dc.connect())
+		{
+			response.addItem("error", "Unable to connect to the database");
+		}
 		else
 		{					
 			switch (request.getRequest()) 
@@ -61,54 +61,59 @@ public class ServerMethods
 		            
 			}
 		}	
-//		dc.closeConnection();
+		dc.closeConnection();
 		return response;		
 	}
 	
 	public static Response handleNewConnection(Request request, NewConnection connection)
 	{
 		Response response = new Response();
-		DbConnection dc = new DbConnection("jdbc:mysql://arve.in", "fellesproj", "pebcak");
+		DbConnection dc = new DbConnection("jdbc:mysql://arve.in/fellesprosjekt", "fellesproj", "pebcak");
 		
 		if(request == null)
 		{
 			response.addItem("error", "No request");
 		}
-//		else if(!dc.connect())
-//		{
-//			response.addItem("error", "Unable to connect to the database");
-//		}
+		else if(!dc.connect())
+		{
+			response.addItem("error", "Unable to connect to the database");
+		}
 		else
 		{					
 			switch (request.getRequest()) 
 			{
 				case Request.LOGIN:  
-					login(request, response, connection);
+					login(request, response, connection, dc);
 					break;
 		        case Request.ATTACH_SOCKET:  
 		        	attachSocket(request, response, connection);
+		            break;
+		        case Request.CREATE_USER:  
+		        	createUser(request, response, dc);
 		            break;
 		        default:
 		        	response.addItem("error", "Invalid request");
 		            
 			}
 		}	
-		//dc.closeConnection();
+		dc.closeConnection();
 		return response;		
 	}
 	
-	private static boolean login(Request request, Response response, NewConnection connection)
+	private static boolean login(Request request, Response response, NewConnection connection, DbConnection dc)
 	{
 		//TODO fix
-		DbConnection dc = new DbConnection(null, null, null);
 		
 		String username = (String) request.getItem("username");
 		String password = (String) request.getItem("password");
 		
 		try
 		{
-			byte[] salt = dc.getStoredHash(username, "Salt");
-			byte[] hashedPassword = dc.getStoredHash(username, "Password");
+			byte[] salt = dc.getStoredHash(username, "pw_hash");
+			byte[] hashedPassword = dc.getStoredHash(username, "password");
+			
+			System.out.println(salt.toString());
+			System.out.println(hashedPassword.toString());
 			
 			if(PasswordEncryption.checkPassword(password, hashedPassword, salt))	
 			{
@@ -127,6 +132,11 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
+			System.out.println("Message:");
+			e.getMessage();
+			System.out.println("Cause");
+			e.getCause();
 			response.addItem("error", e.toString());
 		}
 		return false;
@@ -294,10 +304,12 @@ public class ServerMethods
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			response.addItem("error", e.toString());
 		}
 	}
 	
+
 	private static void triggerAlert()
 	{
 		
