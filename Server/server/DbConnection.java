@@ -290,6 +290,8 @@ public class DbConnection {
        }
        
        
+       
+       
        /**
         * 
         * @param name The name of the user
@@ -300,11 +302,12 @@ public class DbConnection {
         * @param password The password of the user
         * @throws Exception
         */
+       
        public void createUser (User u, byte[] password, byte [] salt)  throws Exception
        {
        	String sql = "INSERT INTO User (email, name, password, pw_hash)  VALUES (?, ?, ?, ?)";
 
-       	PreparedStatement ps = (PreparedStatement) connection.prepareStatement(sql);
+       	PreparedStatement ps = connection.prepareStatement(sql);
        	
        	ps.setString(1, u.getEmail());
        	ps.setString(2, u.getName());
@@ -319,7 +322,7 @@ public class DbConnection {
        // Update methods
        //
        
-       public void updateAppointment(int eventId, String columnname, Object value)throws SQLException{
+       public void updateAppointment(int eventId, String columnname, String value)throws SQLException{
     	   
        }
        
@@ -327,11 +330,12 @@ public class DbConnection {
        // Deletion methods
        //
        
-       public void deleteAppointment(int id){
-    	   
+       public void deleteAppointment(int id) throws SQLException{
+    	   String sql = "UPDATE Appointment set deleted=1 where id = ?";
+    	   PreparedStatement ps = connection.prepareStatement(sql);
+    	   ps.setInt(1, id);
+    	   ps.executeUpdate();
        }
-
-       
        
        
 }
