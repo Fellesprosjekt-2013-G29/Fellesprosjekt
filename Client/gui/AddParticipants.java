@@ -1,7 +1,6 @@
 package gui;
 
 import model.*;
-import hoved.Person;
 
 import java.awt.Color;
 import java.awt.Dimension;

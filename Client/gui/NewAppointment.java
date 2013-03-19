@@ -2,8 +2,6 @@ package gui;
 
 import model.*;
 
-import hoved.Person;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.*;

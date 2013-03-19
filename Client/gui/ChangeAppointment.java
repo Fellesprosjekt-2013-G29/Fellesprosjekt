@@ -2,8 +2,6 @@ package gui;
 
 import model.*;
 
-import hoved.Person;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
