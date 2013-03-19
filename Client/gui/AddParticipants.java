@@ -144,6 +144,8 @@ public class AddParticipants extends JPanel{
 	private void createGraphics() {
 		this.setLayout(new GridBagLayout());
 		this.setBorder(new EmptyBorder(10,10,10,10));
+		Insets timeIns = new Insets(10,0,0,0);
+		constr.insets = timeIns;
 		// Row 1
 		constr.anchor = GridBagConstraints.CENTER;
 		constr.gridy = 0; constr.gridwidth = 4;
@@ -162,17 +164,22 @@ public class AddParticipants extends JPanel{
 		constr.gridx = 2; addLabel("Valgte Deltakere:");
 		// Row 4
 		constr.gridy = 3;
+		timeIns.right = 10;
 		constr.gridx = 0; this.add(listScroller1, constr);
+		timeIns.right = 0;
 		constr.gridx = 2; this.add(listScroller2, constr);
 		// Row 5
 		constr.gridy = 4; constr.gridwidth = 1;
+		timeIns.right = 10;
 		constr.gridx = 0; addButton(addAllButton, 1);
 		constr.anchor = GridBagConstraints.LINE_END;
 		constr.gridx = 1; addButton(addButton, 1);
 						  constr.gridwidth = GridBagConstraints.REMAINDER;
 						  constr.anchor = GridBagConstraints.CENTER;
+		timeIns.right = 0;
 		constr.gridx = 2; addButton(removeButton, 2);
 		// Row 6
+		timeIns.top = 30;
 		constr.gridy = 5; constr.gridwidth = 1;
 		constr.gridx = 0; addButton(saveButton, 0);
 		constr.gridwidth = GridBagConstraints.REMAINDER; 
