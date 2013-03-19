@@ -82,32 +82,8 @@ public class DbConnection {
  	       resultSet.next();
  	       return resultSet.getInt("UserID");
         }
-
-        /**
-         * 
-         * @param name The name of the user
-         * @param email The email of the user
-         * @param farm	The farm of the user
-         * @param phonenumber	The phonenumber of the user
-         * @param salt The salt that is used on the hashed password
-         * @param password The password of the user
-         * @throws Exception
-         */
-        public void createUser (User u, byte[] password, byte [] salt)  throws Exception
-        {
-        	String sql = "INSERT INTO User (email, name, password, pw_hash)  VALUES (?, ?, ?, ?)";
-
-        	PreparedStatement ps = (PreparedStatement) connection.prepareStatement(sql);
-        	
-        	ps.setString(1, u.getEmail());
-        	ps.setString(2, u.getName());
-        	ps.setBytes(3, password);
-        	ps.setBytes(4, salt);
-        	ps.executeUpdate();
-
-        }
         
-        
+
         //
         //
         //  Collections from database
@@ -115,37 +91,40 @@ public class DbConnection {
         //
         
         
-//        public ArrayList<Alarm> getAlarms(User u){
-//        	ArrayList<Invitation> result = new ArrayList<Invitation>();
-//        	
-//        	String query = String.format("SELECT id from Invitation i where user_id = %s", u.getUserId());
-//        	ResultSet res = statement.executeQuery(query);
-//        	while( res.next() ){
-//        		result.add(getInvitation(res.getInt("user_id")));
-//        	}
-////        	return result;
-//        }
+        public ArrayList<Alarm> getAlarms(User u) throws SQLException{
+        	ArrayList<Alarm> result = new ArrayList<Alarm>();
+        	
+        	String query = String.format("SELECT id from Alarm where user_id = %s and alarm_time < NOW()", u.getUserId());
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() ){
+        		result.add(getAlarm(res.getInt("user_id")));
+        	}
+        	return result;
+        }
 //        
         
-        public ArrayList<Event> getCancellations(User u){
+        public ArrayList<Event> getCancellations(User u)throws SQLException{
         	return null;
         }
         
         
         public ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end) throws SQLException{
-        	String query = String.format("select * from Room r where r.id not in ( select roomid from Appointment a where (a.start not between %s and %s)and (a.end not between %s and %s))",
+
+        	String query = String.format("select * from Room where id not in (select roomid from Appointment a where (a.start between '%s' and '%s')and (a.end between '%s' and '%s'));",
         			start.toString(), 
         			end.toString(),
         			start.toString(),
         			end.toString());
+        	System.out.println(query);
         	ArrayList<Room> result = new ArrayList<Room>();
         	
         	ResultSet res = statement.executeQuery(query);
         	while (res.next()){
+        		int id = res.getInt("id");
         		int roomNumber = res.getInt("roomnr");
         		int roomSize = res.getInt("size");
         		String location = res.getString("location");
-        		Room room = new Room(roomNumber, location, roomSize);
+        		Room room = new Room(id, roomNumber, location, roomSize);
         		result.add(room);
         	}
         	return result;
@@ -184,9 +163,20 @@ public class DbConnection {
         	return list;
         }
         
-        public ArrayList<User> getUsers(){
-        	// TODO: Implement
-        	return new ArrayList<User>();
+        public ArrayList<User> getUsers() throws SQLException
+        {
+        	ArrayList<User> list = new ArrayList<User>();
+        	String query = String.format("SELECT * from User");
+        	ResultSet res = statement.executeQuery(query);
+        	while( res.next() )
+        	{
+        		User user = new User();
+        		user.setEmail(res.getString("email"));
+     		   	user.setName(res.getString("name"));
+     		   	user.setUserId(res.getInt("id"));
+     		   	list.add(user);
+     	   	}
+        	return list;
         }
         
         
@@ -200,6 +190,7 @@ public class DbConnection {
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
+    	   res.next();
     	   
     	   event.setEventId(eventId);
     	   event.setCreatedBy(getUser(res.getInt("owner")));
@@ -218,6 +209,7 @@ public class DbConnection {
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
+    	   res.next();
     	   
     	   u.setEmail(res.getString("email"));
     	   u.setName(res.getString("name"));
@@ -241,15 +233,17 @@ public class DbConnection {
        }
        
        public Room getRoom(int rid) throws SQLException{
-    	   String query = String.format("SLEECT * from Room where id = %s", rid);
+    	   String query = String.format("SELECT * from Room where id = %s", rid);
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
+    	   res.next();
     	   
+    	   int id = res.getInt("id");
     	   int roomNumber = res.getInt("roomnr");
     	   int roomSize = res.getInt("size");
     	   String location = res.getString("location");
-    	   Room room = new Room(roomNumber, location, roomSize);
+    	   Room room = new Room(id, roomNumber, location, roomSize);
     	   room.setId(rid);
     	   return room;
        }
@@ -264,6 +258,7 @@ public class DbConnection {
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
+    	   res.next();
     	   
     	   inv.setId(invitationId);
     	   inv.setAlarm( Timestamp.valueOf(res.getString("alarm")));
@@ -275,8 +270,18 @@ public class DbConnection {
     	   return inv;
        }
        
-       public Alarm getAlarm(int id){
-    	   return null;
+       public Alarm getAlarm(int id) throws SQLException{
+    	   Alarm alarm = new Alarm();
+    	   String query = String.format("SLEECT * from Alarm where id = %s", id);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setMaxRows(1);
+    	   ResultSet res = stmt.executeQuery();
+    	   res.next();
+    	   
+    	   alarm.setEvent(getEvent(res.getInt("appointmentid")));
+    	   alarm.setTime(Timestamp.valueOf(res.getString("alarm_time")));
+    	   alarm.setUser(getUser(res.getInt("userid")));
+    	   return alarm;
        }
        
        
@@ -284,15 +289,55 @@ public class DbConnection {
        // Creation methods
        //
        
-       public void addAppointment(Event e) throws SQLException{}
+       public Event createAppointment(Event e) throws SQLException{
+    	   String sql = "INSERT INTO Appointment (title, start, end, description, roomid, owner)  VALUES (?, ?, ?, ?, ?, ?)";
+    	   PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	   // name, start, end, description, roomid, owner
+    	   stmt.setString(1, e.getTitle());
+    	   stmt.setTimestamp(2, e.getStart());
+    	   stmt.setTimestamp(3, e.getEnd());
+    	   stmt.setString(4, e.getDescription());
+    	   stmt.setInt(5, e.getRoom().getId());
+    	   stmt.setInt(6, e.getCreatedBy().getUserId());
+    	   int newId = stmt.executeUpdate();
+    	   
+    	   return getEvent(newId);
+       }
        
+       
+       
+       
+       /**
+        * 
+        * @param name The name of the user
+        * @param email The email of the user
+        * @param farm	The farm of the user
+        * @param phonenumber	The phonenumber of the user
+        * @param salt The salt that is used on the hashed password
+        * @param password The password of the user
+        * @throws Exception
+        */
+       
+       public void createUser (User u, byte[] password, byte [] salt)  throws Exception
+       {
+       	String sql = "INSERT INTO User (email, name, password, pw_hash)  VALUES (?, ?, ?, ?)";
+
+       	PreparedStatement ps = connection.prepareStatement(sql);
+       	
+       	ps.setString(1, u.getEmail());
+       	ps.setString(2, u.getName());
+       	ps.setBytes(3, password);
+       	ps.setBytes(4, salt);
+       	ps.executeUpdate();
+
+       }
        
        
        //
        // Update methods
        //
        
-       public void updateAppointment(int eventId, String columnname, Object value)throws SQLException{
+       public void updateAppointment(int eventId, String columnname, String value)throws SQLException{
     	   
        }
        
@@ -300,11 +345,12 @@ public class DbConnection {
        // Deletion methods
        //
        
-       public void deleteAppointment(int id){
-    	   
+       public void deleteAppointment(int id) throws SQLException{
+    	   String sql = "UPDATE Appointment set deleted=1 where id = ?";
+    	   PreparedStatement ps = connection.prepareStatement(sql);
+    	   ps.setInt(1, id);
+    	   ps.executeUpdate();
        }
-
-       
        
        
 }

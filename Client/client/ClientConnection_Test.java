@@ -1,8 +1,12 @@
 package client;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import model.Event;
+import model.Invitation;
+import model.Room;
+import model.User;
 
 import structs.Alert;
 import structs.Request;
@@ -24,7 +28,13 @@ public class ClientConnection_Test
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		
-		createUser(cc);
+		//testAddAppointment(cc);
+		
+		Timestamp start = Timestamp.valueOf("2013-03-10 00:00:00");
+		Timestamp end = Timestamp.valueOf("2013-03-12 16:00:00");
+		
+		getRooms(cc, start, end);
+		
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -91,7 +101,11 @@ public class ClientConnection_Test
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
-			System.out.println(response.getItem("users"));
+		{
+			ArrayList<User> users = (ArrayList<User>) response.getItem("users");
+			for(User user : users)
+				System.out.println(user.getUserId() + " - " + user.getEmail());
+		}
 	}
 	
 	public static void getRooms(ClientConnection cc, Timestamp start, Timestamp end)
@@ -104,7 +118,12 @@ public class ClientConnection_Test
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
-			System.out.println(response.getItem("users"));
+		{
+			System.out.println("rooms:");
+			ArrayList<Room> rooms = (ArrayList<Room>) response.getItem("rooms");
+			for(Room room : rooms)
+				System.out.println(room.getId() + " - " + room.getRoomNumber() + " - " + room.getLocation() + " - " + room.getRoomSize());
+		}
 	}
 	
 	public static void getNotifications(ClientConnection cc)
@@ -119,17 +138,28 @@ public class ClientConnection_Test
 			System.out.println("Uncomplete");
 	}
 
-	public static void getApointments(ClientConnection cc, String[] users)
+	public static void getApointments(ClientConnection cc, User user)
 	{
 		Request request = new Request(Request.GET_USERS_APPOINTMENTS);
-		request.addItem("users", users);
+		request.addItem("user", user);
 		cc.sendObject(request);
 		Response response = cc.reciveResponse();
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
-			//TODO
-			System.out.println("Uncomplete");
+			System.out.println("Events:");
+		{
+			ArrayList<Event> events = (ArrayList<Event>) response.getItem("events");
+			for(Event event : events)
+				System.out.println(event.getTitle());
+		}
+		System.out.println("Invitations");
+		{
+			ArrayList<Invitation> invitations = (ArrayList<Invitation>) response.getItem("invitations");
+			for(Invitation invitation : invitations)
+				System.out.println(invitation.getEvent().getTitle());
+		}
+			
 	}
 	
 	public static void addAppointment(ClientConnection cc, Event event)
@@ -157,5 +187,19 @@ public class ClientConnection_Test
 		else
 			System.out.println(response.getItem("result"));
 	}
+	
+	public static void testAddAppointment(ClientConnection cc)
+	{
+		Timestamp start = new Timestamp(2013,4,23,12,00,00,00);
+		Timestamp end = new Timestamp(2013,4,23,14,00,00,00);
+		Event event = new Event();
+		event.setDescription("beskrivelse");
+		event.setTitle("Møte1");
+		event.setStart(start);
+		event.setEnd(end);
+		addAppointment(cc, event);
+	}
+
+	
 }
 
