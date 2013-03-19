@@ -1,6 +1,9 @@
 package server;
 
+import java.sql.Timestamp;
+
 import model.Event;
+import model.User;
 import structs.Alert;
 import structs.Request;
 import structs.Response;
@@ -51,7 +54,7 @@ public class ServerMethods
 		        	getUsers(response, dc);
 		            break;
 		        case Request.GET_ROOMS:  
-		        	updateInvite(request, response, dc, session);
+		        	getRooms(request, response, dc);
 		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
@@ -148,11 +151,12 @@ public class ServerMethods
 	{
 		try
 		{
-			String[] users = (String[]) request.getItem("users");
+			User user = (User) request.getItem("user");
 			
-			if(users != null)
+			if(user != null)
 			{
-				response.addItem("appointments", dc.getUsersApointment(users));
+				response.addItem("invitations", dc.getInvites(user));
+				response.addItem("myEvents", dc.getEventsCreatedByUser(user));
 			}
 			else
 			{
@@ -254,7 +258,9 @@ public class ServerMethods
 	{
 		try
 		{
-			response.addItem("rooms", dc.getRooms(request.getItem("start"), request.getItem("end")));
+			Timestamp start = (Timestamp) request.getItem("start");
+			Timestamp end = (Timestamp) request.getItem("end");
+			response.addItem("rooms", dc.getAvailableRooms(start, end));
 		}
 		catch(Exception e)
 		{
@@ -269,11 +275,14 @@ public class ServerMethods
 			String email = (String) request.getItem("username");
 			String password = (String) request.getItem("password");
 			String name = (String)	request.getItem("name");
+			User u = new User();
+			u.setEmail(email);
+			u.setname(name);
 			
 			byte[] salt = PasswordEncryption.createSalt();
 			byte[] hashedPassword = PasswordEncryption.getHash(password, salt);
 			
-			dc.createUser(name, email, salt, password);
+			dc.createUser(u, password, salt);
 			response.addItem("result", "OK");
 		}
 		catch(Exception e)
