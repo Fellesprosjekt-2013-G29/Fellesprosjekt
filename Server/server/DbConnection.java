@@ -319,7 +319,7 @@ public class DbConnection {
     	   return getEvent(id);
        }
        
-       public Invitation createInvitation(Invitation inv) throws SQLException{
+       public void createInvitation(Invitation inv) throws SQLException{
     	   String query = "INSERT INTO Invitation (appointment_id, user_id, status) VALUES (?,?,?)";
     	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     	   
@@ -332,10 +332,10 @@ public class DbConnection {
     	   
     	   stmt.executeUpdate();
     	   
-    	   ResultSet res = stmt.getGeneratedKeys();
-    	   res.next();
-    	   int id = res.getInt(1);
-    	   return getInvitation(id);
+//    	   ResultSet res = stmt.getGeneratedKeys();
+//    	   res.next();
+//    	   int id = res.getInt(1);
+//    	   return getInvitation(id);
        }
        
        public Alarm createAlarm (Alarm alarm) throws SQLException{

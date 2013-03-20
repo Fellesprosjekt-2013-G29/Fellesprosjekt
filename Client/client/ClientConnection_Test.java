@@ -205,7 +205,6 @@ public class ClientConnection_Test
 			inv.setStatus(InvitationAnswer.NA);
 			inv.setTo(user);
 			list.add(inv);
-			System.out.println("User: " + user.getEmail());
 		}
 		request.addItem("invitations", list);
 		cc.sendObject(request);
