@@ -8,8 +8,6 @@ import model.Invitation;
 import model.InvitationAnswer;
 import model.Room;
 import model.User;
-
-import structs.Alert;
 import structs.Request;
 import structs.Response;
 
@@ -88,20 +86,7 @@ public class ClientConnection_Test
 		Response response = cc.reciveResponse();
 		System.out.println(response.getItem("result"));
 	}
-	
-	public static void testServerPushing(ClientConnection cc, boolean connection)
-	{
-		Alert alert;
-		
-		while (true)
-		{
-			alert = cc.reciveAlert();
-			System.out.println("Type: " + alert.getAlertType());
-			if(alert.getAlertType() == 4)
-				break;
-		}
-		System.out.println("Done");
-	}
+
 
 	public static ArrayList<User> getUsers(ClientConnection cc, boolean connection)
 	{

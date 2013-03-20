@@ -1,6 +1,5 @@
 package server;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -8,7 +7,6 @@ import model.Event;
 import model.Invitation;
 import model.Room;
 import model.User;
-import structs.Alert;
 import structs.Request;
 import structs.Response;
 
@@ -63,7 +61,7 @@ public class ServerMethods
 		        	createUser(request, response, dc);
 		            break;
 		        case Request.ADD_INVITE:  
-		        	addInvite(request, response, dc);
+		        	addInvite(request, response, dc, session);
 		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
@@ -111,7 +109,6 @@ public class ServerMethods
 	
 	private static boolean login(Request request, Response response, NewConnection connection, DbConnection dc)
 	{
-		//TODO fix
 		
 		String username = (String) request.getItem("username");
 		String password = (String) request.getItem("password");
@@ -230,7 +227,7 @@ public class ServerMethods
 		}
 	}
 	
-	private static void addInvite(Request request, Response response, DbConnection dc)
+	private static void addInvite(Request request, Response response, DbConnection dc, Session session)
 	{
 		try
 		{
@@ -241,7 +238,7 @@ public class ServerMethods
 				for(Invitation invite : invites)
 				{
 					dc.createInvitation(invite);
-					//TODO trigger notifications
+					sendNotification(1, session.getSessionManager(), invite.getTo());
 				}
 				response.addItem("result", "Invitations added");
 			}
@@ -302,7 +299,7 @@ public class ServerMethods
 		try
 		{
 			dc.deleteAppointment((Integer) request.getItem("appointmentid"));
-			//TODO trigger notifications
+			//sendNotification(1, session.getSessionManager());
 		}
 		catch(Exception e)
 		{
@@ -370,15 +367,12 @@ public class ServerMethods
 		
 	}
 
-	
-	public static void testSessionManaging(Session session)
+	private static void sendNotification(int type, SessionManager sessionManager, User user)
 	{
-		Alert alert = new Alert();
-		alert.setAlertType(Alert.MEETING_INVITATION);
-		session.sendAlert(alert);
-		alert.setAlertType(Alert.MEETING_CANCELATION);
-		session.sendAlert(alert);
-		alert.setAlertType(4);
-		session.sendAlert(alert);
+		Session session = sessionManager.findSession(user);
+		
+		if(session != null)
+			session.sendNotification(type);
+		
 	}
 }
