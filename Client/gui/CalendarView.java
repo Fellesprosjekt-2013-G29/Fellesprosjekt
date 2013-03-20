@@ -280,7 +280,7 @@ public class CalendarView extends JFrame implements ActionListener {
 			new NewEvent(program, program.getUser(), this);
 			break;
 		case "Administrer kalendere":
-			
+			System.out.println(program.getConnectionManager().getUsers());
 			break;
 		case "Detaljer":
 			if(calendarPane.getSelectedEvent().getModel().getCreatedBy().equals(program.getUser())) {

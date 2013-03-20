@@ -299,7 +299,7 @@ public class DbConnection {
        // Creation methods
        //
        
-       public void createAppointment(Event e) throws SQLException{
+       public Event createAppointment(Event e) throws SQLException{
     	   String sql = "INSERT INTO Appointment (name, start, end, description, roomid, owner)  VALUES (?, ?, ?, ?, ?, ?)";
     	   PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	   // name, start, end, description, roomid, owner
@@ -313,22 +313,29 @@ public class DbConnection {
     		   stmt.setNull(5, java.sql.Types.INTEGER);
     	   stmt.setInt(6, e.getCreatedBy().getUserId());
     	   stmt.executeUpdate();
+    	   ResultSet res = stmt.getGeneratedKeys();
+    	   res.next();
+    	   int id = res.getInt(1);
+    	   return getEvent(id);
        }
        
-       public Invitation createInvitation(Invitation inv) throws SQLException{
-    	   String query = "INSERT INTO Invitation (appointment_id, created, user_id, alarm, status) VALUES (?,?,?,?,?)";
+       public void createInvitation(Invitation inv) throws SQLException{
+    	   String query = "INSERT INTO Invitation (appointment_id, user_id, status) VALUES (?,?,?)";
     	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     	   
     	   // appointmentID, timestamp created, toUser, alarm, status
     	   stmt.setInt(1, inv.getEvent().getEventId());
-    	   stmt.setTimestamp(2, inv.getCreated());
-    	   stmt.setString(3, inv.getTo().toString());
-    	   stmt.setTimestamp(4, inv.getAlarm());
-    	   stmt.setString(5, inv.getStatus().toString());
+    	   System.out.println("Event id: " + inv.getEvent().getEventId());
+    	   stmt.setInt(2, inv.getTo().getUserId());
+    	   stmt.setString(3, inv.getStatus().toString());
+    	   System.out.println("Status: " + inv.getStatus().toString());
     	   
-    	   int newID = stmt.executeUpdate();
+    	   stmt.executeUpdate();
     	   
-    	   return getInvitation(newID);
+//    	   ResultSet res = stmt.getGeneratedKeys();
+//    	   res.next();
+//    	   int id = res.getInt(1);
+//    	   return getInvitation(id);
        }
        
        public Alarm createAlarm (Alarm alarm) throws SQLException{

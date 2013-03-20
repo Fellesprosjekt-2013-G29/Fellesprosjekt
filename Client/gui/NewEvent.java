@@ -31,6 +31,7 @@ import javax.swing.border.MatteBorder;
 
 import model.Event;
 import model.Invitation;
+import model.InvitationAnswer;
 import model.Room;
 import model.User;
 import client.Program;
@@ -387,13 +388,14 @@ public class NewEvent extends JPanel {
 						// invite.setFrom(owner);
 						invite.setTo(user);
 						invite.setEvent(model);
+						invite.setStatus(InvitationAnswer.NA);
 						invitationList.add(invite);
 					}
 					model.setParticipants(invitationList);
 				}
 
 				// store event in DB
-				// storeEvent(Event model); <------- implementer
+				 program.getConnectionManager().addEvent(model);
 
 				// sends event-model to calendar
 				sendModel();

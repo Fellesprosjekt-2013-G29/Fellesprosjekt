@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import model.Event;
+import model.Invitation;
+import model.InvitationAnswer;
 import model.Room;
 import model.User;
 import structs.Request;
@@ -98,7 +100,29 @@ public class ConnectionManager {
 	}
 
 	public void addEvent(Event event) {
+		Request request = new Request(Request.ADD_APPOINTMENT);
+		request.addItem("event", event);
+		outboundConnection.sendObject(request);
+		Response response = outboundConnection.reciveResponse();
+		if (response.errorExist())
+			System.out.println(response.getItem("error"));
+		else {
+			Event newEvent = (Event) response.getItem("event");
+			addInvitation(event.getParticipants(), newEvent);
+			System.out.println(response.getItem("result"));
+		}
+	}
 
+	public void addInvitation(ArrayList<Invitation> users, Event event) {
+		Request request = new Request(Request.ADD_INVITE);
+		request.addItem("invitations", users);
+		outboundConnection.sendObject(request);
+		Response response = outboundConnection.reciveResponse();
+		if (response.errorExist())
+			System.out.println(response.getItem("error"));
+		else {
+			System.out.println(response.getItem("result"));
+		}
 	}
 
 	public boolean deleteEvent(Event event) {

@@ -53,7 +53,7 @@ public class ServerMethods
 		        	deleteAppointment(request, response, dc, session);
 		            break;
 		        case Request.GET_USERS:  
-		        	getUsers(response, dc);
+		        	getUsers(response, dc, session);
 		            break;
 		        case Request.GET_ROOMS:  
 		        	getRooms(request, response, dc);
@@ -212,8 +212,8 @@ public class ServerMethods
 			
 			if(event != null)
 			{
-				dc.createAppointment(event);
-				response.addItem("result", "OK");
+				response.addItem("event", dc.createAppointment(event));
+				response.addItem("result", "Appointment added");
 			}
 			else
 				response.addItem("error", "invalid input - event is null");
@@ -238,7 +238,7 @@ public class ServerMethods
 					dc.createInvitation(invite);
 					//TODO trigger notifications
 				}
-				response.addItem("result", "OK");
+				response.addItem("result", "Invitations added");
 			}
 			else
 				response.addItem("error", "invalid input - invite is null");
@@ -306,11 +306,12 @@ public class ServerMethods
 		}
 	}
 	
-	private static void getUsers(Response response, DbConnection dc)
+	private static void getUsers(Response response, DbConnection dc, Session session)
 	{
 		try
 		{
-			response.addItem("users", dc.getUsers());
+			ArrayList<User> users = dc.getUsers();
+			response.addItem("users", users);
 		}
 		catch(Exception e)
 		{
