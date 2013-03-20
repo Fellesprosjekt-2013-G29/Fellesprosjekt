@@ -34,6 +34,7 @@ public class ClientConnection_Test
 		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 		
 		ArrayList<User> users = getUsers(cc, connection);
+	
 		
 		addAppointment(cc, start, end, users);
 		
@@ -186,7 +187,8 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 		{
-			addInvitation(cc, users, event);
+			Event newEvent = (Event) response.getItem("event");
+			addInvitation(cc, users, newEvent);
 			System.out.println(response.getItem("result"));
 		}
 	}
@@ -200,11 +202,20 @@ public class ClientConnection_Test
 		{
 			Invitation inv = new Invitation();
 			inv.setEvent(event);
-			inv.setStatus(InvitationAnswer.NotAnsweredYet);
+			inv.setStatus(InvitationAnswer.NA);
 			inv.setTo(user);
 			list.add(inv);
+			System.out.println("User: " + user.getEmail());
 		}
 		request.addItem("invitations", list);
+		cc.sendObject(request);
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else
+		{
+			System.out.println(response.getItem("result"));
+		}
 	}
 
 	public static void createUser(ClientConnection cc)
