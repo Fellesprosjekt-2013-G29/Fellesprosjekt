@@ -1,8 +1,16 @@
 package server;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DayDV;
+>>>>>>> Added various methods
 
 import model.Event;
+import model.Invitation;
 import model.Room;
 import model.User;
 import structs.Alert;
@@ -58,6 +66,9 @@ public class ServerMethods
 		            break;
 		        case Request.CREATE_USER:  
 		        	createUser(request, response, dc);
+		            break;
+		        case Request.ADD_INVITE:  
+		        	addInvite(request, response, dc);
 		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
@@ -124,6 +135,7 @@ public class ServerMethods
 				session.addToList();
 				session.start();
 				response.addItem("key", key);
+				response.addItem("user", dc.getUser(username));
 				response.addItem("result", "loginok");
 				return true;
 			}
@@ -170,15 +182,11 @@ public class ServerMethods
 		{
 			User user = (User) request.getItem("user");
 			
-			if(user != null)
-			{
-				response.addItem("invitations", dc.getInvites(user));
-				response.addItem("events", dc.getEventsCreatedByUser(user));
-			}
-			else
-			{
-				response.addItem("error", "Invalid input - user object is null");
-			}
+			if(user == null)
+				user = session.getUser();
+
+			response.addItem("invitations", dc.getInvites(user));
+			response.addItem("events", dc.getEventsCreatedByUser(user));
 		}
 		catch(Exception e)
 		{
@@ -212,7 +220,6 @@ public class ServerMethods
 			{
 				dc.createAppointment(event);
 				response.addItem("result", "OK");
-				//TODO trigger notifications
 			}
 			else
 				response.addItem("error", "invalid input - event is null");
@@ -224,25 +231,57 @@ public class ServerMethods
 		}
 	}
 	
-	private static void updateAppointment(Request request, Response response, DbConnection dc)
+	private static void addInvite(Request request, Response response, DbConnection dc)
 	{
-		int id = (int) request.getItem("id");
-		
 		try
 		{
-//			if(request.hasKey("start"))
-//				dc.updateAppointment(id, "start", request.getItem("start"));
-//			if(request.hasKey("end"))
-//				dc.updateAppointment(id, "end", request.getItem("end"));
-//			if(request.hasKey("description"))
-//				dc.updateAppointment(id, "description", request.getItem("description"));
-//			if(request.hasKey("room"))
-//				dc.updateAppointment(id, "room", request.getItem("room"));
-//			if(request.hasKey("participants"))
-//				dc.updateAppointment(id, "participants", request.getItem("participants")); //TODO fix
-//			if(request.hasKey("title"))
-//				dc.updateAppointment(id, "title",  request.getItem("title"));
+			ArrayList<Invitation> invites = (ArrayList<Invitation>) request.getItem("invitations");
 			
+			if(invites != null)
+			{
+				for(Invitation invite : invites)
+				{
+					dc.createInvite(invite);
+					//TODO trigger notifications
+				}
+				response.addItem("result", "OK");
+			}
+			else
+				response.addItem("error", "invalid input - invite is null");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void updateAppointment(Request request, Response response, DbConnection dc)
+	{
+		
+		int id = (Integer)request.getItem("id"); 
+				
+		try
+		{
+			// updateAppointment(int eventId, String columnname, String value)
+			
+			if(request.hasKey("start"))
+				dc.updateAppointment(id, "start", ((Timestamp) request.getItem("start")).toString());
+			if(request.hasKey("end"))
+				dc.updateAppointment(id, "end", ((Timestamp) request.getItem("end")).toString());
+			if(request.hasKey("description"))
+				dc.updateAppointment(id, "description", (String) request.getItem("description"));
+			if(request.hasKey("room"))
+				dc.updateAppointment(id, "roomid", ""+((Room) request.getItem("room")).getId());
+			if(request.hasKey("title"))
+				dc.updateAppointment(id, "name",  (String) request.getItem("title"));
+			if(request.hasKey("participants")){
+				dc.deleteInvitations(id);
+				ArrayList<Invitation> participants = (ArrayList<Invitation>) request.getItem("participants");
+				for (Invitation inv : participants) {
+					dc.createInvitation(inv);
+				}
+			}
 			response.addItem("result", "Update ok");
 			
 			//TODO trigger notifications
@@ -263,7 +302,7 @@ public class ServerMethods
 	{
 		try
 		{
-			dc.deleteAppointment((int) request.getItem("appointmentid"));
+			dc.deleteAppointment((Integer) request.getItem("appointmentid"));
 			//TODO trigger notifications
 		}
 		catch(Exception e)
