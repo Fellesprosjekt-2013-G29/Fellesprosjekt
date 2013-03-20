@@ -324,10 +324,20 @@ public class DbConnection {
     	   
     	   // appointmentID, timestamp created, toUser, alarm, status
     	   stmt.setInt(1, inv.getEvent().getEventId());
+<<<<<<< HEAD
     	   stmt.setInt(2, inv.getTo().getUserId());
     	   stmt.setString(3, inv.getStatus().toString());
+=======
+//    	   System.out.println("Event id: " + inv.getEvent().getEventId());
+    	   stmt.setInt(2, inv.getTo().getUserId());
+    	   stmt.setString(3, inv.getStatus().toString());
+//    	   System.out.println("Status: " + inv.getStatus().toString());
+>>>>>>> FIXED: UpdateAppointment
     	   
     	   stmt.executeUpdate();
+    	   
+    	   
+    	   
     	   
 //    	   ResultSet res = stmt.getGeneratedKeys();
 //    	   res.next();
@@ -395,6 +405,17 @@ public class DbConnection {
        // Update methods
        //
        
+       
+       public void updateInvitations(int eventID, ArrayList<Invitation> updatedList) throws SQLException{
+    	   
+    	   ArrayList<Invitation> inDatabase = getInvitationsByEvent(eventID);
+    	   
+    	   for (Invitation updated : updatedList) {
+    		   if(!inDatabase.contains(updated))
+    			   createInvitation(updated);
+    	   }
+       }
+       
        public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
     	   String query = "UPDATE Appointment SET ? = ? WHERE id = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
@@ -406,7 +427,7 @@ public class DbConnection {
        }
        
        
-       //
+      
        // Deletion methods
        //
        

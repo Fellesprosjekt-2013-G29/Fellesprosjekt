@@ -275,11 +275,8 @@ public class ServerMethods
 			if(request.hasKey("title"))
 				dc.updateAppointment(id, "name",  (String) request.getItem("title"));
 			if(request.hasKey("participants")){
-				dc.deleteInvitations(id);
 				ArrayList<Invitation> participants = (ArrayList<Invitation>) request.getItem("participants");
-				for (Invitation inv : participants) {
-					dc.createInvitation(inv);
-				}
+				dc.updateInvitations(id, participants);
 			}
 			response.addItem("result", "Update ok");
 			
