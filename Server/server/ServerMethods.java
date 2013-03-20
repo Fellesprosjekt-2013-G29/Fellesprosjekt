@@ -1,7 +1,13 @@
 package server;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DayDV;
+>>>>>>> Added various methods
 
 import model.Event;
 import model.Invitation;
@@ -252,23 +258,30 @@ public class ServerMethods
 	
 	private static void updateAppointment(Request request, Response response, DbConnection dc)
 	{
-		int id = (int) request.getItem("id");
 		
+		int id = (Integer)request.getItem("id"); 
+				
 		try
 		{
-//			if(request.hasKey("start"))
-//				dc.updateAppointment(id, "start", request.getItem("start"));
-//			if(request.hasKey("end"))
-//				dc.updateAppointment(id, "end", request.getItem("end"));
-//			if(request.hasKey("description"))
-//				dc.updateAppointment(id, "description", request.getItem("description"));
-//			if(request.hasKey("room"))
-//				dc.updateAppointment(id, "room", request.getItem("room"));
-//			if(request.hasKey("participants"))
-//				dc.updateAppointment(id, "participants", request.getItem("participants")); //TODO fix
-//			if(request.hasKey("title"))
-//				dc.updateAppointment(id, "title",  request.getItem("title"));
+			// updateAppointment(int eventId, String columnname, String value)
 			
+			if(request.hasKey("start"))
+				dc.updateAppointment(id, "start", ((Timestamp) request.getItem("start")).toString());
+			if(request.hasKey("end"))
+				dc.updateAppointment(id, "end", ((Timestamp) request.getItem("end")).toString());
+			if(request.hasKey("description"))
+				dc.updateAppointment(id, "description", (String) request.getItem("description"));
+			if(request.hasKey("room"))
+				dc.updateAppointment(id, "roomid", ""+((Room) request.getItem("room")).getId());
+			if(request.hasKey("title"))
+				dc.updateAppointment(id, "name",  (String) request.getItem("title"));
+			if(request.hasKey("participants")){
+				dc.deleteInvitations(id);
+				ArrayList<Invitation> participants = (ArrayList<Invitation>) request.getItem("participants");
+				for (Invitation inv : participants) {
+					dc.createInvitation(inv);
+				}
+			}
 			response.addItem("result", "Update ok");
 			
 			//TODO trigger notifications
@@ -289,7 +302,7 @@ public class ServerMethods
 	{
 		try
 		{
-			dc.deleteAppointment((int) request.getItem("appointmentid"));
+			dc.deleteAppointment((Integer) request.getItem("appointmentid"));
 			//TODO trigger notifications
 		}
 		catch(Exception e)

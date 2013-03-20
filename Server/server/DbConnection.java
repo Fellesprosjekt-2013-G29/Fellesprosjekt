@@ -315,7 +315,50 @@ public class DbConnection {
     	   stmt.executeUpdate();
        }
        
+       public Invitation createInvitation(Invitation inv) throws SQLException{
+    	   String query = "INSERT INTO Invitation (appointment_id, created, user_id, alarm, status) VALUES (?,?,?,?,?)";
+    	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    	   
+    	   // appointmentID, timestamp created, toUser, alarm, status
+    	   stmt.setInt(1, inv.getEvent().getEventId());
+    	   stmt.setTimestamp(2, inv.getCreated());
+    	   stmt.setString(3, inv.getTo().toString());
+    	   stmt.setTimestamp(4, inv.getAlarm());
+    	   stmt.setString(5, inv.getStatus().toString());
+    	   
+    	   int newID = stmt.executeUpdate();
+    	   
+    	   return getInvitation(newID);
+       }
        
+       public Alarm createAlarm (Alarm alarm) throws SQLException{
+    	   String query = "INSERT INTO Alarm (appointmentid, userid, alarm_time) VALUES (?,?,?)";
+    	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    	   
+    	   // appointmentID, UserID, timeOfalarm
+    	   stmt.setInt(1, alarm.getEvent().getEventId());
+    	   stmt.setInt(2, alarm.getUser().getUserId());
+    	   stmt.setTimestamp(3, alarm.getTime());
+    	   
+    	   int newID = stmt.executeUpdate();
+    	   
+    	   return getAlarm(newID);
+       }
+       
+       public Room createRoom(Room room) throws SQLException{
+    	   String qurey = "INSERT INTO Room	(roomnr, location, size) VALUES (?,?,?)";
+    	   PreparedStatement stmt = connection.prepareStatement(qurey, Statement.RETURN_GENERATED_KEYS);
+    	   
+    	   //RoomNumber, Location, Size
+    	   stmt.setInt(1, room.getRoomNumber());
+    	   stmt.setString(2, room.getLocation());
+    	   stmt.setInt(3, room.getRoomSize());
+    	   
+    	   int newID = stmt.executeUpdate();
+    	   
+    	   return getRoom(newID);
+    	   
+       }
        
        
        /**
@@ -348,9 +391,16 @@ public class DbConnection {
        // Update methods
        //
        
-       public void updateAppointment(int eventId, String columnname, String value)throws SQLException{
+       public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
+    	   String query = "UPDATE Appointment SET ? = ? WHERE id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setString(1, columnname);
+    	   stmt.setString(2, value);
+    	   stmt.setInt(3, eventId);
     	   
+    	   stmt.executeUpdate();
        }
+       
        
        //
        // Deletion methods
@@ -361,6 +411,14 @@ public class DbConnection {
     	   PreparedStatement ps = connection.prepareStatement(sql);
     	   ps.setInt(1, id);
     	   ps.executeUpdate();
+       }
+       
+       public void deleteInvitations(int id) throws SQLException{
+    	   String query = "DELETE FROM Invitation WHERE appointment_id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setInt(1, id);
+    	   
+    	   stmt.executeUpdate();
        }
        
        
