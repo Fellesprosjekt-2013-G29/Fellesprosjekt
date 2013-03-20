@@ -160,7 +160,7 @@ public class DbConnection {
         public ArrayList<Event> getEventsCreatedByUser(User u) throws SQLException{
         	ArrayList<Integer> ids = new ArrayList<Integer>();
         	ArrayList<Event> list = new ArrayList<Event>();
-        	String query = String.format("SELECT id from Appointment where owner = %s", u.getUserId());
+        	String query = String.format("SELECT id from Appointment where owner = %s AND deleted = 0", u.getUserId());
         	ResultSet res = statement.executeQuery(query);
         	while( res.next() ){
      		   ids.add(res.getInt("id"));

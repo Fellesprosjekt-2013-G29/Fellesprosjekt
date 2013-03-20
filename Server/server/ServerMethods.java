@@ -129,6 +129,7 @@ public class ServerMethods
 				session.addToList();
 				session.start();
 				response.addItem("key", key);
+				response.addItem("user", dc.getUser(username));
 				response.addItem("result", "loginok");
 				return true;
 			}
