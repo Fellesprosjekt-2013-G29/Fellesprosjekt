@@ -36,12 +36,12 @@ public class ClientConnection_Test
 		ArrayList<User> users = getUsers(cc, connection);
 	
 		
-		addAppointment(cc, start, end, users);
+		//addAppointment(cc, start, end, users);
 		
 		
 		//getRooms(cc, start, end);
 		
-		//getApointments(cc, null);
+		getApointments(cc, null);
 		
 		
 		
