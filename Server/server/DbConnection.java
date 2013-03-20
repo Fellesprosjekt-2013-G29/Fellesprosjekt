@@ -3,6 +3,9 @@ package server;
 
 import java.sql.*;//jconnector
 import java.util.ArrayList;
+
+import com.sun.tools.corba.se.idl.Preprocessor;
+
 import model.*;
 
 public class DbConnection {
@@ -318,14 +321,12 @@ public class DbConnection {
     	   return getEvent(id);
        }
        
-       public void createInvitation(Invitation inv) throws SQLException{
-    	   String query = "INSERT INTO Invitation (appointment_id, user_id, status) VALUES (?,?,?)";
+       public void createInvitation(int eventID, int userID) throws SQLException{
+    	   String query = "INSERT INTO Invitation (appointment_id, user_id) VALUES (?,?)";
     	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     	   
-    	   // appointmentID, timestamp created, toUser, alarm, status
-    	   stmt.setInt(1, inv.getEvent().getEventId());
-    	   stmt.setInt(2, inv.getTo().getUserId());
-    	   stmt.setString(3, inv.getStatus().toString());
+    	   stmt.setInt(1, eventID);
+    	   stmt.setInt(2, userID);
     	   
     	   stmt.executeUpdate();
     	   
@@ -396,10 +397,22 @@ public class DbConnection {
        //
        
        
+<<<<<<< HEAD
        public void updateInvitations(int eventID, ArrayList<User> users) throws SQLException{
     	   
     	   ArrayList<Invitation> invites = getInvitationsByEvent(eventID);
     	   
+=======
+       public void updateInvitation(int eventID, int userID, String status) throws SQLException{
+    	   String query = "UPDATE Invitation SET status = ? WHERE appointment_id = ? AND user_id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   
+    	   stmt.setString(1, status);
+    	   stmt.setInt(2, eventID);
+    	   stmt.setInt(3, userID);
+    	   
+    	   stmt.executeUpdate();
+>>>>>>> Created updatedInvites
        }
        
        public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
