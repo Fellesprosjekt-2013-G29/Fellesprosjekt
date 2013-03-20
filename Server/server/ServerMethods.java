@@ -1,8 +1,10 @@
 package server;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import model.Event;
+import model.Invitation;
 import model.Room;
 import model.User;
 import structs.Alert;
@@ -58,6 +60,9 @@ public class ServerMethods
 		            break;
 		        case Request.CREATE_USER:  
 		        	createUser(request, response, dc);
+		            break;
+		        case Request.ADD_INVITE:  
+		        	addInvite(request, response, dc);
 		            break;
 		        default:
 		        	response.addItem("error", "Unknown request");
@@ -173,7 +178,7 @@ public class ServerMethods
 			if(user == null)
 				user = session.getUser();
 
-			//response.addItem("invitations", dc.getInvites(user));
+			response.addItem("invitations", dc.getInvites(user));
 			response.addItem("events", dc.getEventsCreatedByUser(user));
 		}
 		catch(Exception e)
@@ -208,10 +213,34 @@ public class ServerMethods
 			{
 				dc.createAppointment(event);
 				response.addItem("result", "OK");
-				//TODO trigger notifications
 			}
 			else
 				response.addItem("error", "invalid input - event is null");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			response.addItem("error", e.toString());
+		}
+	}
+	
+	private static void addInvite(Request request, Response response, DbConnection dc)
+	{
+		try
+		{
+			ArrayList<Invitation> invites = (ArrayList<Invitation>) request.getItem("invitations");
+			
+			if(invites != null)
+			{
+				for(Invitation invite : invites)
+				{
+					dc.createInvite(invite);
+					//TODO trigger notifications
+				}
+				response.addItem("result", "OK");
+			}
+			else
+				response.addItem("error", "invalid input - invite is null");
 		}
 		catch(Exception e)
 		{

@@ -23,6 +23,7 @@ public class Request implements Serializable {
 	public static final int UPDATE_APPOINTMENT = 14;
 	public static final int UPDATE_INVITE = 15; //For alert
 	public static final int DELETE_APPOINTMENT = 16;
+	public static final int ADD_INVITE = 17;
 	public static final int GET_USERS = 20;
 	public static final int GET_ROOMS = 21;
 	public static final int CREATE_USER = 31;

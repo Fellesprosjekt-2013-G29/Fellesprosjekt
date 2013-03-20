@@ -132,13 +132,16 @@ public class DbConnection {
         }
        
         public ArrayList<Invitation> getInvites(User u) throws SQLException{
+        	ArrayList<Integer> ids = new ArrayList<Integer>();
         	ArrayList<Invitation> result = new ArrayList<Invitation>();
         	
         	String query = String.format("SELECT id from Invitation i where user_id = %s", u.getUserId());
         	ResultSet res = statement.executeQuery(query);
         	while( res.next() ){
-        		result.add(getInvitation(res.getInt("user_id")));
+        		ids.add(res.getInt("id"));
         	}
+        	for(Integer i : ids)	
+        		result.add(getInvitation(i));
         	return result;
         }
         
@@ -155,12 +158,15 @@ public class DbConnection {
         
         
         public ArrayList<Event> getEventsCreatedByUser(User u) throws SQLException{
+        	ArrayList<Integer> ids = new ArrayList<Integer>();
         	ArrayList<Event> list = new ArrayList<Event>();
         	String query = String.format("SELECT id from Appointment where owner = %s", u.getUserId());
         	ResultSet res = statement.executeQuery(query);
         	while( res.next() ){
-     		   list.add(getEvent(res.getInt("id")));
-     	   }
+     		   ids.add(res.getInt("id"));
+     	   	}
+        	for(Integer i : ids)	
+        		list.add(getEvent(i));
         	return list;
         }
         
@@ -198,8 +204,8 @@ public class DbConnection {
     	   event.setDescription(res.getString("description"));
     	   event.setStart(Timestamp.valueOf(res.getString("start")));
     	   event.setEnd(Timestamp.valueOf(res.getString("end")));
-    	   event.setTitle("name");
-    	   //event.setRoom(getRoom(res.getInt("roomid")));
+    	   event.setTitle(res.getString("name"));
+    	   event.setRoom(getRoom(res.getInt("roomid")));
     	   event.setParticipants(getInvitationsByEvent(eventId));
     	   return event;
        }
@@ -238,15 +244,17 @@ public class DbConnection {
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   stmt.setMaxRows(1);
     	   ResultSet res = stmt.executeQuery();
-    	   res.next();
-    	   
-    	   int id = res.getInt("id");
-    	   int roomNumber = res.getInt("roomnr");
-    	   int roomSize = res.getInt("size");
-    	   String location = res.getString("location");
-    	   Room room = new Room(id, roomNumber, location, roomSize);
-    	   room.setId(rid);
-    	   return room;
+    	   if(res.next())
+    	   {
+	    	   int id = res.getInt("id");
+	    	   int roomNumber = res.getInt("roomnr");
+	    	   int roomSize = res.getInt("size");
+	    	   String location = res.getString("location");
+	    	   Room room = new Room(id, roomNumber, location, roomSize);
+	    	   room.setId(rid);
+	    	   return room;
+    	   }
+    	   return null;
        }
        
        public int getCancellation(int id){
@@ -262,7 +270,8 @@ public class DbConnection {
     	   res.next();
     	   
     	   inv.setId(invitationId);
-    	   inv.setAlarm( Timestamp.valueOf(res.getString("alarm")));
+    	   if(res.getString("alarm") != null)
+    		   inv.setAlarm( Timestamp.valueOf(res.getString("alarm")));
     	   inv.setCreated(Timestamp.valueOf(res.getString("created")));
     	   inv.setStatus(InvitationAnswer.valueOf(res.getString("status")));
     	   inv.setTo(getUser(res.getInt("user_id")));

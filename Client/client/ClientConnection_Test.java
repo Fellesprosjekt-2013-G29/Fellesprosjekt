@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import model.Event;
 import model.Invitation;
+import model.InvitationAnswer;
 import model.Room;
 import model.User;
 
@@ -32,13 +33,16 @@ public class ClientConnection_Test
 		Timestamp start = Timestamp.valueOf("2013-03-28 16:00:00");
 		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 		
-		//getUsers(cc, connection);
+		ArrayList<User> users = getUsers(cc, connection);
 		
-		//addAppointment(cc, start, end);
+		addAppointment(cc, start, end, users);
+		
 		
 		//getRooms(cc, start, end);
 		
-		getApointments(cc, null);
+		//getApointments(cc, null);
+		
+		
 		
 		
 		cc.closeConnection();
@@ -98,7 +102,7 @@ public class ClientConnection_Test
 		System.out.println("Done");
 	}
 
-	public static void getUsers(ClientConnection cc, boolean connection)
+	public static ArrayList<User> getUsers(ClientConnection cc, boolean connection)
 	{
 		Request request = new Request(Request.GET_USERS);
 		cc.sendObject(request);
@@ -108,9 +112,9 @@ public class ClientConnection_Test
 		else
 		{
 			ArrayList<User> users = (ArrayList<User>) response.getItem("users");
-			for(User user : users)
-				System.out.println(user.getUserId() + " - " + user.getEmail());
+			return users;
 		}
+		return null;
 	}
 	
 	public static void getRooms(ClientConnection cc, Timestamp start, Timestamp end)
@@ -153,21 +157,20 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 		{
-			System.out.println("Events:");
 			ArrayList<Event> events = (ArrayList<Event>) response.getItem("events");
 			for(Event event : events)
 				System.out.println(event.getTitle());
 			
-			System.out.println("Invitations");
+			System.out.println("Invitations:");
 			
 			ArrayList<Invitation> invitations = (ArrayList<Invitation>) response.getItem("invitations");
 			for(Invitation invitation : invitations)
-				System.out.println(invitation.getEvent().getTitle());
+				System.out.println(invitation.getTo().getEmail());
 		}
 			
 	}
 	
-	public static void addAppointment(ClientConnection cc, Timestamp start, Timestamp end)
+	public static void addAppointment(ClientConnection cc, Timestamp start, Timestamp end, ArrayList<User> users)
 	{
 		Event event = new Event();
 		event.setDescription("beskrivelse");
@@ -183,8 +186,25 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 		{
+			addInvitation(cc, users, event);
 			System.out.println(response.getItem("result"));
 		}
+	}
+	
+	public static void addInvitation(ClientConnection cc, ArrayList<User> users, Event event)
+	{
+		Request request = new Request(Request.ADD_INVITE);
+		ArrayList<Invitation> list = new ArrayList<Invitation>();
+		
+		for(User user : users)
+		{
+			Invitation inv = new Invitation();
+			inv.setEvent(event);
+			inv.setStatus(InvitationAnswer.NotAnsweredYet);
+			inv.setTo(user);
+			list.add(inv);
+		}
+		request.addItem("invitations", list);
 	}
 
 	public static void createUser(ClientConnection cc)
