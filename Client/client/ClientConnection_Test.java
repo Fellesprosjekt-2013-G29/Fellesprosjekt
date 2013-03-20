@@ -39,7 +39,7 @@ public class ClientConnection_Test
 		
 		//getRooms(cc, start, end);
 		
-		getApointments(cc, null);
+		//getApointments(cc, null);
 		
 		
 		
@@ -216,6 +216,5 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 	}
 
-	
 }
 
