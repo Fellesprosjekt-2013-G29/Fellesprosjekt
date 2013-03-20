@@ -16,6 +16,8 @@ public class ClientConnection_Test
 	private final static String HOST = "localhost";
 	private final static int PORT = 4447;
 	
+	private static Event returEvent = null;
+	
 	public static void main(String[] args) throws Exception
 	{
 		System.out.println("client started...");
@@ -40,9 +42,7 @@ public class ClientConnection_Test
 		//getRooms(cc, start, end);
 		
 		getApointments(cc, null);
-		
-		
-		
+		updateAppointment(cc, null, users);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -144,16 +144,19 @@ public class ClientConnection_Test
 		else
 		{
 			ArrayList<Event> events = (ArrayList<Event>) response.getItem("ownedevents");
+			returEvent = events.get(4);
+			
 			for(Event event : events)
+				
 				System.out.println(event.getTitle());
+			
 			
 			System.out.println("Invitated events:");
 			
-			events = (ArrayList<Event>) response.getItem("invitedevents");
+			ArrayList<Event> events2 = (ArrayList<Event>) response.getItem("invitedevents");
 			for(Event event : events)
 				System.out.println(event.getTitle());
 		}
-			
 	}
 	
 	public static void addAppointment(ClientConnection cc, Timestamp start, Timestamp end, ArrayList<User> users)
@@ -216,6 +219,26 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 	}
 
+
+	public static void updateAppointment(ClientConnection cc, User user, ArrayList<User> brukerliste)
+	{
+		Request request = new Request(Request.UPDATE_APPOINTMENT);
+		
+		int eventID = returEvent.getEventId();
+		
+		request.addItem("id", eventID);
+		request.addItem("participants", brukerliste);
+		
+		cc.sendObject(request);
+
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else{
+			System.out.println(response.getItem("result"));
+		}
+			
+	}
 	
 }
 
