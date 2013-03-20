@@ -324,20 +324,10 @@ public class DbConnection {
     	   
     	   // appointmentID, timestamp created, toUser, alarm, status
     	   stmt.setInt(1, inv.getEvent().getEventId());
-<<<<<<< HEAD
     	   stmt.setInt(2, inv.getTo().getUserId());
     	   stmt.setString(3, inv.getStatus().toString());
-=======
-//    	   System.out.println("Event id: " + inv.getEvent().getEventId());
-    	   stmt.setInt(2, inv.getTo().getUserId());
-    	   stmt.setString(3, inv.getStatus().toString());
-//    	   System.out.println("Status: " + inv.getStatus().toString());
->>>>>>> FIXED: UpdateAppointment
     	   
     	   stmt.executeUpdate();
-    	   
-    	   
-    	   
     	   
 //    	   ResultSet res = stmt.getGeneratedKeys();
 //    	   res.next();
