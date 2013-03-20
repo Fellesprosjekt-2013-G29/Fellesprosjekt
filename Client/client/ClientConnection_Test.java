@@ -41,8 +41,10 @@ public class ClientConnection_Test
 
 		//getApointments(cc, null);
 				
-		Event event = getApointments(cc, null);
-		updateAppointment(cc, null, users, event);
+//		Event event = getApointments(cc, null);
+//		updateAppointment(cc, null, users, event);
+		
+		getNotifications(cc);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -129,8 +131,11 @@ public class ClientConnection_Test
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
-			//TODO
-			System.out.println("Uncomplete");
+		{
+			ArrayList<Invitation> invites = (ArrayList<Invitation>) response.getItem("invitation");
+			for(Invitation invite : invites)
+				System.out.println(invite.getEvent().getTitle());
+		}
 	}
 
 	public static Event getApointments(ClientConnection cc, User user)

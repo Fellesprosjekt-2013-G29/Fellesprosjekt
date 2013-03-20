@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.sun.nio.sctp.Notification;
+
 public class Invitation implements Serializable{
 	private int id;
 	private Timestamp created;

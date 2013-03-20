@@ -396,14 +396,10 @@ public class DbConnection {
        //
        
        
-       public void updateInvitations(int eventID, ArrayList<Invitation> updatedList) throws SQLException{
+       public void updateInvitations(int eventID, ArrayList<User> users) throws SQLException{
     	   
-    	   ArrayList<Invitation> inDatabase = getInvitationsByEvent(eventID);
+    	   ArrayList<Invitation> invites = getInvitationsByEvent(eventID);
     	   
-    	   for (Invitation updated : updatedList) {
-    		   if(!inDatabase.contains(updated))
-    			   createInvitation(updated);
-    	   }
        }
        
        public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
