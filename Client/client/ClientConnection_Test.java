@@ -158,15 +158,15 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("error"));
 		else
 		{
-			ArrayList<Event> events = (ArrayList<Event>) response.getItem("events");
+			ArrayList<Event> events = (ArrayList<Event>) response.getItem("ownedevents");
 			for(Event event : events)
 				System.out.println(event.getTitle());
 			
-			System.out.println("Invitations:");
+			System.out.println("Invitated events:");
 			
-			ArrayList<Invitation> invitations = (ArrayList<Invitation>) response.getItem("invitations");
-			for(Invitation invitation : invitations)
-				System.out.println(invitation.getTo().getEmail());
+			events = (ArrayList<Event>) response.getItem("invitedevents");
+			for(Event event : events)
+				System.out.println(event.getTitle());
 		}
 			
 	}

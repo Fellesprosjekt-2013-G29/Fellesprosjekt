@@ -180,8 +180,12 @@ public class ServerMethods
 			if(user == null)
 				user = session.getUser();
 
-			response.addItem("invitations", dc.getInvites(user));
-			response.addItem("events", dc.getEventsCreatedByUser(user));
+			response.addItem("ownedevents", dc.getEventsCreatedByUser(user));			
+			ArrayList<Invitation> invites = dc.getInvites(user);
+			ArrayList<Event> events  = new ArrayList<Event>();
+			for(Invitation invite : invites)
+				events.add(invite.getEvent());
+			response.addItem("invitedevents", events);
 		}
 		catch(Exception e)
 		{
