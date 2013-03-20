@@ -361,10 +361,6 @@ public class DbConnection {
        }
        
        
-       public void addAppointment(Event e) throws SQLException{}
-       
-       
-       
        /**
         * 
         * @param name The name of the user
@@ -395,9 +391,16 @@ public class DbConnection {
        // Update methods
        //
        
-       public void updateAppointment(int eventId, String columnname, String value)throws SQLException{
+       public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
+    	   String query = "UPDATE Appointment SET ? = ? WHERE id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setString(1, columnname);
+    	   stmt.setString(2, value);
+    	   stmt.setInt(3, eventId);
     	   
+    	   stmt.executeUpdate();
        }
+       
        
        //
        // Deletion methods
@@ -408,6 +411,14 @@ public class DbConnection {
     	   PreparedStatement ps = connection.prepareStatement(sql);
     	   ps.setInt(1, id);
     	   ps.executeUpdate();
+       }
+       
+       public void deleteInvitations(int id) throws SQLException{
+    	   String query = "DELETE FROM Invitation WHERE appointment_id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setInt(1, id);
+    	   
+    	   stmt.executeUpdate();
        }
        
        
