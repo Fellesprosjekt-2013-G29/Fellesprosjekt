@@ -60,4 +60,9 @@ public class Room implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+//	@Override
+//	public String toString() {
+//		return "Romnummer: " + roomNumber + "  Plasser: " + roomSize + "  Sted: " + location;
+//	}
 }

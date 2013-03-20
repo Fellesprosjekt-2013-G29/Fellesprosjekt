@@ -1,13 +1,7 @@
 package server;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
-
-import com.sun.org.apache.xerces.internal.impl.dv.xs.DayDV;
->>>>>>> Added various methods
 
 import model.Event;
 import model.Invitation;
@@ -241,7 +235,7 @@ public class ServerMethods
 			{
 				for(Invitation invite : invites)
 				{
-					dc.createInvite(invite);
+					dc.createInvitation(invite);
 					//TODO trigger notifications
 				}
 				response.addItem("result", "OK");

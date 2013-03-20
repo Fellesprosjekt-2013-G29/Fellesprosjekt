@@ -201,9 +201,12 @@ public class NewEvent extends JPanel {
 		constr.gridx = 0;
 		addLabel("Velg rom:");
 
+		constr.fill = GridBagConstraints.HORIZONTAL;
 		constr.gridx = 1;
+		constr.gridwidth = GridBagConstraints.REMAINDER;
 		addDDList(roomBox);
 		// row7
+		constr.fill = GridBagConstraints.NONE;
 		constr.gridy = 6;
 		constr.gridx = 0;
 		addLabel("Beskrivelse:");
@@ -306,11 +309,12 @@ public class NewEvent extends JPanel {
 		endDate = eventDate.parse(endDateTot);
 
 		// gets available rooms from DB
-		// roomList = findAvailableRooms(startDate, endDate);
+		roomList = program.getConnectionManager().getRooms(new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()));
 		// Adds rooms to combobox
+		roomBox.removeAllItems();
 		if (roomList.size() > 0) {
-			for (int i = 0; i < roomList.size(); i++) {
-				roomBox.addItem(roomList.get(i));
+			for (Room r : roomList) {
+				roomBox.addItem("Rom: " + r.getRoomNumber() + "  Plasser: " + r.getRoomSize() + "  Sted: " + r.getLocation());
 			}
 		}
 	}
@@ -364,8 +368,6 @@ public class NewEvent extends JPanel {
 				int roomIndex = roomBox.getSelectedIndex();
 				if (roomIndex >= 0) {
 					model.setRoom(roomList.get(roomIndex));
-				} else {
-					model.setRoom(new Room(0, 10, "Yo mama's", 10));
 				}
 
 				// int timeBefore = (int) alarmBox.getSelectedItem();
