@@ -38,11 +38,11 @@ public class ClientConnection_Test
 		
 		
 		//getRooms(cc, start, end);
-		
+
 		//getApointments(cc, null);
-		
-		
-		
+				
+		Event event = getApointments(cc, null);
+		updateAppointment(cc, null, users, event);
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -133,7 +133,7 @@ public class ClientConnection_Test
 			System.out.println("Uncomplete");
 	}
 
-	public static void getApointments(ClientConnection cc, User user)
+	public static Event getApointments(ClientConnection cc, User user)
 	{
 		Request request = new Request(Request.GET_USERS_APPOINTMENTS);
 		request.addItem("user", user);
@@ -144,16 +144,20 @@ public class ClientConnection_Test
 		else
 		{
 			ArrayList<Event> events = (ArrayList<Event>) response.getItem("ownedevents");
-			for(Event event : events)
-				System.out.println(event.getTitle());
+			return events.get(4);
 			
-			System.out.println("Invitated events:");
-			
-			events = (ArrayList<Event>) response.getItem("invitedevents");
-			for(Event event : events)
-				System.out.println(event.getTitle());
+//			for(Event event : events)
+//				
+//				System.out.println(event.getTitle());
+//			
+//			
+//			System.out.println("Invitated events:");
+//			
+//			ArrayList<Event> events2 = (ArrayList<Event>) response.getItem("invitedevents");
+//			for(Event event : events)
+//				System.out.println(event.getTitle());
 		}
-			
+		return null;
 	}
 	
 	public static void addAppointment(ClientConnection cc, Timestamp start, Timestamp end, ArrayList<User> users)
@@ -216,5 +220,24 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 	}
 
+	public static void updateAppointment(ClientConnection cc, User user, ArrayList<User> brukerliste, Event event)
+	{
+		Request request = new Request(Request.UPDATE_APPOINTMENT);
+		
+		int eventID = event.getEventId();
+		
+		request.addItem("id", eventID);
+		request.addItem("participants", brukerliste);
+		
+		cc.sendObject(request);
+
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else{
+			System.out.println(response.getItem("result"));
+		}
+			
+	}
 }
 
