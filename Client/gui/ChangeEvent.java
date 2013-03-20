@@ -508,7 +508,7 @@ public class ChangeEvent extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddParticipants addPartPanel = new AddParticipants(
+				AddParticipants addPartPanel = new AddParticipants(program, 
 						participantsList, child);
 			}
 		});

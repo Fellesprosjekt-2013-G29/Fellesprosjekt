@@ -37,7 +37,8 @@ public class CalendarModel {
 		events = new ArrayList<EventView>();
 		additionalEvents = new ArrayList<EventView>();
 		
-		createTestEvents();
+//		createTestEvents();
+		fetchEvents();
 	}
 
 	public Program getProgram() {
@@ -54,7 +55,12 @@ public class CalendarModel {
 
 	public void setAdditionalUser(User additionalUser) {
 		this.additionalUser = additionalUser;
-//		TODO Implement fetching additionalUser's Events
+		additionalEvents.clear();
+		if(additionalUser != null) {
+			for(Event e : program.getConnectionManager().getEvents(additionalUser)) {
+				additionalEvents.add(new EventView(e));
+			}
+		}
 	}
 
 	public Date getCurrentDate() {
@@ -82,7 +88,10 @@ public class CalendarModel {
 	}
 
 	public ArrayList<EventView> getEvents() {
-		return events;
+		ArrayList<EventView> temp = new ArrayList<EventView>();
+		temp.addAll(events);
+		temp.addAll(additionalEvents);
+		return temp;
 	}
 
 	public void setEvents(ArrayList<EventView> events) {
@@ -99,6 +108,12 @@ public class CalendarModel {
 	
 	public void deleteEvent(EventView event) {
 		events.remove(event);
+	}
+	
+	public void fetchEvents() {
+		for(Event e : program.getConnectionManager().getEvents(program.getUser())) {
+			events.add(new EventView(e));
+		}
 	}
 	
 	public void createTestEvents() {

@@ -198,9 +198,12 @@ public class ShowEvent extends JPanel {
 	}
 
 	private void addLabelRoom(Room room) {
-		int room1 = room.getRoomNumber();
-		String loc = room.getLocation();
-		JLabel label = new JLabel(room1 + " i " + loc);
+		JLabel label = new JLabel("");
+		if(room != null) {
+			int room1 = room.getRoomNumber();
+			String loc = room.getLocation();
+			label.setText(room1 + " i " + loc);
+		}
 		label.setPreferredSize(dateDimension);
 		this.add(label, constr);
 	}

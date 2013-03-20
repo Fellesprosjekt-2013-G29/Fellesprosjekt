@@ -206,7 +206,6 @@ public class DbConnection {
     	   event.setEnd(Timestamp.valueOf(res.getString("end")));
     	   event.setTitle(res.getString("name"));
     	   event.setRoom(getRoom(res.getInt("roomid")));
-    	   event.setParticipants(getInvitationsByEvent(eventId));
     	   return event;
        }
         
@@ -325,10 +324,8 @@ public class DbConnection {
     	   
     	   // appointmentID, timestamp created, toUser, alarm, status
     	   stmt.setInt(1, inv.getEvent().getEventId());
-    	   System.out.println("Event id: " + inv.getEvent().getEventId());
     	   stmt.setInt(2, inv.getTo().getUserId());
     	   stmt.setString(3, inv.getStatus().toString());
-    	   System.out.println("Status: " + inv.getStatus().toString());
     	   
     	   stmt.executeUpdate();
     	   

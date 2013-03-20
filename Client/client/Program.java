@@ -9,7 +9,7 @@ public class Program {
 	private ConnectionManager connectionManager;
 	private ClientConnection conn;
 	private LoginWindow loginWindow;
-	private User user = new User();
+	private User user;
 	
 	public Program() {
 		connectionManager = new ConnectionManager(this);
@@ -21,25 +21,6 @@ public class Program {
 		int port = 0;
 		
 		System.out.println("u: " + username + " p: " + password);
-		
-		
-		// Client side validation
-		
-		
-		// check for sane host string
-//		if(hoststr.contains(":") && hoststr.replaceAll("[^:]", "").length() == 1){ // make sure we contain 1 and only 1 colon character.
-//			hostname = hoststr.split(":")[0];
-//			port = Integer.parseInt(hoststr.split(":")[1]);
-//			
-//			
-//			System.out.println(hostname);
-//			System.out.println(port);
-//		} else{
-//			loginWindow.alert("Invalid hostname. <ip>:<port>");
-//			System.out.println(hostname.contains(":"));
-//			System.out.println( hostname.replaceAll("[^:]", "").length());
-//			return;
-//		}
 		
 		// Make sure password isn't empty
 		if(password.length()==0){

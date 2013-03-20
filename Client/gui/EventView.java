@@ -79,7 +79,9 @@ public class EventView extends JComponent {
 			g.setFont(new Font("Default", Font.PLAIN, getHeight() / 6));
 		int pos = 1;
 		g.drawString(model.getTitle(), 4, g.getFont().getSize() * pos++);
-		g.drawString("Rom: " + model.getRoom().getRoomNumber(), 4, g.getFont().getSize() * pos++);
+		if(model.getRoom() != null) {
+			g.drawString("Rom: " + model.getRoom().getRoomNumber(), 4, g.getFont().getSize() * pos++);
+		}
 		g.drawString(" ", 4, g.getFont().getSize() * pos++);
 		g.drawString(new SimpleDateFormat("HH:mm").format(model.getStart()), 4, g.getFont().getSize() * pos++);
 		g.drawString(" - ", 4, g.getFont().getSize() * pos++);

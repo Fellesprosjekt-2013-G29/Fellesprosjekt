@@ -257,7 +257,7 @@ public class CalendarPane extends JPanel implements MouseListener {
 			
 			double duration = (endHour + endMinute) - (startHour + startMinute);
 			
-			addToCalendar(se, startDay + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), startHour + startMinute, 1 / (double)simultaneousEvents.size(), duration);
+			addToCalendar(se, startDay + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), 1 + startHour + startMinute, 1 / (double)simultaneousEvents.size(), duration);
 		}
 	}
 

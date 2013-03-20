@@ -31,12 +31,27 @@ public class ClientConnection_Test {
 		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 
 		ArrayList<User> users = getUsers(cc, connection);
+<<<<<<< HEAD
 		addAppointment(cc, start, end, users);
 
 		// getRooms(cc, start, end);
 
 		// getApointments(cc, null);
 
+=======
+	
+		
+		//addAppointment(cc, start, end, users);
+		
+		
+		//getRooms(cc, start, end);
+		
+		getApointments(cc, null);
+		
+		
+		
+		
+>>>>>>> 115966274d648318efa302033dc7add88f9ff12f
 		cc.closeConnection();
 		cc2.closeConnection();
 	}
@@ -141,6 +156,7 @@ public class ClientConnection_Test {
 		Response response = cc.reciveResponse();
 		if (response.errorExist())
 			System.out.println(response.getItem("error"));
+<<<<<<< HEAD
 		else {
 			ArrayList<Event> events = (ArrayList<Event>) response
 					.getItem("events");
@@ -153,6 +169,19 @@ public class ClientConnection_Test {
 					.getItem("invitations");
 			for (Invitation invitation : invitations)
 				System.out.println(invitation.getTo().getEmail());
+=======
+		else
+		{
+			ArrayList<Event> events = (ArrayList<Event>) response.getItem("ownedevents");
+			for(Event event : events)
+				System.out.println(event.getTitle());
+			
+			System.out.println("Invitated events:");
+			
+			events = (ArrayList<Event>) response.getItem("invitedevents");
+			for(Event event : events)
+				System.out.println(event.getTitle());
+>>>>>>> 115966274d648318efa302033dc7add88f9ff12f
 		}
 
 	}

@@ -6,10 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
@@ -20,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import model.Event;
+import model.User;
 import client.Program;
 
 public class CalendarView extends JFrame implements ActionListener {
@@ -245,6 +244,11 @@ public class CalendarView extends JFrame implements ActionListener {
 		calendarPane.getModel().changeEvent(calendarPane.getSelectedEvent(), model);
 		calendarPane.updateCalendar();
 	}
+	
+	public void addUserCalendar(User user) {
+		calendarPane.getModel().setAdditionalUser(user);
+		calendarPane.updateCalendar();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -280,10 +284,10 @@ public class CalendarView extends JFrame implements ActionListener {
 			new NewEvent(program, program.getUser(), this);
 			break;
 		case "Administrer kalendere":
-			System.out.println(program.getConnectionManager().getUsers());
+			new AddUsersCal(program, this);
 			break;
 		case "Detaljer":
-			if(calendarPane.getSelectedEvent().getModel().getCreatedBy().equals(program.getUser())) {
+			if(calendarPane.getSelectedEvent().getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
 				new ChangeEvent(program, calendarPane.getSelectedEvent().getModel(), this);
 			}
 			else {

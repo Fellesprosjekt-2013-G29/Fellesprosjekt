@@ -64,6 +64,26 @@ public class ConnectionManager {
 	}
 
 	public ArrayList<Event> getEvents(User user) {
+		Request request = new Request(Request.GET_USERS_APPOINTMENTS);
+		request.addItem("user", user);
+		outboundConnection.sendObject(request);
+		Response response = outboundConnection.reciveResponse();
+		if (response.errorExist())
+			System.out.println(response.getItem("error"));
+		else {
+			ArrayList<Event> events = (ArrayList<Event>) response
+					.getItem("ownedevents");
+			for (Event event : events)
+				System.out.println(event.getTitle());
+
+			System.out.println("Invitated events:");
+
+			events.addAll((ArrayList<Event>) response.getItem("invitedevents"));
+//			events = (ArrayList<Event>) response.getItem("invitedevents");
+//			for (Event event : events)
+//				System.out.println(event.getTitle());
+			return events;
+		}
 		return null;
 	}
 

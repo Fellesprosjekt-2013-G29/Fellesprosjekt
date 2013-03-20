@@ -163,10 +163,10 @@ public class NewEvent extends JPanel {
 		addLabel("Fra:");
 
 		constr.gridx = 1;
-		addDDList(fromHourBox);
+		addList(fromHourBox);
 
 		timeIns.left = 45;
-		addDDList(fromMinBox);
+		addList(fromMinBox);
 		timeIns.left = 100;
 		addTextField(fromDateField, false, 150, 30);
 		timeIns.left = 0;
@@ -178,9 +178,9 @@ public class NewEvent extends JPanel {
 		addLabel("Til:");
 
 		constr.gridx = 1;
-		addDDList(toHourBox);
+		addList(toHourBox);
 		timeIns.left = 45;
-		addDDList(toMinBox);
+		addList(toMinBox);
 		timeIns.left = 100;
 		addTextField(toDateField, false, 150, 30);
 		timeIns.left = 0;
@@ -205,7 +205,7 @@ public class NewEvent extends JPanel {
 		constr.fill = GridBagConstraints.HORIZONTAL;
 		constr.gridx = 1;
 		constr.gridwidth = GridBagConstraints.REMAINDER;
-		addDDList(roomBox);
+		addList(roomBox);
 		// row7
 		constr.fill = GridBagConstraints.NONE;
 		constr.gridy = 6;
@@ -225,7 +225,7 @@ public class NewEvent extends JPanel {
 		addLabel("Alarm(ant. min f�r):");
 
 		constr.gridx = 1;
-		addDDList(alarmBox);
+		addList(alarmBox);
 		// row10
 		constr.gridy = 9;
 		constr.anchor = GridBagConstraints.SOUTHWEST;
@@ -238,7 +238,7 @@ public class NewEvent extends JPanel {
 		addButton(cancelButton, 0);
 	}
 
-	private void addDDList(JComboBox box) {
+	private void addList(JComboBox box) {
 		int count = 0;
 		if (box == alarmBox) {
 			for (int i = 0; i < 12; i++) {
@@ -310,12 +310,15 @@ public class NewEvent extends JPanel {
 		endDate = eventDate.parse(endDateTot);
 
 		// gets available rooms from DB
-		roomList = program.getConnectionManager().getRooms(new Timestamp(startDate.getTime()), new Timestamp(endDate.getTime()));
+		roomList = program.getConnectionManager().getRooms(
+				new Timestamp(startDate.getTime()),
+				new Timestamp(endDate.getTime()));
 		// Adds rooms to combobox
 		roomBox.removeAllItems();
 		if (roomList.size() > 0) {
 			for (Room r : roomList) {
-				roomBox.addItem("Rom: " + r.getRoomNumber() + "  Plasser: " + r.getRoomSize() + "  Sted: " + r.getLocation());
+				roomBox.addItem("Rom: " + r.getRoomNumber() + "  Plasser: "
+						+ r.getRoomSize() + "  Sted: " + r.getLocation());
 			}
 		}
 	}
@@ -395,7 +398,7 @@ public class NewEvent extends JPanel {
 				}
 
 				// store event in DB
-				 program.getConnectionManager().addEvent(model);
+				program.getConnectionManager().addEvent(model);
 
 				// sends event-model to calendar
 				sendModel();
@@ -474,10 +477,8 @@ public class NewEvent extends JPanel {
 		});
 		addUsersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// AddParticipants addPartPanel = new
-				// AddParticipants(participantsList, child);// <-- add comment
-				AddParticipants addPartPanel = new AddParticipants(
-						participantsList, child); // <---- fjern comment
+				AddParticipants addPartPanel = new AddParticipants(program,
+						participantsList, child);
 			}
 		});
 	}
