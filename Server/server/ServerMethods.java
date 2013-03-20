@@ -295,7 +295,7 @@ public class ServerMethods
 	{
 		try
 		{
-			dc.deleteAppointment((Integer) request.getItem("appointmentid"));
+			dc.deleteAppointment((Integer) request.getItem("id"));
 			//sendNotification(1, session.getSessionManager());
 			response.addItem("result", "Delete OK");
 		}

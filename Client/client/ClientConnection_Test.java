@@ -32,19 +32,19 @@ public class ClientConnection_Test
 		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 		
 		ArrayList<User> users = getUsers(cc, connection);
+		ArrayList<Event> events = getApointments(cc, null);
 	
 		
 		//addAppointment(cc, start, end, users);
 		
 		
 		//getRooms(cc, start, end);
-
-		//getApointments(cc, null);
 				
-//		Event event = getApointments(cc, null);
 //		updateAppointment(cc, null, users, event);
 		
-		getNotifications(cc);
+		//getNotifications(cc);
+		
+		//deleteAppointment(cc, events.get(1));
 		
 		cc.closeConnection();
 		cc2.closeConnection();
@@ -138,7 +138,7 @@ public class ClientConnection_Test
 		}
 	}
 
-	public static Event getApointments(ClientConnection cc, User user)
+	public static ArrayList<Event> getApointments(ClientConnection cc, User user)
 	{
 		Request request = new Request(Request.GET_USERS_APPOINTMENTS);
 		request.addItem("user", user);
@@ -149,7 +149,9 @@ public class ClientConnection_Test
 		else
 		{
 			ArrayList<Event> events = (ArrayList<Event>) response.getItem("ownedevents");
-			return events.get(4);
+			for(Event event : events)				
+				System.out.println(event.getTitle());
+			return events;
 			
 //			for(Event event : events)
 //				
@@ -243,6 +245,21 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 		}
 			
+	}
+
+	public static void deleteAppointment(ClientConnection cc, Event event)
+	{
+		Request request = new Request(Request.DELETE_APPOINTMENT);
+		
+		request.addItem("id", event.getEventId());
+		cc.sendObject(request);
+
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else{
+			System.out.println(response.getItem("result"));
+		}
 	}
 }
 
