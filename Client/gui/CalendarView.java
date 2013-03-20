@@ -49,7 +49,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CalendarView window = new CalendarView(null);
+					CalendarView window = new CalendarView(new Program());
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -160,7 +160,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_newEventButton.gridy = 3;
 		getContentPane().add(newEventButton, gbc_newEventButton);
 		
-		editEventButton = new JButton("Endre hendelse");
+		editEventButton = new JButton("Detaljer");
 		editEventButton.setEnabled(false);
 		editEventButton.addActionListener(this);
 		GridBagConstraints gbc_editEventButton = new GridBagConstraints();
@@ -172,7 +172,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_editEventButton.gridy = 3;
 		getContentPane().add(editEventButton, gbc_editEventButton);
 		
-		deleteEventButton = new JButton("Slett valgt(e)");
+		deleteEventButton = new JButton("Slett valgt");
 		deleteEventButton.setEnabled(false);
 		deleteEventButton.addActionListener(this);
 		GridBagConstraints gbc_deleteEventButton = new GridBagConstraints();
@@ -238,11 +238,16 @@ public class CalendarView extends JFrame implements ActionListener {
 	
 	public void addEvent(Event event) {
 		calendarPane.getModel().addEvent(event);
+		calendarPane.updateCalendar();
+	}
+	
+	public void changeEvent(Event model) {
+		calendarPane.getModel().changeEvent(calendarPane.getSelectedEvent(), model);
+		calendarPane.updateCalendar();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(e.getActionCommand());
 		switch(e.getActionCommand()) {
 		case "comboBoxChanged":
 			if(e.getSource().equals(weekNumberBox)) {
@@ -272,16 +277,27 @@ public class CalendarView extends JFrame implements ActionListener {
 			System.exit(0);
 			break;
 		case "Opprett hendelse":
-			System.out.println(program.getConnectionManager().getUsers());
+			new NewEvent(program, program.getUser(), this);
 			break;
 		case "Administrer kalendere":
 			
 			break;
-		case "Endre hendelse":
+		case "Detaljer":
+			if(calendarPane.getSelectedEvent().getModel().getCreatedBy().equals(program.getUser())) {
+				new ChangeEvent(program, calendarPane.getSelectedEvent().getModel(), this);
+			}
+			else {
+				new ShowEvent(program, calendarPane.getSelectedEvent().getModel());
+			}
 			
 			break;
-		case "Slett valgt(e)":
-			
+		case "Slett valgt":
+			EventView deleteEvent = calendarPane.getSelectedEvent();
+			if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
+				calendarPane.getModel().deleteEvent(deleteEvent);
+				calendarPane.remove(deleteEvent);
+				calendarPane.updateCalendar();
+			}
 			break;
 		}
 	}

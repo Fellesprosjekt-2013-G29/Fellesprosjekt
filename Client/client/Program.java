@@ -2,14 +2,14 @@ package client;
 
 import gui.CalendarView;
 import gui.LoginWindow;
-
-import javax.swing.JFrame;
+import model.User;
 
 public class Program {
 	
 	private ConnectionManager connectionManager;
 	private ClientConnection conn;
 	private LoginWindow loginWindow;
+	private User user = new User();
 	
 	public Program() {
 		connectionManager = new ConnectionManager(this);
@@ -64,6 +64,14 @@ public class Program {
 	
 	public ConnectionManager getConnectionManager() {
 		return connectionManager;
+	}
+
+	public User getUser() {
+		return user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public static void main(String[] args) {

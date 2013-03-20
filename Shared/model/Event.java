@@ -90,4 +90,13 @@ public class Event implements Serializable{
 	public int getEventId(){
 		return this.eventId;
 	}
+
+	@Override
+	public String toString() {
+		return "Event [eventId=" + eventId + ", createdBy=" + createdBy
+				+ ", start=" + start + ", end=" + end + ", description="
+				+ description + ", room=" + room + ", participants="
+				+ participants + ", title=" + title + "]";
+	}
+	
 }

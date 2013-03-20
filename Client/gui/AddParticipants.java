@@ -23,8 +23,8 @@ import model.User;
 
 public class AddParticipants extends JPanel{
 	private JFrame thisFrame;
-	private ChangeAppointment parentChange = null;
-	private NewAppointment parentNew = null;
+	private ChangeEvent parentChange = null;
+	private NewEvent parentNew = null;
 	
 	private GridBagConstraints constr;
 	
@@ -53,7 +53,7 @@ public class AddParticipants extends JPanel{
 	
 	private JTextField searchField;
 	
-	public AddParticipants(ArrayList<User> oldList, ChangeAppointment parent) { // <------ fjern comment
+	public AddParticipants(ArrayList<User> oldList, ChangeEvent parent) { // <------ fjern comment
 	// public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, ChangeAppointment parent) { // <--- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");
@@ -100,7 +100,7 @@ public class AddParticipants extends JPanel{
 		frame.setContentPane(this);
 		frame.pack();
 	}
-	public AddParticipants(ArrayList<User> oldList, NewAppointment parent) { //<---------------- fjern comment
+	public AddParticipants(ArrayList<User> oldList, NewEvent parent) { //<---------------- fjern comment
 	//public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, NewAppointment parent) {// <-- add comment
 		
 		JFrame frame = new JFrame("Valg av deltakere");

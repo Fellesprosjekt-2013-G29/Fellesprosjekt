@@ -20,8 +20,8 @@ public class ConnectionManager {
 	public ConnectionManager(Program program) {
 		this.program = program;
 
-		outboundConnection = new ClientConnection("78.91.9.92", 4447);
-		inboundConnection = new ClientConnection("78.91.9.92", 4447);
+		outboundConnection = new ClientConnection("78.91.9.199", 4447);
+		inboundConnection = new ClientConnection("78.91.9.199", 4447);
 	}
 
 	public boolean login(String username, String password) {
@@ -41,6 +41,7 @@ public class ConnectionManager {
 				result = (String) response.getItem("result");
 				if (result.equals("loginok")) {
 					key = (String) response.getItem("key");
+					program.setUser((User) response.getItem("user"));
 					return true;
 				}
 			}
@@ -68,10 +69,9 @@ public class ConnectionManager {
 		Request request = new Request(Request.GET_USERS);
 		outboundConnection.sendObject(request);
 		Response response = outboundConnection.reciveResponse();
-		if(response.errorExist()) {
+		if (response.errorExist()) {
 			System.out.println(response.getItem("error"));
-		}
-		else {
+		} else {
 			return (ArrayList<User>) response.getItem("users");
 		}
 		return null;
@@ -88,8 +88,8 @@ public class ConnectionManager {
 	public void addEvent(Event event) {
 
 	}
-	
-	public void deleteEvent(Event event) {
-		
+
+	public boolean deleteEvent(Event event) {
+		return true;
 	}
 }
