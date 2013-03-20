@@ -170,15 +170,11 @@ public class ServerMethods
 		{
 			User user = (User) request.getItem("user");
 			
-			if(user != null)
-			{
-				response.addItem("invitations", dc.getInvites(user));
-				response.addItem("events", dc.getEventsCreatedByUser(user));
-			}
-			else
-			{
-				response.addItem("error", "Invalid input - user object is null");
-			}
+			if(user == null)
+				user = session.getUser();
+
+			//response.addItem("invitations", dc.getInvites(user));
+			response.addItem("events", dc.getEventsCreatedByUser(user));
 		}
 		catch(Exception e)
 		{

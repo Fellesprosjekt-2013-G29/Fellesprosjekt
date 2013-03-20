@@ -199,7 +199,7 @@ public class DbConnection {
     	   event.setStart(Timestamp.valueOf(res.getString("start")));
     	   event.setEnd(Timestamp.valueOf(res.getString("end")));
     	   event.setTitle("name");
-    	   event.setRoom(getRoom(res.getInt("roomid")));
+    	   //event.setRoom(getRoom(res.getInt("roomid")));
     	   event.setParticipants(getInvitationsByEvent(eventId));
     	   return event;
        }

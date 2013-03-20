@@ -28,16 +28,17 @@ public class ClientConnection_Test
 		boolean connection2 = cc2.openConnection();
 		attachSocket(cc2, connection2, key);
 		
-		//testAddAppointment(cc);
 		
 		Timestamp start = Timestamp.valueOf("2013-03-28 16:00:00");
 		Timestamp end = Timestamp.valueOf("2013-03-28 18:00:00");
 		
 		//getUsers(cc, connection);
 		
-		addAppointment(cc, start, end);
+		//addAppointment(cc, start, end);
 		
 		//getRooms(cc, start, end);
+		
+		getApointments(cc, null);
 		
 		
 		cc.closeConnection();
@@ -151,14 +152,14 @@ public class ClientConnection_Test
 		if(response.errorExist())
 			System.out.println(response.getItem("error"));
 		else
-			System.out.println("Events:");
 		{
+			System.out.println("Events:");
 			ArrayList<Event> events = (ArrayList<Event>) response.getItem("events");
 			for(Event event : events)
 				System.out.println(event.getTitle());
-		}
-		System.out.println("Invitations");
-		{
+			
+			System.out.println("Invitations");
+			
 			ArrayList<Invitation> invitations = (ArrayList<Invitation>) response.getItem("invitations");
 			for(Invitation invitation : invitations)
 				System.out.println(invitation.getEvent().getTitle());
