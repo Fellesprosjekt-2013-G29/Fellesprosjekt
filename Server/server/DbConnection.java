@@ -3,6 +3,7 @@ package server;
 
 import java.sql.*;//jconnector
 import java.util.ArrayList;
+
 import model.*;
 
 public class DbConnection {
@@ -318,14 +319,12 @@ public class DbConnection {
     	   return getEvent(id);
        }
        
-       public void createInvitation(Invitation inv) throws SQLException{
-    	   String query = "INSERT INTO Invitation (appointment_id, user_id, status) VALUES (?,?,?)";
+       public void createInvitation(int eventID, int userID) throws SQLException{
+    	   String query = "INSERT INTO Invitation (appointment_id, user_id) VALUES (?,?)";
     	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     	   
-    	   // appointmentID, timestamp created, toUser, alarm, status
-    	   stmt.setInt(1, inv.getEvent().getEventId());
-    	   stmt.setInt(2, inv.getTo().getUserId());
-    	   stmt.setString(3, inv.getStatus().toString());
+    	   stmt.setInt(1, eventID);
+    	   stmt.setInt(2, userID);
     	   
     	   stmt.executeUpdate();
     	   
@@ -394,16 +393,15 @@ public class DbConnection {
        //
        // Update methods
        //
-       
-       
-       public void updateInvitations(int eventID, ArrayList<Invitation> updatedList) throws SQLException{
+       public void updateInvitation(int eventID, int userID, String status) throws SQLException{
+    	   String query = "UPDATE Invitation SET status = ? WHERE appointment_id = ? AND user_id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
     	   
-    	   ArrayList<Invitation> inDatabase = getInvitationsByEvent(eventID);
+    	   stmt.setString(1, status);
+    	   stmt.setInt(2, eventID);
+    	   stmt.setInt(3, userID);
     	   
-    	   for (Invitation updated : updatedList) {
-    		   if(!inDatabase.contains(updated))
-    			   createInvitation(updated);
-    	   }
+    	   stmt.executeUpdate();
        }
        
        public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
