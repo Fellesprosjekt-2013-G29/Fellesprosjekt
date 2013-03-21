@@ -387,8 +387,12 @@ public class ServerMethods
 	{
 		Session session = sessionManager.findSession(user);
 		
+		
 		if(session != null)
+		{
+			System.out.println("Found session: " + session.getUser().getEmail());
 			session.sendNotification(type);
+		}
 		
 	}
 	

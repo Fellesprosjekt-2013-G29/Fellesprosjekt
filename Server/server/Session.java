@@ -27,7 +27,7 @@ public class Session extends Connection
 		{          
             while(running)
             {
-            	System.out.println("Session waiting for object");
+            	System.out.println("Session[" + key + "]: waiting for object");
             	Response response = ServerMethods.handleRequest(reciveRequest(), this);
             	sendResponse(response);
             }

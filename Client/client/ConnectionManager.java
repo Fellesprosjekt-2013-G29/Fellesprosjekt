@@ -22,7 +22,7 @@ public class ConnectionManager {
 		this.program = program;
 
 		outboundConnection = new ClientConnection(host, port);
-		inboundConnection = new ClientConnectionListener(host,port, program.getConnectionManager());
+		inboundConnection = new ClientConnectionListener(host,port, this);
 	}
 
 	public String login(String username, String password) {
@@ -121,12 +121,11 @@ public class ConnectionManager {
 
 	public void handleNotifications(int type) 
 	{
-		System.out.println("Recieived notification");
+		System.out.println("Recieived notification: " + type);
 		switch (type) 
 		{
 		case 1:
-			System.out.println("type 1");
-			// get uppdates
+			getEvents(null);
 			break;
 
 		default:
