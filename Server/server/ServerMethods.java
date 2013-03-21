@@ -41,6 +41,7 @@ public class ServerMethods
 		            break;
 		        case Request.GET_UPDATE_ALL:  
 		        	//TODO
+		        	testNotification(response, session);
 		            break;
 		        case Request.UPDATE_APPOINTMENT:  
 		        	updateAppointment(request, response, dc);
@@ -272,13 +273,20 @@ public class ServerMethods
 			if(request.hasKey("title"))
 				dc.updateAppointment(id, "name",  (String) request.getItem("title"));
 			if(request.hasKey("participants")){
-				dc.deleteInvitations(id);
 				
 				ArrayList<User> participants = (ArrayList<User>) request.getItem("participants");
+				ArrayList<Invitation> dbInvitations = dc.getInvitationsByEvent(id);
+				ArrayList<User> dbUsers = new ArrayList<User>(); 
+				
+				for (Invitation inv : dbInvitations) {
+					dbUsers.add(inv.getTo());
+				}
 				
 				for (User user : participants) {
-					dc.createInvitation(id, user.getUserId());
+					if(!dbUsers.contains(user));
+						dc.createInvitation(id, user.getUserId());
 				}
+				
 			}
 			response.addItem("result", "Update ok");
 			
@@ -364,12 +372,6 @@ public class ServerMethods
 		}
 	}
 	
-
-	private static void triggerAlert()
-	{
-		
-	}
-
 	private static void sendNotification(int type, SessionManager sessionManager, User user)
 	{
 		Session session = sessionManager.findSession(user);
@@ -377,5 +379,11 @@ public class ServerMethods
 		if(session != null)
 			session.sendNotification(type);
 		
+	}
+	
+	private static void testNotification( Response response, Session session)
+	{
+		response.addItem("result", "notification sent");
+		session.sendNotification(1);
 	}
 }

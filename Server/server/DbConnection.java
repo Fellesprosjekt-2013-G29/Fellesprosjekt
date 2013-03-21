@@ -170,7 +170,7 @@ public class DbConnection {
         		list.add(getEvent(i));
         	return list;
         }
-        
+       
         public ArrayList<User> getUsers() throws SQLException
         {
         	ArrayList<User> list = new ArrayList<User>();
@@ -393,13 +393,13 @@ public class DbConnection {
        //
        // Update methods
        //
-       public void updateInvitation(int eventID, int userID, String status) throws SQLException{
+       public void updateInvitation(Invitation inv) throws SQLException{
     	   String query = "UPDATE Invitation SET status = ? WHERE appointment_id = ? AND user_id = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
     	   
-    	   stmt.setString(1, status);
-    	   stmt.setInt(2, eventID);
-    	   stmt.setInt(3, userID);
+    	   stmt.setString(1, inv.getStatus().toString());
+    	   stmt.setInt(2, inv.getEvent().getEventId());
+    	   stmt.setInt(3, inv.getTo().getUserId());
     	   
     	   stmt.executeUpdate();
        }
@@ -426,10 +426,11 @@ public class DbConnection {
     	   ps.executeUpdate();
        }
        
-       public void deleteInvitations(int id) throws SQLException{
-    	   String query = "DELETE FROM Invitation WHERE appointment_id = ?";
+       public void deleteInvitation(int eventID, int userID) throws SQLException{
+    	   String query = "DELETE FROM Invitation WHERE appointment_id = ? AND user_id = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
-    	   stmt.setInt(1, id);
+    	   stmt.setInt(1, eventID);
+    	   stmt.setInt(2, userID);
     	   
     	   stmt.executeUpdate();
        }

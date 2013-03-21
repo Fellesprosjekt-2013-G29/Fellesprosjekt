@@ -14,15 +14,15 @@ public class ConnectionManager {
 
 	private Program program;
 	private ClientConnection outboundConnection;
-	private ClientConnection inboundConnection;
+	private ClientConnectionListener inboundConnection;
 
 	private String key;
 
 	public ConnectionManager(Program program) {
 		this.program = program;
 
-		outboundConnection = new ClientConnection("localhost", 4447);
-		inboundConnection = new ClientConnection("localhost", 4447);
+		outboundConnection = new ClientConnection("78.91.9.92", 4447);
+		inboundConnection = new ClientConnectionListener("78.91.9.92", 4447, this);
 	}
 
 	public boolean login(String username, String password) {
@@ -59,6 +59,7 @@ public class ConnectionManager {
 			inboundConnection.sendObject(request);
 			Response response = inboundConnection.reciveResponse();
 			System.out.println(response.getItem("result"));
+			inboundConnection.run();
 		}
 	}
 
@@ -114,6 +115,21 @@ public class ConnectionManager {
 		return null;
 	}
 
+	public void handleNotifications(int type) 
+	{
+		System.out.println("Recieived notification");
+		switch (type) 
+		{
+		case 1:
+			System.out.println("type 1");
+			// get uppdates
+			break;
+
+		default:
+			break;
+		}
+	}
+		
 	public ArrayList<Invitation> getNotifications() {
 		Request request = new Request(Request.GET_USERS_NOTIFICATIONS);
 		outboundConnection.sendObject(request);
