@@ -46,6 +46,8 @@ public class ClientConnection_Test
 		
 		//deleteAppointment(cc, events.get(1));
 		
+		testNotification(cc);
+		
 		cc.closeConnection();
 		cc2.closeConnection();
 	}
@@ -252,6 +254,20 @@ public class ClientConnection_Test
 		Request request = new Request(Request.DELETE_APPOINTMENT);
 		
 		request.addItem("id", event.getEventId());
+		cc.sendObject(request);
+
+		Response response = cc.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else{
+			System.out.println(response.getItem("result"));
+		}
+	}
+
+	public static void testNotification(ClientConnection cc)
+	{
+		Request request = new Request(Request.GET_UPDATE_ALL);
+		
 		cc.sendObject(request);
 
 		Response response = cc.reciveResponse();

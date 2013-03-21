@@ -41,6 +41,7 @@ public class ServerMethods
 		            break;
 		        case Request.GET_UPDATE_ALL:  
 		        	//TODO
+		        	testNotification(response, session);
 		            break;
 		        case Request.UPDATE_APPOINTMENT:  
 		        	updateAppointment(request, response, dc);
@@ -359,12 +360,6 @@ public class ServerMethods
 		}
 	}
 	
-
-	private static void triggerAlert()
-	{
-		
-	}
-
 	private static void sendNotification(int type, SessionManager sessionManager, User user)
 	{
 		Session session = sessionManager.findSession(user);
@@ -372,5 +367,11 @@ public class ServerMethods
 		if(session != null)
 			session.sendNotification(type);
 		
+	}
+	
+	private static void testNotification( Response response, Session session)
+	{
+		response.addItem("result", "notification sent");
+		session.sendNotification(1);
 	}
 }
