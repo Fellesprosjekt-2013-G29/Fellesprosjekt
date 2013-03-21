@@ -305,7 +305,7 @@ public class ServerMethods
 		try
 		{
 			Invitation invite = (Invitation) request.getItem("invite");
-			dc.updateInvitation(invite.getId(), invite.getTo().getUserId(), invite.getStatus());
+			dc.updateInvitation(invite);
 			response.addItem("result", "Invite updated");
 		}
 		catch(Exception e)
