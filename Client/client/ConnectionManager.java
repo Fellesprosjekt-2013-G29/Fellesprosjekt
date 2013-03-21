@@ -22,7 +22,7 @@ public class ConnectionManager {
 		this.program = program;
 
 		outboundConnection = new ClientConnection(host, port);
-		inboundConnection = new ClientConnectionListener(host,port, program.getConnectionManager());
+		inboundConnection = new ClientConnectionListener(host,port, this);
 	}
 
 	public String login(String username, String password) {
@@ -115,12 +115,13 @@ public class ConnectionManager {
 		return null;
 	}
 
-	public void handleNotifications(int type) {
-		System.out.println("Recieived notification");
-		switch (type) {
+	public void handleNotifications(int type) 
+	{
+		System.out.println("Recieived notification: " + type);
+		switch (type) 
+		{
 		case 1:
-			System.out.println("type 1");
-			// get uppdates
+			getEvents(null);
 			break;
 
 		default:
@@ -153,8 +154,10 @@ public class ConnectionManager {
 		else {
 			Event newEvent = (Event) response.getItem("event");
 			ArrayList<Invitation> participants = event.getParticipants();
-			for (Invitation i : participants) {
-				i.setEvent(newEvent);
+			if(participants != null) {
+				for (Invitation i : participants) {
+					i.setEvent(newEvent);
+				}
 			}
 			newEvent.setParticipants(participants);
 			addInvitation(participants);
@@ -247,6 +250,7 @@ public class ConnectionManager {
 		Request request = new Request(Request.DELETE_APPOINTMENT);
 
 		request.addItem("id", event.getEventId());
+		request.addItem("user", program.getUser().getUserId());
 		outboundConnection.sendObject(request);
 
 		Response response = outboundConnection.reciveResponse();

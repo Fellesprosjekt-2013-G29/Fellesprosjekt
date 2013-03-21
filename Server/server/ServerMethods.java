@@ -179,11 +179,18 @@ public class ServerMethods
 			if(user == null)
 				user = session.getUser();
 
-			response.addItem("ownedevents", dc.getEventsCreatedByUser(user));			
+			ArrayList<Event> events = dc.getEventsCreatedByUser(user);
+			for (Event evt : events) {
+				evt.setParticipants(dc.getInvitationsByEvent(evt.getEventId()));
+			}
+			
+			response.addItem("ownedevents", events);
+			
 			ArrayList<Invitation> invites = dc.getInvites(user);
-			ArrayList<Event> events  = new ArrayList<Event>();
-			for(Invitation invite : invites)
+			events  = new ArrayList<Event>();
+			for(Invitation invite : invites) {
 				events.add(invite.getEvent());
+			}
 			response.addItem("invitedevents", events);
 		}
 		catch(Exception e)
@@ -320,6 +327,7 @@ public class ServerMethods
 		try
 		{
 			dc.deleteAppointment((Integer) request.getItem("id"));
+//			dc.deleteEventInvitations((Integer) request.getItem("id"));
 			//sendNotification(1, session.getSessionManager());
 			response.addItem("result", "Delete OK");
 		}
@@ -387,8 +395,12 @@ public class ServerMethods
 	{
 		Session session = sessionManager.findSession(user);
 		
+		
 		if(session != null)
+		{
+			System.out.println("Found session: " + session.getUser().getEmail());
 			session.sendNotification(type);
+		}
 		
 	}
 	

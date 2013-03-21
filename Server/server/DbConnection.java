@@ -148,12 +148,14 @@ public class DbConnection {
         
 
         public ArrayList<Invitation> getInvitationsByEvent(int eventId) throws SQLException{
+     	   System.out.println("etter");
         	ArrayList<Invitation> list = new ArrayList<Invitation>();
         	String query = String.format("SELECT id from Invitation where appointment_id = %s", eventId);
         	ResultSet res = statement.executeQuery(query);
         	while( res.next() ){
      		   list.add(getInvitation(res.getInt("id")));
      	   }
+     	   System.out.println("etteretter");
      	   return list;
         }
         
@@ -207,7 +209,7 @@ public class DbConnection {
     	   event.setEnd(Timestamp.valueOf(res.getString("end")));
     	   event.setTitle(res.getString("name"));
     	   event.setRoom(getRoom(res.getInt("roomid")));
-    	   event.setParticipants(getInvitationsByEvent(eventId));
+    	   System.out.println("før");
     	   return event;
        }
         
@@ -421,7 +423,7 @@ public class DbConnection {
        //
        
        public void deleteAppointment(int id) throws SQLException{
-    	   String sql = "UPDATE Appointment set deleted=1 where id = ?";
+    	   String sql = "UPDATE Appointment set deleted=1, roomid=null where id = ?";
     	   PreparedStatement ps = connection.prepareStatement(sql);
     	   ps.setInt(1, id);
     	   ps.executeUpdate();
@@ -435,8 +437,14 @@ public class DbConnection {
     	   
     	   stmt.executeUpdate();
        }
-       
-       
+
+       public void deleteEventInvitations(int eventID) throws SQLException{
+    	   String query = "DELETE FROM Invitation WHERE appointment_id = ?";
+    	   PreparedStatement stmt = connection.prepareStatement(query);
+    	   stmt.setInt(1, eventID);
+    	   
+    	   stmt.executeUpdate();
+       }
 }
 
 

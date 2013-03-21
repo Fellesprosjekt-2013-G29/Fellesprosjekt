@@ -324,28 +324,28 @@ public class CalendarView extends JFrame implements ActionListener {
 				break;
 			case "Slett valgt":
 				EventView deleteEvent = calendarPane.getSelectedEvent();
-				if(deleteEvent.getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
+//				if(deleteEvent.getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
 					if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
 						calendarPane.getModel().deleteEvent(deleteEvent);
 						calendarPane.remove(deleteEvent);
 						calendarPane.updateCalendar();
 					}
-				}
-				else {
-					ArrayList<Invitation> participants = deleteEvent.getModel().getParticipants();
-					Invitation invite = null;
-					for(Invitation i : participants) {
-						if(i.getTo().getUserId() == program.getUser().getUserId()) {
-							invite = i;
-							invite.setStatus(InvitationAnswer.NO);
-						}
-					}
-					if(invite != null && program.getConnectionManager().updateInvitation(invite)) {
-						calendarPane.getModel().deleteEvent(deleteEvent);
-						calendarPane.remove(deleteEvent);
-						calendarPane.updateCalendar();
-					}
-				}
+//				}
+//				else {
+//					ArrayList<Invitation> participants = deleteEvent.getModel().getParticipants();
+//					Invitation invite = null;
+//					for(Invitation i : participants) {
+//						if(i.getTo().getUserId() == program.getUser().getUserId()) {
+//							invite = i;
+//							invite.setStatus(InvitationAnswer.NO);
+//						}
+//					}
+//					if(invite != null && program.getConnectionManager().updateInvitation(invite)) {
+//						calendarPane.getModel().deleteEvent(deleteEvent);
+//						calendarPane.remove(deleteEvent);
+//						calendarPane.updateCalendar();
+//					}
+//				}
 				break;
 			}
 		}
