@@ -22,7 +22,7 @@ public class ConnectionManager {
 		this.program = program;
 
 		outboundConnection = new ClientConnection(host, port);
-		inboundConnection = new ClientConnectionListener(host, port, this);
+		inboundConnection = new ClientConnectionListener(host,port, program.getConnectionManager());
 	}
 
 	public String login(String username, String password) {
@@ -56,14 +56,14 @@ public class ConnectionManager {
 	}
 
 	public void attachSocket() {
-		if (inboundConnection.openConnection()) {
+		if (inboundConnection.getClientConnection().openConnection()) {
 			Request request = new Request();
 			request.setRequest(Request.ATTACH_SOCKET);
 			request.addItem("key", key);
-			inboundConnection.sendObject(request);
-			Response response = inboundConnection.reciveResponse();
+			inboundConnection.getClientConnection().sendObject(request);
+			Response response = inboundConnection.getClientConnection().reciveResponse();
 			System.out.println(response.getItem("result"));
-			inboundConnection.run();
+			inboundConnection.start();
 		}
 	}
 

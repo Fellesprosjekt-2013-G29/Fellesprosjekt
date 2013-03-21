@@ -331,11 +331,11 @@ public class CalendarView extends JFrame implements ActionListener {
 					}
 				}
 				else {
-					if(program.getConnectionManager().updateInvite(deleteEvent.getModel())) {
-						calendarPane.getModel().deleteEvent(deleteEvent);
-						calendarPane.remove(deleteEvent);
-						calendarPane.updateCalendar();
-					}
+//					if(program.getConnectionManager().updateInvite(deleteEvent.getModel())) {
+//						calendarPane.getModel().deleteEvent(deleteEvent);
+//						calendarPane.remove(deleteEvent);
+//						calendarPane.updateCalendar();
+//					}
 				}
 				break;
 			}
