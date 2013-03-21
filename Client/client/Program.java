@@ -4,39 +4,37 @@ import gui.CalendarView;
 import gui.LoginWindow;
 import model.User;
 
-public class Program {
+public class Program 
+{
 	
 	private ConnectionManager connectionManager;
-	private ClientConnection conn;
 	private LoginWindow loginWindow;
 	private User user;
 	
+	private String host = "localhost";
+	private int port = 4447;
+	
 	public Program() {
-		connectionManager = new ConnectionManager(this);
+		connectionManager = new ConnectionManager(this, host, port);
 		loginWindow = new LoginWindow(this);
 	}	
 	
-	public void login(String hoststr, String username, String password){
-		String hostname = "";
-		int port = 0;
-		
-		System.out.println("u: " + username + " p: " + password);
-		
-		// Make sure password isn't empty
+	public void login(String hoststr, String username, String password)
+	{	
+		loginWindow.alert("logging inn...");
 		if(password.length()==0){
-			loginWindow.alert("Please type in your password");
+			loginWindow.alert("Skriv inn ditt passord");
 			return;
 		}
 		
-		if(!connectionManager.login(username, password)) {
-			loginWindow.alert("Username or password is wrong!");
+		String connectionResult = connectionManager.login(username, password);
+		
+		loginWindow.alert(connectionResult);
+
+		if(!connectionResult.equals("Login ok"))
 			return;
-		}
 		
 		connectionManager.attachSocket();
-		
-		// ...
-		loginWindow.alert("Login success");
 		
 		loginWindow.dispose();
 		CalendarView calendar = new CalendarView(this);

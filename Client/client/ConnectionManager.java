@@ -19,14 +19,14 @@ public class ConnectionManager {
 
 	private String key;
 
-	public ConnectionManager(Program program) {
+	public ConnectionManager(Program program, String host, int port) {
 		this.program = program;
 
-		outboundConnection = new ClientConnection("78.91.9.92", 4447);
-		inboundConnection = new ClientConnectionListener("78.91.9.92", 4447, this);
+		outboundConnection = new ClientConnection(host, port);
+		inboundConnection = new ClientConnectionListener(host, port, this);
 	}
 
-	public boolean login(String username, String password) {
+	public String login(String username, String password) {
 
 		if (outboundConnection.openConnection()) {
 			String result;
@@ -36,20 +36,24 @@ public class ConnectionManager {
 			request.addItem("password", password);
 			outboundConnection.sendObject(request);
 			Response response = outboundConnection.reciveResponse();
-			if (response.errorExist()) {
+			if (response.errorExist()) 
+			{
 				System.out.println("error " + response.getItem("error"));
-				return false;
-			} else {
+				return "Feil brukernavn eller passord";
+			} 
+			else 
+			{
 				result = (String) response.getItem("result");
-				if (result.equals("loginok")) {
+				if (result.equals("loginok")) 
+				{
 					key = (String) response.getItem("key");
 					program.setUser((User) response.getItem("user"));
-					return true;
+					return "Login ok";
 				}
 			}
 		}
 		System.out.println("connection failed");
-		return false;
+		return "Klarer ikke koble til serveren";
 	}
 
 	public void attachSocket() {
