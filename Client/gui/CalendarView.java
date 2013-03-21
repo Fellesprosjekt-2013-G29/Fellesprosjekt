@@ -22,6 +22,7 @@ import javax.swing.Timer;
 
 import model.Event;
 import model.Invitation;
+import model.InvitationAnswer;
 import model.User;
 import client.Program;
 
@@ -331,7 +332,15 @@ public class CalendarView extends JFrame implements ActionListener {
 					}
 				}
 				else {
-					if(program.getConnectionManager().updateInvite(deleteEvent.getModel())) {
+					ArrayList<Invitation> participants = deleteEvent.getModel().getParticipants();
+					Invitation invite = null;
+					for(Invitation i : participants) {
+						if(i.getTo().getUserId() == program.getUser().getUserId()) {
+							invite = i;
+							invite.setStatus(InvitationAnswer.NO);
+						}
+					}
+					if(invite != null && program.getConnectionManager().updateInvitation(invite)) {
 						calendarPane.getModel().deleteEvent(deleteEvent);
 						calendarPane.remove(deleteEvent);
 						calendarPane.updateCalendar();

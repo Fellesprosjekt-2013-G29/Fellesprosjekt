@@ -345,7 +345,7 @@ public class NewEvent extends JPanel {
 		}
 	}
 
-	private void sendModel() {
+	private void sendModel(Event model) {
 		parent.addEvent(model);
 
 	}
@@ -398,10 +398,8 @@ public class NewEvent extends JPanel {
 				}
 
 				// store event in DB
-				program.getConnectionManager().addEvent(model);
-
 				// sends event-model to calendar
-				sendModel();
+				sendModel(program.getConnectionManager().addEvent(model));
 				thisFrame.dispose();
 			}
 		});

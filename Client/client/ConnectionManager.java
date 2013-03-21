@@ -35,16 +35,12 @@ public class ConnectionManager {
 			request.addItem("password", password);
 			outboundConnection.sendObject(request);
 			Response response = outboundConnection.reciveResponse();
-			if (response.errorExist()) 
-			{
+			if (response.errorExist()) {
 				System.out.println("error " + response.getItem("error"));
 				return "Feil brukernavn eller passord";
-			} 
-			else 
-			{
+			} else {
 				result = (String) response.getItem("result");
-				if (result.equals("loginok")) 
-				{
+				if (result.equals("loginok")) {
 					key = (String) response.getItem("key");
 					program.setUser((User) response.getItem("user"));
 					return "Login ok";
@@ -83,9 +79,9 @@ public class ConnectionManager {
 			System.out.println("Invitated events:");
 
 			events.addAll((ArrayList<Event>) response.getItem("invitedevents"));
-//			events = (ArrayList<Event>) response.getItem("invitedevents");
-//			for (Event event : events)
-//				System.out.println(event.getTitle());
+			// events = (ArrayList<Event>) response.getItem("invitedevents");
+			// for (Event event : events)
+			// System.out.println(event.getTitle());
 			return events;
 		}
 		return null;
@@ -119,11 +115,9 @@ public class ConnectionManager {
 		return null;
 	}
 
-	public void handleNotifications(int type) 
-	{
+	public void handleNotifications(int type) {
 		System.out.println("Recieived notification");
-		switch (type) 
-		{
+		switch (type) {
 		case 1:
 			System.out.println("type 1");
 			// get uppdates
@@ -133,23 +127,23 @@ public class ConnectionManager {
 			break;
 		}
 	}
-		
+
 	public ArrayList<Invitation> getNotifications() {
 		Request request = new Request(Request.GET_USERS_NOTIFICATIONS);
 		outboundConnection.sendObject(request);
 		Response response = outboundConnection.reciveResponse();
 		if (response.errorExist()) {
 			System.out.println(response.getItem("error"));
-		}
-		else {
+		} else {
 			// TODO
-			ArrayList<Invitation> notifications = (ArrayList<Invitation>) response.getItem("invitation");
+			ArrayList<Invitation> notifications = (ArrayList<Invitation>) response
+					.getItem("invitation");
 			return notifications;
 		}
 		return null;
 	}
 
-	public void addEvent(Event event) {
+	public Event addEvent(Event event) {
 		Request request = new Request(Request.ADD_APPOINTMENT);
 		request.addItem("event", event);
 		outboundConnection.sendObject(request);
@@ -160,13 +154,14 @@ public class ConnectionManager {
 			Event newEvent = (Event) response.getItem("event");
 			addInvitation(event.getParticipants(), newEvent);
 			System.out.println(response.getItem("result"));
+			return newEvent;
 		}
+		return null;
 	}
 
-	public void updateEvent(Event event, ArrayList<String> changes)
-	{
+	public void updateEvent(Event event, ArrayList<String> changes) {
 		Request request = new Request(Request.UPDATE_APPOINTMENT);
-		
+
 		int eventID = event.getEventId();
 		int room;
 		Timestamp start;
@@ -175,10 +170,10 @@ public class ConnectionManager {
 		ArrayList<User> participants;
 
 		request.addItem("id", eventID);
-		
+
 		System.out.println(changes);
-		
-		for(String s : changes) {
+
+		for (String s : changes) {
 			switch (s) {
 			case "room":
 				request.addItem("room", event.getRoom());
@@ -195,28 +190,28 @@ public class ConnectionManager {
 				break;
 			case "participants":
 				participants = new ArrayList<User>();
-				for(Invitation i : event.getParticipants()) {
+				for (Invitation i : event.getParticipants()) {
 					participants.add(i.getTo());
 				}
 				request.addItem("participants", participants);
 				break;
 			}
 		}
-		
+
 		outboundConnection.sendObject(request);
 
 		Response response = outboundConnection.reciveResponse();
-		if(response.errorExist())
+		if (response.errorExist())
 			System.out.println(response.getItem("error"));
-		else{
+		else {
 			System.out.println(response.getItem("result"));
 		}
-			
+
 	}
 
 	public void addInvitation(ArrayList<Invitation> users, Event event) {
 		Request request = new Request(Request.ADD_INVITE);
-		for(Invitation i : users) {
+		for (Invitation i : users) {
 			i.setEvent(event);
 		}
 		request.addItem("invitations", users);
@@ -229,20 +224,35 @@ public class ConnectionManager {
 		}
 	}
 
-	public boolean deleteEvent(Event event)
-	{
+	public boolean updateInvitation(Invitation invite) {
+		Request request = new Request(Request.UPDATE_APPOINTMENT);
+
+		request.addItem("invitation", invite);
+		outboundConnection.sendObject(request);
+
+		Response response = outboundConnection.reciveResponse();
+
+		if (response.errorExist()) {
+			System.out.println(response.getItem("error"));
+			return false;
+		} else {
+			System.out.println(response.getItem("result"));
+			return true;
+		}
+	}
+
+	public boolean deleteEvent(Event event) {
 		Request request = new Request(Request.DELETE_APPOINTMENT);
-		
+
 		request.addItem("id", event.getEventId());
 		outboundConnection.sendObject(request);
 
 		Response response = outboundConnection.reciveResponse();
-		
-		if(response.errorExist()) {
+
+		if (response.errorExist()) {
 			System.out.println(response.getItem("error"));
 			return false;
-		}
-		else {
+		} else {
 			System.out.println(response.getItem("result"));
 			return true;
 		}
