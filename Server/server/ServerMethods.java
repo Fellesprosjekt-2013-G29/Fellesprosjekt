@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import model.Event;
 import model.Invitation;
+import model.InvitationAnswer;
 import model.Room;
 import model.User;
 import structs.Request;
@@ -294,7 +295,17 @@ public class ServerMethods
 	
 	private static void updateInvite(Request request, Response response, DbConnection dc, Session session)
 	{
-		//TODO
+		try
+		{
+			Invitation invite = (Invitation) request.getItem("invite");
+			dc.updateInvitation(invite.getId(), invite.getTo().getUserId(), invite.getStatus());
+			response.addItem("result", "Invite updated");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			response.addItem("error", e.toString());
+		}
 	}
 	
 	private static void deleteAppointment(Request request, Response response, DbConnection dc, Session session)
