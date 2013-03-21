@@ -22,13 +22,8 @@ public class ConnectionManager {
 	public ConnectionManager(Program program) {
 		this.program = program;
 
-<<<<<<< HEAD
 		outboundConnection = new ClientConnection("78.91.9.92", 4447);
 		inboundConnection = new ClientConnectionListener("78.91.9.92", 4447, this);
-=======
-		outboundConnection = new ClientConnection("localhost", 4447);
-		inboundConnection = new ClientConnection("localhost", 4447);
->>>>>>> 04f13fabda15650de08f7c7a7ff3d3a08c12465d
 	}
 
 	public boolean login(String username, String password) {
@@ -121,7 +116,6 @@ public class ConnectionManager {
 		return null;
 	}
 
-<<<<<<< HEAD
 	public void handleNotifications(int type) 
 	{
 		System.out.println("Recieived notification");
@@ -135,8 +129,8 @@ public class ConnectionManager {
 		default:
 			break;
 		}
-
-=======
+	}
+		
 	public ArrayList<Invitation> getNotifications() {
 		Request request = new Request(Request.GET_USERS_NOTIFICATIONS);
 		outboundConnection.sendObject(request);
@@ -150,7 +144,6 @@ public class ConnectionManager {
 			return notifications;
 		}
 		return null;
->>>>>>> 04f13fabda15650de08f7c7a7ff3d3a08c12465d
 	}
 
 	public void addEvent(Event event) {
