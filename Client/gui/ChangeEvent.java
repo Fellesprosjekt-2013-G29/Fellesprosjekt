@@ -78,6 +78,7 @@ public class ChangeEvent extends JPanel {
 	private JComboBox alarmBox;
 	private JComboBox roomBox;
 
+	private ArrayList<String> changes = new ArrayList<String>();
 	private ArrayList<Room> roomList = new ArrayList<Room>();
 	private String[] minutesList = { "00", "15", "30", "45" };
 	private String[] hoursList = { "00", "01", "02", "03", "04", "05", "06",
@@ -384,7 +385,7 @@ public class ChangeEvent extends JPanel {
 	}
 
 	private void sendModel() {
-		parent.changeEvent(model);
+		parent.changeEvent(model, changes);
 	}
 
 	public Event getModel() {
@@ -399,14 +400,26 @@ public class ChangeEvent extends JPanel {
 
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.setCreatedBy(owner);
-				model.setStart(new Timestamp(startDate.getTime()));
-				model.setEnd(new Timestamp(endDate.getTime()));
-				model.setDescription(description.getText());
+				if(0 != model.getStart().compareTo(new Timestamp(startDate.getTime()))) {
+					model.setStart(new Timestamp(startDate.getTime()));
+					changes.add("start");
+				}
+				if(0 != model.getEnd().compareTo(new Timestamp(endDate.getTime()))) {
+					model.setEnd(new Timestamp(endDate.getTime()));
+					changes.add("end");
+				}
+				System.out.println(description.getText());
+				if(model.getDescription().equals(description.getText())) {
+					model.setDescription(description.getText());
+					changes.add("description");
+				}
 
 				int roomIndex = roomBox.getSelectedIndex();
 				if (roomIndex >= 0) {
-					model.setRoom(roomList.get(roomIndex));
+					if(model.getRoom().getId() != roomList.get(roomIndex).getId()) {
+						model.setRoom(roomList.get(roomIndex));
+						changes.add("room");
+					}
 				}
 
 				// int timeBefore = (int) alarmBox.getSelectedItem();
@@ -426,7 +439,10 @@ public class ChangeEvent extends JPanel {
 						invite.setEvent(model);
 						invitationList.add(invite);
 					}
-					model.setParticipants(invitationList);
+					if(!(model.getParticipants().containsAll(invitationList) && invitationList.containsAll(model.getParticipants()))) {
+						model.setParticipants(invitationList);
+						changes.add("participants");
+					}
 				}
 				// store event in DB
 				// storeEvent(Event model); <------------ implementer

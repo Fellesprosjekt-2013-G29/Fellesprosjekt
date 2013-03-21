@@ -321,7 +321,7 @@ public class DbConnection {
        
        public void createInvitation(int eventID, int userID) throws SQLException{
     	   String query = "INSERT INTO Invitation (appointment_id, user_id) VALUES (?,?)";
-    	   PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    	   PreparedStatement stmt = connection.prepareStatement(query);
     	   
     	   stmt.setInt(1, eventID);
     	   stmt.setInt(2, userID);

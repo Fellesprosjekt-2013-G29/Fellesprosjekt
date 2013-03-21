@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import model.Event;
 import model.Invitation;
-import model.InvitationAnswer;
 import model.Room;
 import model.User;
 import structs.Request;
@@ -164,8 +163,62 @@ public class ConnectionManager {
 		}
 	}
 
+	public void updateEvent(Event event, ArrayList<String> changes)
+	{
+		Request request = new Request(Request.UPDATE_APPOINTMENT);
+		
+		int eventID = event.getEventId();
+		int room;
+		Timestamp start;
+		Timestamp end;
+		String description;
+		ArrayList<User> participants;
+
+		request.addItem("id", eventID);
+		
+		System.out.println(changes);
+		
+		for(String s : changes) {
+			switch (s) {
+			case "room":
+				request.addItem("room", event.getRoom());
+				break;
+			case "start":
+				System.out.println(event.getStart());
+				request.addItem("start", event.getStart());
+				break;
+			case "end":
+				request.addItem("end", event.getEnd());
+				break;
+			case "description":
+				request.addItem("description", event.getDescription());
+				break;
+			case "participants":
+				participants = new ArrayList<User>();
+				for(Invitation i : event.getParticipants()) {
+					participants.add(i.getTo());
+				}
+				request.addItem("participants", participants);
+				break;
+			}
+		}
+		
+		outboundConnection.sendObject(request);
+
+		Response response = outboundConnection.reciveResponse();
+		if(response.errorExist())
+			System.out.println(response.getItem("error"));
+		else{
+			System.out.println(response.getItem("result"));
+		}
+			
+	}
+
 	public void addInvitation(ArrayList<Invitation> users, Event event) {
 		Request request = new Request(Request.ADD_INVITE);
+		for(Invitation i : users) {
+			i.setEvent(event);
+		}
 		request.addItem("invitations", users);
 		outboundConnection.sendObject(request);
 		Response response = outboundConnection.reciveResponse();
@@ -176,7 +229,22 @@ public class ConnectionManager {
 		}
 	}
 
-	public boolean deleteEvent(Event event) {
-		return true;
+	public boolean deleteEvent(Event event)
+	{
+		Request request = new Request(Request.DELETE_APPOINTMENT);
+		
+		request.addItem("id", event.getEventId());
+		outboundConnection.sendObject(request);
+
+		Response response = outboundConnection.reciveResponse();
+		
+		if(response.errorExist()) {
+			System.out.println(response.getItem("error"));
+			return false;
+		}
+		else {
+			System.out.println(response.getItem("result"));
+			return true;
+		}
 	}
 }

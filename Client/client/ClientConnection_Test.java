@@ -263,7 +263,7 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 		}
 	}
-
+	
 	public static void testNotification(ClientConnection cc)
 	{
 		Request request = new Request(Request.GET_UPDATE_ALL);
