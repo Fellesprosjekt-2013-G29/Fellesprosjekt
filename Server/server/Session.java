@@ -6,8 +6,6 @@ import java.net.SocketException;
 import javax.net.ssl.SSLSocket;
 
 import model.User;
-
-import structs.Alert;
 import structs.Response;
 
 public class Session extends Connection
@@ -43,14 +41,14 @@ public class Session extends Connection
 		}
 	}
 	
-	public boolean sendAlert(Alert alert)
+	public boolean sendNotification(int type)
 	{
 		if(outboundSocket == null)
 			return false;
 		try
 		{
 			objectOutputStream = new ObjectOutputStream(outboundSocket.getOutputStream());
-			objectOutputStream.writeObject(alert);
+			objectOutputStream.writeObject(type);
 			objectOutputStream.flush();
 			return true;
 		}
@@ -94,6 +92,11 @@ public class Session extends Connection
 	public void addToList()
 	{
 		sessionManager.addSession(this);
+	}
+	
+	public SessionManager getSessionManager()
+	{
+		return sessionManager;
 	}
 	
 	

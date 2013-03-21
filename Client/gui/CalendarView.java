@@ -6,8 +6,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
@@ -16,8 +18,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import model.Event;
+import model.Invitation;
 import model.User;
 import client.Program;
 
@@ -41,27 +45,31 @@ public class CalendarView extends JFrame implements ActionListener {
 	private JButton manageCalendarsButton;
 	private JComboBox weekNumberBox;
 	
+	private ArrayList<Invitation> notifications;
+	private final Timer timer;
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CalendarView window = new CalendarView(new Program());
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					CalendarView window = new CalendarView(new Program());
+//					window.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
 	 */
 	public CalendarView(Program parent) {
 		this.program = parent;
+		timer = new Timer(3000, this);
 		initialize();
 	}
 
@@ -78,6 +86,8 @@ public class CalendarView extends JFrame implements ActionListener {
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		getContentPane().setLayout(gridBagLayout);
+		
+		notifications = new ArrayList<Invitation>();
 		
 		chooseDateLabel = new JLabel("Velg dato:");
 		GridBagConstraints gbc_chooseDateLabel = new GridBagConstraints();
@@ -117,7 +127,6 @@ public class CalendarView extends JFrame implements ActionListener {
 		getContentPane().add(chooseWeekLabel, gbc_chooseWeekLabel);
 		
 		notificationsBox = new JComboBox();
-		notificationsBox.setModel(new DefaultComboBoxModel(new String[] {"Varslinger!"}));
 		notificationsBox.addActionListener(this);
 		GridBagConstraints gbc_notificationsBox = new GridBagConstraints();
 		gbc_notificationsBox.fill = GridBagConstraints.HORIZONTAL;
@@ -201,6 +210,8 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_weekNumberBox.gridx = 6;
 		gbc_weekNumberBox.gridy = 1;
 		getContentPane().add(weekNumberBox, gbc_weekNumberBox);
+		
+		timer.start();
 	}
 
 	public JComboBox getNotificationsBox() {
@@ -249,60 +260,75 @@ public class CalendarView extends JFrame implements ActionListener {
 		calendarPane.getModel().setAdditionalUser(user);
 		calendarPane.updateCalendar();
 	}
+	
+	public void updateNotifications() {
+
+		notifications = program.getConnectionManager().getNotifications();
+		notificationsBox.removeAllItems();
+		
+		for(Invitation i : notifications) {
+			notificationsBox.addItem(i.getEvent().getTitle());
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch(e.getActionCommand()) {
-		case "comboBoxChanged":
-			if(e.getSource().equals(weekNumberBox)) {
-				calendarPane.getModel().setWeek(weekNumberBox.getSelectedIndex() + 1);
-				calendarPane.updateCalendar();
-			}
-			else if(e.getSource().equals(notificationsBox)) {
+		if(e.getSource().equals(timer)) {
+			updateNotifications();
+		}
+		else {
+			switch(e.getActionCommand()) {
+			case "comboBoxChanged":
+				if(e.getSource().equals(weekNumberBox)) {
+					calendarPane.getModel().setWeek(weekNumberBox.getSelectedIndex() + 1);
+					calendarPane.updateCalendar();
+				}
+				else if(e.getSource().equals(notificationsBox)) {
+					
+				}
+				break;
+			case "Velg dato":
+				String pickedDate = new DatePicker(this).setPickedDate();
+				dateField.setText(pickedDate);
+				try {
+					calendarPane.getModel().setYear(Integer.parseInt(new SimpleDateFormat("yyyy").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
+					calendarPane.getModel().setWeek(Integer.parseInt(new SimpleDateFormat("w").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
+					calendarPane.updateCalendar();
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+			case "Logg ut":
+				System.exit(0);
+				break;
+			case "Opprett hendelse":
+				new NewEvent(program, program.getUser(), this);
+				break;
+			case "Administrer kalendere":
+				new AddUsersCal(program, this);
+				break;
+			case "Detaljer":
+				if(calendarPane.getSelectedEvent().getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
+					new ChangeEvent(program, calendarPane.getSelectedEvent().getModel(), this);
+				}
+				else {
+					new ShowEvent(program, calendarPane.getSelectedEvent().getModel());
+				}
 				
+				break;
+			case "Slett valgt":
+				EventView deleteEvent = calendarPane.getSelectedEvent();
+				if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
+					calendarPane.getModel().deleteEvent(deleteEvent);
+					calendarPane.remove(deleteEvent);
+					calendarPane.updateCalendar();
+				}
+				break;
 			}
-			break;
-		case "Velg dato":
-			String pickedDate = new DatePicker(this).setPickedDate();
-			dateField.setText(pickedDate);
-			try {
-				calendarPane.getModel().setYear(Integer.parseInt(new SimpleDateFormat("yyyy").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
-				calendarPane.getModel().setWeek(Integer.parseInt(new SimpleDateFormat("w").format(new SimpleDateFormat("dd-MM-yyyy").parse(dateField.getText()))));
-				calendarPane.updateCalendar();
-			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			break;
-		case "Logg ut":
-			System.exit(0);
-			break;
-		case "Opprett hendelse":
-			new NewEvent(program, program.getUser(), this);
-			break;
-		case "Administrer kalendere":
-			new AddUsersCal(program, this);
-			break;
-		case "Detaljer":
-			if(calendarPane.getSelectedEvent().getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
-				new ChangeEvent(program, calendarPane.getSelectedEvent().getModel(), this);
-			}
-			else {
-				new ShowEvent(program, calendarPane.getSelectedEvent().getModel());
-			}
-			
-			break;
-		case "Slett valgt":
-			EventView deleteEvent = calendarPane.getSelectedEvent();
-			if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
-				calendarPane.getModel().deleteEvent(deleteEvent);
-				calendarPane.remove(deleteEvent);
-				calendarPane.updateCalendar();
-			}
-			break;
 		}
 	}
 }

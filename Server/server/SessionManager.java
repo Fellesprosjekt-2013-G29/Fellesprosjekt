@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.net.ssl.SSLSocket;
 
+import model.User;
+
 public class SessionManager 
 {
 	private ArrayList<Session> sessions = new ArrayList<Session>();
@@ -17,7 +19,6 @@ public class SessionManager
 	{
 		for(Session session : sessions)
 		{
-			System.out.println("Session: " + session.getKey() + " - " + key + " = " + session.getKey().equals(key));
 			if(session.getKey().equals(key))
 				return session;
 		}
@@ -27,5 +28,20 @@ public class SessionManager
 	public void removeSession(Session session)
 	{
 		sessions.remove(session);
+	}
+	
+	public ArrayList<Session> getSessions()
+	{
+		return sessions;
+	}
+	
+	public Session findSession(User user)
+	{
+		for(Session session : sessions)
+		{
+			if(session.getUser().getUserId() == user.getUserId())
+				return session;
+		}
+		return null;
 	}
 }

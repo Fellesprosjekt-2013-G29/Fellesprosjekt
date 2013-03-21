@@ -395,6 +395,17 @@ public class DbConnection {
        // Update methods
        //
        
+       
+       public void updateInvitations(int eventID, ArrayList<Invitation> updatedList) throws SQLException{
+    	   
+    	   ArrayList<Invitation> inDatabase = getInvitationsByEvent(eventID);
+    	   
+    	   for (Invitation updated : updatedList) {
+    		   if(!inDatabase.contains(updated))
+    			   createInvitation(updated);
+    	   }
+       }
+       
        public void updateAppointment(int eventId, String columnname, String value) throws SQLException{
     	   String query = "UPDATE Appointment SET ? = ? WHERE id = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
@@ -406,7 +417,7 @@ public class DbConnection {
        }
        
        
-       //
+      
        // Deletion methods
        //
        

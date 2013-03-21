@@ -8,7 +8,6 @@ import java.net.SocketAddress;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
-import structs.Alert;
 import structs.Request;
 import structs.Response;
 
@@ -80,17 +79,17 @@ public class ClientConnection
 		}
 	}
 	
-	public Alert reciveAlert()
+	public int reciveNotification()
 	{
 		try
 		{
 			objectInputStream = new ObjectInputStream(sslsocket.getInputStream());
-	        return (Alert) objectInputStream.readObject();
+	        return (Integer) objectInputStream.readObject();
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			return null;
+			return -1;
 		}
 	}
 	

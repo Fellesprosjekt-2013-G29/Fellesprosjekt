@@ -115,8 +115,19 @@ public class ConnectionManager {
 		return null;
 	}
 
-	public void getNotifications() {
-
+	public ArrayList<Invitation> getNotifications() {
+		Request request = new Request(Request.GET_USERS_NOTIFICATIONS);
+		outboundConnection.sendObject(request);
+		Response response = outboundConnection.reciveResponse();
+		if (response.errorExist()) {
+			System.out.println(response.getItem("error"));
+		}
+		else {
+			// TODO
+			ArrayList<Invitation> notifications = (ArrayList<Invitation>) response.getItem("invitation");
+			return notifications;
+		}
+		return null;
 	}
 
 	public void addEvent(Event event) {
