@@ -173,7 +173,7 @@ public class ClientConnection_Test
 	{
 		Event event = new Event();
 		event.setDescription("beskrivelse");
-		event.setTitle("Møte1");
+		event.setTitle("Mï¿½te1");
 		event.setStart(start);
 		event.setEnd(end);
 		

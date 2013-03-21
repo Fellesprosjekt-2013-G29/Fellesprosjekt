@@ -37,6 +37,7 @@ public class Invitation implements Serializable{
 	public void setEvent(Event event) {
 		this.event = event;
 	}
+	
 	public Timestamp getAlarm() {
 		return alarm;
 	}

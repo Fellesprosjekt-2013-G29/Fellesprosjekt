@@ -238,7 +238,7 @@ public class ServerMethods
 			{
 				for(Invitation invite : invites)
 				{
-					dc.createInvitation(invite);
+					dc.createInvitation(invite.getEvent().getEventId(), invite.getTo().getUserId());
 					sendNotification(1, session.getSessionManager(), invite.getTo());
 				}
 				response.addItem("result", "Invitations added");
@@ -257,7 +257,7 @@ public class ServerMethods
 	{
 		
 		int id = (Integer)request.getItem("id"); 
-				
+		
 		try
 		{
 			// updateAppointment(int eventId, String columnname, String value)
@@ -273,8 +273,13 @@ public class ServerMethods
 			if(request.hasKey("title"))
 				dc.updateAppointment(id, "name",  (String) request.getItem("title"));
 			if(request.hasKey("participants")){
+				dc.deleteInvitations(id);
+				
 				ArrayList<User> participants = (ArrayList<User>) request.getItem("participants");
-				//dc.updateInvitations(id, participants);
+				
+				for (User user : participants) {
+					dc.createInvitation(id, user.getUserId());
+				}
 			}
 			response.addItem("result", "Update ok");
 			

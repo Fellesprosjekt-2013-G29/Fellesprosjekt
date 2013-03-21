@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -68,16 +69,22 @@ public class EventView extends JComponent {
 		Graphics2D g = (Graphics2D)gr;
 
 		g.setColor(color);
-		g.fillRoundRect(2, 1, getBounds().width - 3, getBounds().height - 1, 10, 10);
+		g.fillRoundRect(2, 1, getWidth() - 3, getHeight() - 1, 10, 10);
 		g.setColor(Color.BLACK);
 		if(selected) {
-			g.drawRoundRect(0, 0, getBounds().width, getBounds().height - 1, 10, 10);
-			g.drawRoundRect(1, 1, getBounds().width - 2, getBounds().height - 3, 10, 10);
+			g.drawRoundRect(0, 0, getWidth(), getHeight() - 1, 10, 10);
+			g.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 3, 10, 10);
 		}
+		if(getHeight() < g.getFont().getSize() * 6)
+			g.setFont(new Font("Default", Font.PLAIN, getHeight() / 6));
 		int pos = 1;
 		g.drawString(model.getTitle(), 4, g.getFont().getSize() * pos++);
-		g.drawString("Rom: " + model.getRoom().getRoomNumber(), 4, g.getFont().getSize() * pos++);
-		g.drawString("Start: " + new SimpleDateFormat("HH:mm").format(model.getStart()), 4, g.getFont().getSize() * pos++);
-		g.drawString("Slutt: " + new SimpleDateFormat("HH:mm").format(model.getEnd()), 4, g.getFont().getSize() * pos++);
+		if(model.getRoom() != null) {
+			g.drawString("Rom: " + model.getRoom().getRoomNumber(), 4, g.getFont().getSize() * pos++);
+		}
+		g.drawString(" ", 4, g.getFont().getSize() * pos++);
+		g.drawString(new SimpleDateFormat("HH:mm").format(model.getStart()), 4, g.getFont().getSize() * pos++);
+		g.drawString(" - ", 4, g.getFont().getSize() * pos++);
+		g.drawString(new SimpleDateFormat("HH:mm").format(model.getEnd()), 4, g.getFont().getSize() * pos++);
 	}
 }

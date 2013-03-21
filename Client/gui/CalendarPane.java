@@ -23,6 +23,8 @@ import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
+import model.CalendarModel;
+
 import client.Program;
 
 public class CalendarPane extends JPanel implements MouseListener {
@@ -244,10 +246,18 @@ public class CalendarPane extends JPanel implements MouseListener {
 		for(EventView se : simultaneousEvents) {
 			start = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getStart());
 			end = (new SimpleDateFormat("ww HH mm u")).format(se.getModel().getEnd());
-			int day = Integer.parseInt(start.substring(9, 10));
-			int hour = Integer.parseInt(start.substring(3, 5));
-			int duration = Integer.parseInt(end.substring(3, 5)) - Integer.parseInt(start.substring(3, 5));
-			addToCalendar(se, day + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), hour, 1 / (double)simultaneousEvents.size(), duration);
+			
+			int startDay = Integer.parseInt(start.substring(9, 10));
+			int startHour = Integer.parseInt(start.substring(3, 5));
+			double startMinute = Double.parseDouble(start.substring(6, 8)) / 60;
+			
+			int endDay = Integer.parseInt(end.substring(9, 10));
+			int endHour = Integer.parseInt(end.substring(3, 5));
+			double endMinute = Double.parseDouble(end.substring(6, 8)) / 60;
+			
+			double duration = (endHour + endMinute) - (startHour + startMinute);
+			
+			addToCalendar(se, startDay + (double)simultaneousEvents.indexOf(se) / (double)simultaneousEvents.size(), 1 + startHour + startMinute, 1 / (double)simultaneousEvents.size(), duration);
 		}
 	}
 

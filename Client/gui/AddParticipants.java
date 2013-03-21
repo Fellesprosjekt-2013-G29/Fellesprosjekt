@@ -20,11 +20,15 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import model.User;
+import client.Program;
 
 public class AddParticipants extends JPanel{
+	
+	private Program program;
+	
 	private JFrame thisFrame;
-	private ChangeAppointment parentChange = null;
-	private NewAppointment parentNew = null;
+	private ChangeEvent parentChange = null;
+	private NewEvent parentNew = null;
 	
 	private GridBagConstraints constr;
 	
@@ -53,16 +57,23 @@ public class AddParticipants extends JPanel{
 	
 	private JTextField searchField;
 	
-	public AddParticipants(ArrayList<User> oldList, ChangeAppointment parent) { // <------ fjern comment
-	// public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, ChangeAppointment parent) { // <--- add comment
+	public AddParticipants(Program program, ArrayList<User> oldList, Object parent) { 
+
+		if(parent instanceof NewEvent) {
+			this.parentNew = (NewEvent) parent;
+		}
+		else if(parent instanceof ChangeEvent) {
+			this.parentChange = (ChangeEvent) parent;
+		}
 		
+		this.program = program;
+
 		JFrame frame = new JFrame("Valg av deltakere");
 		frame.setVisible(true);
 		this.setBackground(Color.WHITE);
 		thisFrame = frame;
-		this.parentChange = parent; 
 		constr = new GridBagConstraints();
-		
+
 		userListModel1 = new DefaultListModel();
 		userListModel2 = new DefaultListModel();
 		userList1 = new JList(userListModel1);
@@ -88,64 +99,26 @@ public class AddParticipants extends JPanel{
 		searchField = new JTextField();;
 		
 		createGraphics();
-		
-		//test-method
-		//addUsersToList(oldList, persList); // <--------- legg til comment
-		// Real method:
+
 		// Gets all users from DB
-		//addUsersToList(oldList, getAllUsersFromDB()); //<----------- implementer
+		ArrayList<User> tempUsers = program.getConnectionManager().getUsers();
+		for(User u : tempUsers) {
+			if(u.getUserId() == program.getUser().getUserId()) {
+				tempUsers.remove(u);
+				break;
+			}
+		}
+		addUsersToList(oldList, tempUsers);
 		
 		addListeners();
 		
 		frame.setContentPane(this);
 		frame.pack();
+
 	}
-	public AddParticipants(ArrayList<User> oldList, NewAppointment parent) { //<---------------- fjern comment
-	//public AddParticipants(ArrayList<User> oldList, ArrayList<User> persList, NewAppointment parent) {// <-- add comment
-		
-		JFrame frame = new JFrame("Valg av deltakere");
-		frame.setVisible(true);
-		this.setBackground(Color.WHITE);
-		thisFrame = frame;
-		this.parentNew = parent; 
-		constr = new GridBagConstraints();
-		
-		userListModel1 = new DefaultListModel();
-		userListModel2 = new DefaultListModel();
-		userList1 = new JList(userListModel1);
-		userList2 = new JList(userListModel2);
-		
-		notAddedList = new ArrayList<User>();
-		addedList = new ArrayList<User>();
-		
-		listScroller1 = new JScrollPane(userList1);
-		listScroller1.setPreferredSize(scrollDim);
-		listScroller1.setFocusable(false);
-		
-		listScroller2 = new JScrollPane(userList2);
-		listScroller2.setPreferredSize(scrollDim);
-		listScroller2.setFocusable(false);
-		
-		saveButton = new JButton("Lagre");
-		cancelButton = new JButton("Abryt");
-		searchButton = new JButton("S�k");
-		addAllButton = new JButton("Velg alle");
-		addButton = new JButton("Legg til");
-		removeButton = new JButton("Fjern");
-		searchField = new JTextField();;
-		
-		createGraphics();
-		
-		//test-method
-		// addUsersToList(oldList, persList); // <--------- legg til comment
-		// Real method:
-		// Gets all users from DB
-		//addUsersToList(oldList, getAllUsersFromDB()); // <------------- implementer
-		
-		addListeners();
-		
-		frame.setContentPane(this);
-		frame.pack();
+	
+	public void init(Program program) {
+
 	}
 	
 	private void createGraphics() {
