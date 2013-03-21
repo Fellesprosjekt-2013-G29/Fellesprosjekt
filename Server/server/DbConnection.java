@@ -207,6 +207,7 @@ public class DbConnection {
     	   event.setEnd(Timestamp.valueOf(res.getString("end")));
     	   event.setTitle(res.getString("name"));
     	   event.setRoom(getRoom(res.getInt("roomid")));
+    	   event.setParticipants(getInvitationsByEvent(eventId));
     	   return event;
        }
         

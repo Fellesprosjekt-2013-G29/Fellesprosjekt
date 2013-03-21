@@ -262,6 +262,7 @@ public class ChangeEvent extends JPanel {
 			return;
 		} else {
 			for (int i = 0; i < inviteList.size(); i++) {
+				System.out.println(i);
 				Invitation invite = inviteList.get(i);
 				User pers = invite.getTo();
 				participantsList.add(pers);
@@ -270,7 +271,10 @@ public class ChangeEvent extends JPanel {
 		}
 
 		roomList.add(model.getRoom());
-		roomBox.addItem(model.getRoom().getRoomNumber());
+		if(model.getRoom() != null) {
+			roomBox.addItem(model.getRoom().getRoomNumber());
+		}
+		System.out.println(model.getDescription());
 		description.setText(model.getDescription());
 		// if (model.isAlarm()) {
 		// int alarmTime = model.getAlarmBefore();
@@ -439,9 +443,11 @@ public class ChangeEvent extends JPanel {
 						invite.setEvent(model);
 						invitationList.add(invite);
 					}
-					if(!(model.getParticipants().containsAll(invitationList) && invitationList.containsAll(model.getParticipants()))) {
-						model.setParticipants(invitationList);
-						changes.add("participants");
+					if(model.getParticipants() != null && invitationList != null) {
+						if(!(model.getParticipants().containsAll(invitationList) && invitationList.containsAll(model.getParticipants()))) {
+							model.setParticipants(invitationList);
+							changes.add("participants");
+						}
 					}
 				}
 				// store event in DB

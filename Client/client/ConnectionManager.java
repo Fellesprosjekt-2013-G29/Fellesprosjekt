@@ -22,7 +22,7 @@ public class ConnectionManager {
 		this.program = program;
 
 		outboundConnection = new ClientConnection(host, port);
-		inboundConnection = new ClientConnectionListener(host, port, this);
+		inboundConnection = new ClientConnectionListener(host,port, program.getConnectionManager());
 	}
 
 	public String login(String username, String password) {
@@ -52,14 +52,14 @@ public class ConnectionManager {
 	}
 
 	public void attachSocket() {
-		if (inboundConnection.openConnection()) {
+		if (inboundConnection.getClientConnection().openConnection()) {
 			Request request = new Request();
 			request.setRequest(Request.ATTACH_SOCKET);
 			request.addItem("key", key);
-			inboundConnection.sendObject(request);
-			Response response = inboundConnection.reciveResponse();
+			inboundConnection.getClientConnection().sendObject(request);
+			Response response = inboundConnection.getClientConnection().reciveResponse();
 			System.out.println(response.getItem("result"));
-			inboundConnection.run();
+			inboundConnection.start();
 		}
 	}
 
@@ -152,7 +152,12 @@ public class ConnectionManager {
 			System.out.println(response.getItem("error"));
 		else {
 			Event newEvent = (Event) response.getItem("event");
-			addInvitation(event.getParticipants(), newEvent);
+			ArrayList<Invitation> participants = event.getParticipants();
+			for (Invitation i : participants) {
+				i.setEvent(newEvent);
+			}
+			newEvent.setParticipants(participants);
+			addInvitation(participants);
 			System.out.println(response.getItem("result"));
 			return newEvent;
 		}
@@ -209,11 +214,8 @@ public class ConnectionManager {
 
 	}
 
-	public void addInvitation(ArrayList<Invitation> users, Event event) {
+	public void addInvitation(ArrayList<Invitation> users) {
 		Request request = new Request(Request.ADD_INVITE);
-		for (Invitation i : users) {
-			i.setEvent(event);
-		}
 		request.addItem("invitations", users);
 		outboundConnection.sendObject(request);
 		Response response = outboundConnection.reciveResponse();

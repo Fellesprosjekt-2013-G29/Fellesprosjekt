@@ -112,6 +112,7 @@ public class CalendarModel {
 	
 	public void fetchEvents() {
 		for(Event e : program.getConnectionManager().getEvents(program.getUser())) {
+			System.out.println(e.getTitle() + e.getParticipants());
 			events.add(new EventView(e));
 		}
 	}

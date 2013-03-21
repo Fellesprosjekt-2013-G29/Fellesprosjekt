@@ -347,7 +347,6 @@ public class NewEvent extends JPanel {
 
 	private void sendModel(Event model) {
 		parent.addEvent(model);
-
 	}
 
 	public Event getModel() {
@@ -388,7 +387,6 @@ public class NewEvent extends JPanel {
 					for (int i = 0; i < userListModel.getSize(); i++) {
 						User user = participantsList.get(i);
 						Invitation invite = new Invitation();
-						// invite.setFrom(owner);
 						invite.setTo(user);
 						invite.setEvent(model);
 						invite.setStatus(InvitationAnswer.NA);

@@ -22,7 +22,7 @@ public class Program
 	public void login(String hoststr, String username, String password)
 	{	
 		loginWindow.alert("logging inn...");
-		if(password.length()==0){
+		if(password.length() == 0){
 			loginWindow.alert("Skriv inn ditt passord");
 			return;
 		}

@@ -1,12 +1,13 @@
 package client;
 
-public class ClientConnectionListener extends ClientConnection implements Runnable
+public class ClientConnectionListener extends Thread
 {
-	private ConnectionManager cm;
+	private ClientConnection cc;
+	ConnectionManager cm;
 
 	public ClientConnectionListener(String host, int port, ConnectionManager cm) 
 	{
-		super(host, port);
+		cc = new ClientConnection(host, port);
 		this.cm = cm;
 	}
 
@@ -15,9 +16,14 @@ public class ClientConnectionListener extends ClientConnection implements Runnab
 	{
 		while(true)
 		{
-			cm.handleNotifications(reciveNotification());
+			cm.handleNotifications(cc.reciveNotification());
 		}
 		
+	}
+	
+	public ClientConnection getClientConnection()
+	{
+		return cc;
 	}
 
 }
