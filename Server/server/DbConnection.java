@@ -426,10 +426,11 @@ public class DbConnection {
     	   ps.executeUpdate();
        }
        
-       public void deleteInvitations(int id) throws SQLException{
-    	   String query = "DELETE FROM Invitation WHERE appointment_id = ?";
+       public void deleteInvitation(int eventID, int userID) throws SQLException{
+    	   String query = "DELETE FROM Invitation WHERE appointment_id = ? AND user_id = ?";
     	   PreparedStatement stmt = connection.prepareStatement(query);
-    	   stmt.setInt(1, id);
+    	   stmt.setInt(1, eventID);
+    	   stmt.setInt(2, userID);
     	   
     	   stmt.executeUpdate();
        }
