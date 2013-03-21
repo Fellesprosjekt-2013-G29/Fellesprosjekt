@@ -261,6 +261,5 @@ public class ClientConnection_Test
 			System.out.println(response.getItem("result"));
 		}
 	}
-	
 }
 

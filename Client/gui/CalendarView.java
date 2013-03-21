@@ -69,7 +69,7 @@ public class CalendarView extends JFrame implements ActionListener {
 	 */
 	public CalendarView(Program parent) {
 		this.program = parent;
-		timer = new Timer(3000, this);
+		timer = new Timer(10000, this);
 		initialize();
 	}
 
@@ -211,7 +211,7 @@ public class CalendarView extends JFrame implements ActionListener {
 		gbc_weekNumberBox.gridy = 1;
 		getContentPane().add(weekNumberBox, gbc_weekNumberBox);
 		
-		timer.start();
+//		timer.start();
 	}
 
 	public JComboBox getNotificationsBox() {
@@ -251,7 +251,8 @@ public class CalendarView extends JFrame implements ActionListener {
 		calendarPane.updateCalendar();
 	}
 	
-	public void changeEvent(Event model) {
+	public void changeEvent(Event model, ArrayList<String> changes) {
+		program.getConnectionManager().updateEvent(model, changes);
 		calendarPane.getModel().changeEvent(calendarPane.getSelectedEvent(), model);
 		calendarPane.updateCalendar();
 	}
@@ -322,10 +323,19 @@ public class CalendarView extends JFrame implements ActionListener {
 				break;
 			case "Slett valgt":
 				EventView deleteEvent = calendarPane.getSelectedEvent();
-				if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
-					calendarPane.getModel().deleteEvent(deleteEvent);
-					calendarPane.remove(deleteEvent);
-					calendarPane.updateCalendar();
+				if(deleteEvent.getModel().getCreatedBy().getUserId() == program.getUser().getUserId()) {
+					if(program.getConnectionManager().deleteEvent(deleteEvent.getModel())) {
+						calendarPane.getModel().deleteEvent(deleteEvent);
+						calendarPane.remove(deleteEvent);
+						calendarPane.updateCalendar();
+					}
+				}
+				else {
+					if(program.getConnectionManager().updateInvite(deleteEvent.getModel())) {
+						calendarPane.getModel().deleteEvent(deleteEvent);
+						calendarPane.remove(deleteEvent);
+						calendarPane.updateCalendar();
+					}
 				}
 				break;
 			}
