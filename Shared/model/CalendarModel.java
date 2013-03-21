@@ -10,7 +10,7 @@ import java.util.Date;
 import client.Program;
 
 public class CalendarModel {
-
+ 
 	private Program program;
 	
 	private User additionalUser;
