@@ -12,14 +12,18 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import javax.sound.sampled.ReverbType;
+
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.cl.ClException;
 import no.ntnu.fp.net.cl.ClSocket;
 import no.ntnu.fp.net.cl.KtnDatagram;
 import no.ntnu.fp.net.cl.KtnDatagram.Flag;
+import no.ntnu.fp.net.co.AbstractConnection.State;
 
 /**
  * Implementation of the Connection-interface. <br>
@@ -30,195 +34,350 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * of the functionality, leaving message passing and error handling to this
  * implementation.
  * 
- * @author Sebjørn Birkeland and Stein Jakob Nordbø
+ * @author Sebj¿rn Birkeland and Stein Jakob Nordb¿
  * @see no.ntnu.fp.net.co.Connection
  * @see no.ntnu.fp.net.cl.ClSocket
  */
 public class ConnectionImpl extends AbstractConnection {
 
-    /** Keeps track of the used ports for each server port. */
-    private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
-    private final int minPort = 31337;
-    private final int maxPort = 41337;
-    /**
-     * Initialise initial sequence number and setup state machine.
-     * 
-     * @param myPort
-     *            - the local port to associate with this connection
-     */
-    public ConnectionImpl(int myPort) {
-        this.myAddress = getIPv4Address();
-        this.myPort = myPort;
-        this.state = State.CLOSED;
-    }
+	/** Keeps track of the used ports for each server port. */
+	private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
+	private static final int MAXPORT = 48900;
+	private static final int STARTPORT = 5555;
 
-    private String getIPv4Address() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        }
-        catch (UnknownHostException e) {
-            return "127.0.0.1";
-        }
-    }
+	private int sendTries = 0; //keeps track of how many times we have tried to send a packet and not received answer
+	private static final int MAXSENDTRIES = 2;
+	private int receives = 0; //keeps track of how many times we have tried to receive a packet and not received answer
+	private static final int MAXRECEIVES = 2;
 
-    /**
-     * Establish a connection to a remote location.
-     * 
-     * @param remoteAddress
-     *            - the remote IP-address to connect to
-     * @param remotePort
-     *            - the remote portnumber to connect to
-     * @throws IOException
-     *             If there's an I/O error.
-     * @throws java.net.SocketTimeoutException
-     *             If timeout expires before connection is completed.
-     * @see Connection#connect(InetAddress, int)
-     */
-    public void connect(InetAddress remoteAddress, int remotePort) throws IOException, SocketTimeoutException {
-    	if(this.state != State.CLOSED){
-    		throw new IOException("Could not connect at this time. Connection already open?");
-    	}
-    	this.remoteAddress = remoteAddress.getHostAddress();
-    	this.remotePort = remotePort;
-        
-    	// Send syn
-    	try{
-	    	simplySendPacket(constructInternalPacket(Flag.SYN));
-    	}catch(ClException e){
-    		this.state = State.CLOSED;
-    		Log.writeToLog("Failed to send SYN", "ConnectionImpl.connect");
-        	throw new IOException();
-        }
-    	this.state = State.SYN_SENT;
-        
-    	
-    	KtnDatagram ack = receiveAck();
+	private KtnDatagram lastPacket = null;
+	/**
+	 * Initialise initial sequence number and setup state machine.
+	 * 
+	 * @param myPort
+	 *            - the local port to associate with this connection
+	 */
+	public ConnectionImpl(int myPort) {
+		this.myPort = myPort;
+		this.myAddress = getIPv4Address();
+		//throw new NotImplementedException();
+	}
 
-    	if (ack == null){
-            // Connetion Timed out
-    		this.state = State.CLOSED;
-    		Log.writeToLog("Connection Timed out - did not receive ack.", "ConnectionImpl.connect");
-    		throw new SocketTimeoutException();
-    	}
-    	else if (ack.getFlag() != Flag.SYN_ACK){
-    		// Wrong answer. Connection failed
-    		this.state = State.CLOSED;
-    		Log.writeToLog("Connection failed. Received ack instead of synack", "ConnectionImpl.connect");
-    		throw new IOException();
-    	}
-    	else{
-    		// Received syn_ack! :D
-    		this.remotePort = ack.getSrc_port();
-    		this.state = State.ESTABLISHED;
-    		sendAck(ack, false);
+	private String getIPv4Address(){
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		}
+		catch (UnknownHostException e) {
+			return "127.0.0.1";
+		}
+	}
+
+	/**
+	 * Establish a connection to a remote location.
+	 * 	
+	 * @param remoteAddress
+	 *            - the remote IP-address to connect to
+	 * @param remotePort
+	 *            - the remote portnumber to connect to
+	 * @throws IOException
+	 *             If there's an I/O error.
+	 * @throws java.net.SocketTimeoutException
+	 *             If timeout expires before connection is completed.
+	 * @see Connection#connect(InetAddress, int)
+	 * @see AbstractConnection#receiveAck()
+	 */
+	public void connect(InetAddress remoteAddress, int remotePort) throws IOException, SocketTimeoutException{
+		KtnDatagram ack;
+		this.remoteAddress = remoteAddress.getHostAddress();
+		this.remotePort = remotePort;
+		KtnDatagram IPacket = constructInternalPacket(Flag.SYN);
+		// uses a self made method similar to sendDataPacketWithRetransmit() because we need to send a packet even though the state is set to CLOSED
+		//ack = sendPacketWithRetransmitConnect(IPacket);
+		try{
+			simplySendPacket(IPacket);
+		} catch (ClException e) {
+
+			Log.writeToLog("SimplySendFailed", "ConnectionImpl");
+			e.printStackTrace();
+		}
+		state = State.SYN_SENT;
+
+		ack = receiveAck();
+		if(ack != null)
+			this.remotePort = ack.getSrc_port();
+		else
+			throw new SocketTimeoutException();
+
+		if(ack.getFlag() == Flag.SYN_ACK){
+			//If we received a syn_ack from the right server the connection is established
+			state = State.ESTABLISHED;
+			//System.out.println("Client Established!");
+		}
+		//System.out.println(ack.getFlag());
+		sendAck(ack,false);
+	}
+	/**
+	 * Listen for, and accept, incoming connections.
+	 * 
+	 * @return A new ConnectionImpl-object representing the new connection.
+	 * @see Connection#accept()
+	 */
+	public Connection accept() throws IOException, SocketTimeoutException {
+		KtnDatagram ack;
+		state = State.LISTEN;
+		KtnDatagram packet;
+		do{
+			packet = receivePacket(true);
+		}
+		while(packet == null || packet.getFlag() != Flag.SYN);
+		state = State.SYN_RCVD;
+		ConnectionImpl c = new ConnectionImpl(findFreePort());//method to find a free port
+		c.remotePort = packet.getSrc_port();
+		c.remoteAddress = packet.getSrc_addr();
+		try{
+			c.sendAck(packet,true);
+		} catch (IOException e) {
+			Log.writeToLog("sendAck failed", "ConnectionImpl");
+			e.printStackTrace();
+		}
+		ack = c.receiveAck();
+		if(!ack.getSrc_addr().equals(c.remoteAddress)){
+			System.out.println("ACK SRC not Equal to remoteAdress");
+			System.out.println("Ack.src: "+ ack.getSrc_addr());
+			System.out.println("Remoteadress: " + c.remoteAddress);
+			
+			return null;
+		}
+		if(ack == null || ack.getFlag() != Flag.ACK)
+			throw new SocketTimeoutException();
+		
+		c.state = State.ESTABLISHED;
+		//System.out.println("Server connection up");
+		Log.writeToLog("Connection established", "Client");
+		state = State.LISTEN;
+		return (Connection)c;
+	}
+	/**
+	 * Finds a free port for the accept method 
+	 * Alltough originaly it was based on the idea of usedPorts holding available ports (which would be far more elegant), 
+	 * the method now generates more input for the usedPorts and eventually throws an exception if the port number get to high.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public int findFreePort() throws IOException{//method to find a free port
+		int port = STARTPORT;
+		usedPorts.put(port, false);
+		boolean foundPort = false;
+		while(!foundPort){
+			port = (int) (Math.random()*MAXPORT-STARTPORT)+STARTPORT;
+			try{
+				if(!usedPorts.get(port)){ //assuming usedport is stored as false, this if should hit when we find a freeport
+					foundPort = true;
+					usedPorts.put(port, false);
+				}
+			}
+			catch(NullPointerException e){//There is no previously used port that is free in usedPorts, so we need to add a new one 
+				if(port < MAXPORT){
+					usedPorts.put(port, false);
+					port = STARTPORT;
+				}
+			}
+		}
+		return port;
+	}
+
+	/**
+	 * Send a message from the application.
+	 * 
+	 * @param msg
+	 *            - the String to be sent.
+	 * @throws ConnectException
+	 *             If no connection exists
+	 * @throws IOException
+	 *             If no ACK was received.
+	 * @see AbstractConnection#sendDataPacketWithRetransmit(KtnDatagram)
+	 * @see no.ntnu.fp.net.co.Connection#send(String)
+	 */
+    public void send(String msg) throws ConnectException, IOException {
+    	//Construct the datagram
+    	if(state != State.ESTABLISHED) throw new ConnectException("No established connection");
+        KtnDatagram datagram = constructDataPacket(msg);
+        //Send it and wait for ack
+		KtnDatagram ack = sendDataPacketWithRetransmit(datagram);
+		System.out.println("finished sending");
+		if(ack == null) { //do this if no ack was received
+			System.out.println("No ack received");
+			if(sendTries < MAXSENDTRIES) {
+				sendTries++;
+				send(msg);
+				sendTries = 0;
+				return;
+			} else {
+				state = State.CLOSED;
+				throw new ConnectException("CONNECTION LOST");
+				// Connection is considered lost
+			}
+		} else { //Do this if an ack was received
+			System.out.println("ack received");
+			if(!isValid(ack)) {
+				//Not a valid ack
+			} else if(ack.getAck() > nextSequenceNo-1) {
+				//seq number is too high
+			} else if (ack.getAck() < nextSequenceNo-1) {  //Received a duplicate older ack, resending the msg
+				nextSequenceNo--;
+				send(msg);
+				return;
+			} else { //The ack was valid *do dance*
+				System.out.println("Valid ACK received");
+			}
 		}
     }
 
-    /**
-     * Listen for, and accept, incoming connections.
-     * 
-     * @return A new ConnectionImpl-object representing the new connection.
-     * @see Connection#accept()
-     */
-    public Connection accept() throws IOException, SocketTimeoutException {
-    	if(this.state != State.CLOSED){
-    		Log.writeToLog("Initial state not CLOSED", "ConnectionImpl.accept");
-    		throw new IOException("Could not connect at this time. Connection already open?");
-    	}
-    	state = State.LISTEN;
-    	
-    	// Listen for SYN:
-    	KtnDatagram syn;
-    	do{
-    		syn = receivePacket(true);
-    	}while (syn == null || syn.getFlag() != Flag.SYN);
-    	// SYN has been received
-    	this.state = State.SYN_RCVD;
-    	this.remoteAddress = syn.getSrc_addr();
-    	this.remotePort = syn.getSrc_port();
-    	
-    	ConnectionImpl newConnection = new ConnectionImpl(getFreePort());
-    	return newConnection;
+	/**
+	 * Wait for incoming data.
+	 * 
+	 * @return The received data's payload as a String.
+	 * @see Connection#receive()
+	 * @see AbstractConnection#receivePacket(boolean)
+	 * @see AbstractConnection#sendAck(KtnDatagram, boolean)
+	 */
+	public String receive() throws ConnectException, IOException {
+        //Receiving
+    	KtnDatagram datagram = null; 
+    	try {
+    		datagram = receivePacket(false);	
+		} catch (EOFException e) { //got a FIN
+			state = State.CLOSE_WAIT;
+			throw new EOFException();
+		}
+    	// Evaluating the received msg and acking accordingly
+		if(datagram == null) { // Receive timeout
+			if(receives < MAXRECEIVES) {
+				receives++;
+				String msg = receive();
+				receives = 0;
+				return msg;
+			} else {
+				state = State.CLOSED;
+				throw new ConnectException();
+			}
+		} else { // A packet was received
+			if(!isGhostPacket(datagram)) {
+				System.out.println("Not a ghost packet");
+				if(isValid(datagram)) {
+					if(lastPacket != null && datagram.getSeq_nr()-1!=lastPacket.getSeq_nr()) {
+						//making sure it's not the first packet comming in and checking if the datagram is the expected one
+						System.out.println("1");
+						sendAck(lastPacket, false); //sending a duplicate ack for last packet
+						return receive();
+					} else {
+						System.out.println("2");
+						sendAck(datagram, false);
+						lastPacket = datagram;
+						return (String) datagram.getPayload();
+					}
+				} else { //is not valid
+ 					if(lastPacket != null) {  //checking if this was the first received package
+ 						System.out.println("3");
+ 						sendAck(lastPacket, false); //Requests a resend
+ 						return receive();
+ 					}
+ 					return receive();
+				}
+			} else { //ghost package
+				System.out.println("Received a ghost package");
+				return receive();
+			}
+		}
     }
 
-    /**
-     * Send a message from the application.
-     * 
-     * @param msg
-     *            - the String to be sent.
-     * @throws ConnectException
-     *             If no connection exists.
-     * @throws IOException
-     *             If no ACK was received.
-     * @see AbstractConnection#sendDataPacketWithRetransmit(KtnDatagram)
-     * @see no.ntnu.fp.net.co.Connection#send(String)
-     */
-    public void send(String msg) throws ConnectException, IOException {
-    	if( state != State.ESTABLISHED ){
-    		throw new ConnectException();
-    	}
-		KtnDatagram packet = new KtnDatagram();
-		packet.setPayload(msg);
-		packet.setSrc_addr(myAddress);
-		packet.setSrc_port(myPort);
-		packet.setDest_addr(remoteAddress);
-		packet.setDest_port(remotePort);
-		sendDataPacketWithRetransmit(packet);
-    }
+	/**
+	 * Close the connection.
+	 * @see Connection#close()
+	 */
+	public void close() throws IOException {
+		System.out.println("System in state : " + state);
+		KtnDatagram ack = null;
+		KtnDatagram packet = null;
+		KtnDatagram finack = null;
+		if(state == State.CLOSE_WAIT){
+			System.out.println("Last Packet: "+lastPacket);
+			sendAck(lastPacket, false);
+			packet = constructInternalPacket(Flag.FIN);
 
-    /**
-     * Wait for incoming data.
-     * 
-     * @return The received data's payload as a String.
-     * @see Connection#receive()
-     * @see AbstractConnection#receivePacket(boolean)
-     * @see AbstractConnection#sendAck(KtnDatagram, boolean)
-     */
-    public String receive() throws ConnectException, IOException {
-        try{
-        	KtnDatagram packet = receivePacket(false);
-        	// @TODO: proper sendAck and handle retransmit!
-        	return packet.getPayload().toString();
-        	
-        } catch( EOFException e){
-        	throw new ConnectException();
-        }
-    }
+			try {
+				Thread.currentThread().sleep(100);//Wait for client to be ready to recieve FIN
+				simplySendPacket(packet);
+			} catch (ClException e) {
+				e.printStackTrace();
+			}
+			catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			ack = receiveAck();
+			if(ack == null)
+				//How to handle this? Answer: Do nothing!
+			state = State.CLOSED;
+		}
+		else if(state == State.ESTABLISHED){
+			packet = constructInternalPacket(Flag.FIN);
+			try {
+				simplySendPacket(packet);
+			} catch (ClException e) {
+				e.printStackTrace();
+			}
+			state = State.FIN_WAIT_1;
+			ack = receiveAck();
+			if(ack == null){
+				if(sendTries < MAXSENDTRIES){
+					state = State.ESTABLISHED;
+					close();
+					return;					
+				}
+				else{
+					state = State.CLOSED;
+				}
+			}
+			state = State.FIN_WAIT_2;
+			
+			System.out.println("Waiting for Fin2");
+			finack = receiveAck();
+			if(finack == null)
+				finack = receiveAck();
+			System.out.println("Done waiting for Fin2");
+			if(finack != null)
+				sendAck(finack, false);
+				state = State.TIME_WAIT;
+			
+			state = State.CLOSED;
+			
+		}
+		else{
+			System.out.println("Impressive you managed to call close in the state: " + state);
+			throw new IOException();
+		}
+		
+		
+	}
 
-    /**
-     * Close the connection.
-     * 
-     * @see Connection#close()
-     */
-    public void close() throws IOException {
-       
-    }
-
-    /**
-     * Test a packet for transmission errors. This function should only called
-     * with data or ACK packets in the ESTABLISHED state.
-     * 
-     * @param packet
-     *            Packet to test.
-     * @return true if packet is free of errors, false otherwise.
-     */
-    protected boolean isValid(KtnDatagram packet) {
-        if(packet.getChecksum() == packet.calculateChecksum()){
-        	return true;
-        }
-        return false;
-    }
-    
-    
-    private int getFreePort() throws IOException{
-    	int port = minPort;
-    	while(usedPorts.containsValue(port)){
-    		port = port+1;
-    		if(port == maxPort){
-    			Log.writeToLog("All ports are used!", "getFreePort");
-    			throw new IOException();
-    		}
-    	}
-    	return port;
+	/**
+	 * Test a packet for transmission errors. This function should only called
+	 * with data or ACK packets in the ESTABLISHED state.
+	 * 
+	 * @param packet
+	 *            Packet to test.
+	 * @return true if packet is free of errors, false otherwise.
+	 */
+	protected boolean isValid(KtnDatagram packet) {
+		if(packet.getChecksum() == packet.calculateChecksum())
+			return true;
+		return false;
+	}
+	private boolean isGhostPacket(KtnDatagram datagram) {
+//    	if(datagram.getSrc_addr() != null) {
+//    		return !(datagram.getSrc_addr().equals(remoteAddress) && datagram.getSrc_port()==remotePort);
+//    	}
+    	return false;
     }
 }
