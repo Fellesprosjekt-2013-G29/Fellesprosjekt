@@ -200,38 +200,10 @@ public class ConnectionImpl extends AbstractConnection {
 	 * @see no.ntnu.fp.net.co.Connection#send(String)
 	 */
     public void send(String msg) throws ConnectException, IOException {
-    	//Construct the datagram
-    	if(state != State.ESTABLISHED) throw new ConnectException("No established connection");
-        KtnDatagram datagram = constructDataPacket(msg);
-        //Send it and wait for ack
-		KtnDatagram ack = sendDataPacketWithRetransmit(datagram);
-		System.out.println("finished sending");
-		if(ack == null) { //do this if no ack was received
-			System.out.println("No ack received");
-			if(sendTries < MAXSENDTRIES) {
-				sendTries++;
-				send(msg);
-				sendTries = 0;
-				return;
-			} else {
-				state = State.CLOSED;
-				throw new ConnectException("CONNECTION LOST");
-				// Connection is considered lost
-			}
-		} else { //Do this if an ack was received
-			System.out.println("ack received");
-			if(!isValid(ack)) {
-				//Not a valid ack
-			} else if(ack.getAck() > nextSequenceNo-1) {
-				//seq number is too high
-			} else if (ack.getAck() < nextSequenceNo-1) {  //Received a duplicate older ack, resending the msg
-				nextSequenceNo--;
-				send(msg);
-				return;
-			} else { //The ack was valid *do dance*
-				System.out.println("Valid ACK received");
-			}
-		}
+    	
+    	KtnDatagram dataGram  = constructDataPacket(msg);
+    	sendDataPacketWithRetransmit(dataGram);
+    	
     }
 
 	/**
@@ -242,54 +214,14 @@ public class ConnectionImpl extends AbstractConnection {
 	 * @see AbstractConnection#receivePacket(boolean)
 	 * @see AbstractConnection#sendAck(KtnDatagram, boolean)
 	 */
-	public String receive() throws ConnectException, IOException {
-        //Receiving
-    	KtnDatagram datagram = null; 
-    	try {
-    		datagram = receivePacket(false);	
-		} catch (EOFException e) { //got a FIN
-			state = State.CLOSE_WAIT;
-			throw new EOFException();
-		}
-    	// Evaluating the received msg and acking accordingly
-		if(datagram == null) { // Receive timeout
-			if(receives < MAXRECEIVES) {
-				receives++;
-				String msg = receive();
-				receives = 0;
-				return msg;
-			} else {
-				state = State.CLOSED;
-				throw new ConnectException();
-			}
-		} else { // A packet was received
-			if(!isGhostPacket(datagram)) {
-				System.out.println("Not a ghost packet");
-				if(isValid(datagram)) {
-					if(lastPacket != null && datagram.getSeq_nr()-1!=lastPacket.getSeq_nr()) {
-						//making sure it's not the first packet comming in and checking if the datagram is the expected one
-						System.out.println("1");
-						sendAck(lastPacket, false); //sending a duplicate ack for last packet
-						return receive();
-					} else {
-						System.out.println("2");
-						sendAck(datagram, false);
-						lastPacket = datagram;
-						return (String) datagram.getPayload();
-					}
-				} else { //is not valid
- 					if(lastPacket != null) {  //checking if this was the first received package
- 						System.out.println("3");
- 						sendAck(lastPacket, false); //Requests a resend
- 						return receive();
- 					}
- 					return receive();
-				}
-			} else { //ghost package
-				System.out.println("Received a ghost package");
-				return receive();
-			}
-		}
+    public String receive() throws ConnectException, IOException {
+    	KtnDatagram pkt;
+    	do{
+    		pkt = receivePacket(false);
+    		
+    	}while(!isValid(pkt));
+    	sendAck(pkt, false);
+    	return (String) pkt.getPayload();
     }
 
 	/**
