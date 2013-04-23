@@ -293,23 +293,10 @@ public class ConnectionImpl extends AbstractConnection {
 		
 	}
 
-	/**
-	 * Test a packet for transmission errors. This function should only called
-	 * with data or ACK packets in the ESTABLISHED state.
-	 * 
-	 * @param packet
-	 *            Packet to test.
-	 * @return true if packet is free of errors, false otherwise.
-	 */
+
 	protected boolean isValid(KtnDatagram packet) {
 		if(packet.getChecksum() == packet.calculateChecksum())
 			return true;
 		return false;
 	}
-	private boolean isGhostPacket(KtnDatagram datagram) {
-//    	if(datagram.getSrc_addr() != null) {
-//    		return !(datagram.getSrc_addr().equals(remoteAddress) && datagram.getSrc_port()==remotePort);
-//    	}
-    	return false;
-    }
 }
